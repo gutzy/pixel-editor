@@ -1,9 +1,8 @@
 .idea
 _ext
-routes
-build
 node_modules
-dist
+
+dist/*.js
 
 yarn.lock
 package-lock.json

@@ -12,11 +12,11 @@ app.get('/', (req, res) => {
         if(err){
             console.log('error sending file',err);
         } else {
-            setTimeout(()=>{
-                console.log('closing server');
-                server.close();
-                process.exit();
-            },1000*10);
+            // setTimeout(()=>{
+            //     console.log('closing server');
+            //     server.close();
+            //     process.exit();
+            // },1000*10);
         }
     });
 });
