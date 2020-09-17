@@ -3,12 +3,12 @@ const express = require('express');
 
 const app = express();
 
-const BUILDDIR = process.argv[2] || './build';
+const BUILDDIR = process.argv[2] || './dist';
 const PORT = process.argv[3] || 3000;
 
 //ROUTE - index.htm
-app.get('/', (req, res) => { 
-    res.sendFile(path.join(__dirname, BUILDDIR, 'index.htm'), {}, function (err) {
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, BUILDDIR, 'index.html'), {}, function (err) {
         if(err){
             console.log('error sending file',err);
         } else {

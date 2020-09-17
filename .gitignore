@@ -1,5 +1,9 @@
+.idea
 _ext
 routes
 build
 node_modules
-.idea
+dist
+
+yarn.lock
+package-lock.json
