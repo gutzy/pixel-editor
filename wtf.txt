@@ -1,0 +1,62 @@
+Hey, so this is a lot of new code so I think I should add a little about what I'm trying to do here.
+I'm kinda writing this as I'm sketching up the beginnings but this is a big project, so this might be a weird and
+completely incorrect document by the time that I'm done, so I'm sorry about this, but I need this to keep my train of
+thought rolling as fast as other stuff during my country's 2nd covid lockdown.
+
+I tried to keep things as close as possible to the original app, but to completely overhaul the insides.
+My goal was to make the code more modular, modern, approachable to new developers and easier to improve on.
+Since I opted for a very different approach to most things, there is very little original code left,
+but I hope you like the changes enough to keep at least some of them.
+
+general goals
+- I removed gulp global inclusions and replaced it with webpack w/ standard ES6 imports - no more global code.
+  The most difficult part in recreating this app is many arbitrary function calls that I didn't know existed earlier.
+  this is the most crucial design change in the app, and everything else kinda branches from it.
+- The existing HTML template is extremely heavy and difficult to understand. I opted to replace all HTML related stuff
+  with a vueJS implementation, and get rid of Handlebars. I'm not a massive Vue fan, but I think it's appropriate
+  just because it's a pretty compact and well known library and it would really help to create small and modular
+  components for stuff like the Palette, that people can safely play around with or just ignore.
+
+structure/design philosophy crap
+- I made a class out of everything that's reusable w/ functionality in it, a configuration for every stack of vars,
+  also because I hate global vars, but mostly since this helps a lot with serialization and portability. Since a File
+  is the biggest granular object in the hierarchy, I put everything that could possibly be related to the current image
+  on it, and it includes instances of a Layer.
+- Tools: originally split into small Tool class wrapper variables, but most functionality was split between different
+  global handlers. I opted to improving the Tool class so it would encompass all tool functionality, basically so it
+  would be easier to add more tools or expand the existing ones. All 'facilities' should be in the parent Tool class
+  while all concrete functionality in the tools themselves. This called for additional big goals right away.
+- Event Bus: To prevent the huge if/else blocks when handling events, all 'global' app events will be handled using
+  an event bus. It is not unlike the 'On' function currently available, but more uh, my style :P
+- canvas wrapper: To prevent tons of complicated ctx2d code inside tools, a canvas wrapper that wraps all canvas
+  operations and simplifies them will provide an interface for all tools.
+- Actions: To avoid big if/else or switch statements and allow adding more custom actions, I opted for just defining
+  actions as hooks to different operations. File actions, Canvas actions, etc.. Composition is cooler than extensions.
+  so really none of the main classes has any concrete functionality and everything uses extendable actions unless it's
+  internal code or stuff that are really novel etc. The file class just binds together a bunch of actions, and more can
+  always be added. In the long term, this kinda rules out extending stuff more than once or twice and encourages more
+  tools and actions created from scratch, but for this kind of app there are some advantages in that.
+
+events and stuff
+- Input Manager: an input manager will wrap all the input and delegate it via custom events to the app. Since there is
+  only one canvas element and very few relevant keyboard and mouse input events, creating an input manager that will
+  deal with all user input and delegate it with custom events will allow better performance and decrease the likelihood
+  of things breaking.
+- App Manager: a singleton state manager for the app, that I tried to keep as thin as possible (basically just a holder
+  for the currently active file, so that actions can be routed properly) to make things more portable/serializable.
+
+
+events list
+
+input-mouse-up
+input-mouse-down
+input-mouse-move
+input-key-down
+load-file
+new-file
+
+canvas-clear
+a little about me,
+I'm an aging developer/drummer/punker from the middle east, I spent a lot of time trying to make pixel editors
+in Javascript throughout the years, but always kinda gave up because I never had a lot of free time on my hands.
+I still don't, but nvm.

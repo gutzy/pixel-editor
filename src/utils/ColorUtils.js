@@ -1,4 +1,4 @@
-export function hexToRgb(hex, divisor) {
+export function hexToRgba(hex, divisor) {
     //if divisor isn't set, set it to one (so it has no effect)
     divisor = divisor || 1;
 
@@ -12,7 +12,8 @@ export function hexToRgb(hex, divisor) {
     return result ? {
         r: parseInt(result[1], 16)/divisor,
         g: parseInt(result[2], 16)/divisor,
-        b: parseInt(result[3], 16)/divisor
+        b: parseInt(result[3], 16)/divisor,
+        a: 255
     } : null;
 }
 

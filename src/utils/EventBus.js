@@ -6,6 +6,8 @@
  What's exported is a singleton instance
 */
 
+const DEBUG = false;
+
 class _EventBus {
 
     constructor() {
@@ -28,6 +30,9 @@ class _EventBus {
     }
 
     $emit(id, ...vars) {
+
+        if (DEBUG) console.log('[emit]', id, ...vars);
+
         if (this.bus[id]) {
             for (let callback of this.bus[id]) callback(...vars);
         }
