@@ -17,10 +17,9 @@
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    transition: all 0.2s;
 
     &:hover {
-      background-color: transparentize($panelSelectedBg, 0.5);
+      background-color: $panelHoverBg;
     }
 
     &.selected {

@@ -35,3 +35,22 @@ export function coordColor(img, x,y,width) {
     const red = y * (width * 4) + x * 4;
     return [img.data[red], img.data[red + 1], img.data[red + 2], img.data[red + 3]];
 }
+
+export function distance(x1, y1, x2, y2) {
+    return Math.sqrt(Math.pow(x1-x2,2)+Math.pow(y1-y2, 2));
+}
+
+export function pixelsBetween(x1, y1, x2, y2) {
+    let res = {};
+    const angle = Math.atan2(y1-y2, x1-x2);
+    let dist = distance(x1, y1, x2, y2);
+
+    let r = {x: x1, y: y1};
+    while (dist > 1) {
+        r.x -= Math.cos(angle)*0.5;
+        r.y -= Math.sin(angle)*0.5;
+        res[Math.floor(r.x)+','+Math.floor(r.y)] = true;
+        dist = distance(r.x, r.y, x2, y2);
+    }
+    return Object.keys(res).map(e => ({x : e.split(",")[0], y: e.split(",")[1] }));
+}

@@ -18,7 +18,7 @@ export default class Rectangle extends Tool {
     }
 
     stop(file, canvas, x, y) {
-        canvas.doAction(DrawRect, this.startPos.x, this.startPos.y, x-this.startPos.x, y-this.startPos.y, null, file.color);
+        if (this.startPos) canvas.doAction(DrawRect, this.startPos.x, this.startPos.y, x-this.startPos.x, y-this.startPos.y, null, file.color);
     }
 
     use(file, canvas, x, y, toolCanvas) {

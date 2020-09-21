@@ -16,6 +16,7 @@ export default class Input {
         window.addEventListener('mousemove', this.onMouseMove.bind(this));
         window.addEventListener('keyup', this.onKeyUp.bind(this));
         window.addEventListener('keydown', this.onKeyDown.bind(this));
+        window.addEventListener('resize', this.onResize.bind(this));
     }
 
     onMouseUp(e) {
@@ -49,7 +50,12 @@ export default class Input {
         let combo = this.onKeyCombination(e);
         if (!combo) EventBus.$emit('input-key-down', e.key);
         this._lastKeyDown = e.key;
+    }
 
+    onResize(e) {
+        this._canvas.el.setAttribute('width', this._canvas.el.offsetWidth*1+'');
+        this._canvas.el.setAttribute('height', this._canvas.el.offsetHeight*1+'');
+        EventBus.$emit('redraw-canvas');
     }
 
     onKeyCombination(e) {
@@ -61,7 +67,6 @@ export default class Input {
             if (shift) res.push('shift');
             if (ctrl) res.push('ctrl');
             EventBus.$emit('input-key-combination', res);
-            e.preventDefault();
         }
         return false;
 

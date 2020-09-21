@@ -53,6 +53,8 @@ export default class File {
         EventBus.$on('save-history', this.onSaveHistoryRequest.bind(this));
         EventBus.$on('try-selecting-layer', this.onTrySelectingLayer.bind(this));
         EventBus.$on('try-adding-layer', this.onTryAddingLayer.bind(this));
+        EventBus.$on('try-deleting-layer', this.onTryDeletingLayer.bind(this));
+        EventBus.$on('try-renaming-layer', this.onTryRenamingLayer.bind(this));
         EventBus.$on('try-toggling-layer-visibility', this.onTryTogglingLayerVisibility.bind(this));
         EventBus.$on('try-toggling-layer-lock', this.onTryTogglingLayerLock.bind(this));
     }
@@ -83,7 +85,8 @@ export default class File {
             const state = this.history.getState(this.historyIndex-1);
             this.resetLayers();
             this.loadContents({name: this.name, layers: state});
-            EventBus.$emit("redraw-canvas")
+            EventBus.$emit("redraw-canvas");
+            EventBus.$emit("update-layers", this.layers);
         }
     }
 
@@ -93,7 +96,8 @@ export default class File {
             const state = this.history.getState(this.historyIndex-1);
             this.resetLayers();
             this.loadContents({name: this.name, layers: state});
-            EventBus.$emit("redraw-canvas")
+            EventBus.$emit("redraw-canvas");
+            EventBus.$emit("update-layers", this.layers);
         }
     }
 
@@ -101,7 +105,6 @@ export default class File {
 
         if (index === -1) index = this.activeLayer+1;
 
-        console.log(index);
         let existing = this.layers.find(l => l.name === name);
         while (existing) {
             let match = name.match(/([0-9]+)$/);
@@ -164,6 +167,7 @@ export default class File {
         if (DEBUG) console.log("Stop tool on",x,y);
         if (this.selectedTool && this.activeLayer > -1 && !this.layers[this.activeLayer].locked) {
             this.toolCanvas = null;
+            EventBus.$emit('update-layers', this.layers);
             EventBus.$emit('save-history');
             await this.selectedTool.stop(this, this.layers[this.activeLayer].canvas, x, y);
         }
@@ -218,6 +222,30 @@ export default class File {
     onTryAddingLayer() {
         this.addLayer('Layer 1');
         EventBus.$emit('update-layers', this.layers);
+        EventBus.$emit('save-history');
+    }
+
+    onTryDeletingLayer(layerName) {
+        if (this.layers.length <= 1) return false;
+        for (let l = 0; l < this.layers.length; l++) {
+            if (this.layers[l].name === layerName) {
+                this.layers.splice(l, 1);
+                EventBus.$emit('update-layers', this.layers);
+                EventBus.$emit('save-history');
+                return true;
+            }
+        }
+    }
+
+    onTryRenamingLayer(layerName, newLayerName) {
+        for (let l = 0; l < this.layers.length; l++) {
+            if (this.layers[l].name === layerName) {
+                this.layers[l].name = newLayerName;
+                EventBus.$emit('update-layers', this.layers);
+                EventBus.$emit('save-history');
+                return true;
+            }
+        }
     }
 
     onTryTogglingLayerLock(layerName) {
