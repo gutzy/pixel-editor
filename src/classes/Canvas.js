@@ -6,7 +6,7 @@ import {CanvasAction} from "./abstracts/Actions";
 
 export default class Canvas {
 
-    constructor(canvasElement = null, width = 666, height = 420) {
+    constructor(canvasElement = null, width = 666, height = 420, data = null) {
         if (canvasElement) {
             this.el = canvasElement;
             canvasElement.setAttribute('width', canvasElement.offsetWidth);
@@ -20,6 +20,10 @@ export default class Canvas {
         }
 
         this.ctx = this.el.getContext('2d');
+
+        if (data) {
+            this.ctx
+        }
     }
 
     doAction(action, ...params) {

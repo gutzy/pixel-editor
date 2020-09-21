@@ -55,9 +55,8 @@ class _AppManager {
         });
         EventBus.$on("redraw-canvas", () => {
             if (!this.file) return false;
-
             this.file.redraw(this.canvas);
-        })
+        });
     }
 
     newFile(width, height, editorMode, name = 'Untitled') {
@@ -69,6 +68,8 @@ class _AppManager {
     }
 
     loadFile(file) {
+        if (this.file) this.file.blur();
+
         this.file = file;
         this.file.focus();
         EventBus.$emit("load-file", this.file);

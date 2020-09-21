@@ -56,6 +56,8 @@ load-file
 new-file
 
 canvas-clear
+
+
 a little about me,
 I'm an aging developer/drummer/punker from the middle east, I spent a lot of time trying to make pixel editors
 in Javascript throughout the years, but always kinda gave up because I never had a lot of free time on my hands.

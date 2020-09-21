@@ -7,6 +7,7 @@ export default class Input {
         this._canvas = canvasEl;
         this._keyDown = {};
         this._mouseDown = false;
+        this._lastKeyDown = null;
     }
 
     bindInputs() {
@@ -35,17 +36,38 @@ export default class Input {
     }
 
     onKeyUp(e) {
-        if (this._keyDown[e.key]) delete this._keyDown[e.key.charCodeAt(0)];
+        if (this._keyDown[e.key]) delete this._keyDown[e.key];
         EventBus.$emit('input-key-up', e.key);
+        if (e.key === this._lastKeyDown) {
+            this._lastKeyDown = null;
+        }
     }
 
     onKeyDown(e) {
-        this._keyDown[e.key.charCodeAt(0)] = true;
-        EventBus.$emit('input-key-down', e.key);
+        if (e.key === this._lastKeyDown) return;
+
+        this._keyDown[e.key] = true;
+        let combo = this.onKeyCombination(e);
+        if (!combo) EventBus.$emit('input-key-down', e.key);
+        this._lastKeyDown = e.key;
+    }
+
+    onKeyCombination(e) {
+        const alt = this.isKeyDown("Alt"), shift = this.isKeyDown("Shift"), ctrl = this.isKeyDown("Control");
+
+        if ((alt || shift || ctrl) && (e.key !== "Alt" && e.key !== "Shift" && e.key !== "Control")) {
+            let res = [e.key];
+            if (alt) res.push('alt');
+            if (shift) res.push('shift');
+            if (ctrl) res.push('ctrl');
+            EventBus.$emit('input-key-combination', res);
+            return true;
+        }
+
     }
 
     isKeyDown(key) {
-        return (typeof this._keyDown[key.charCodeAt(0)] !== "undefined");
+        return (typeof this._keyDown[key] !== "undefined");
     }
 
     isMouseDown() {

@@ -12,3 +12,26 @@ export function screenToRectXY(r, x, y) {
     return {x,y}
 }
 
+export function colorPixel(img, pixelPos, fillColor) {
+    img.data[pixelPos] = fillColor.r;
+    img.data[pixelPos + 1] = fillColor.g;
+    img.data[pixelPos + 2] = fillColor.b;
+    img.data[pixelPos + 3] = 255;
+}
+
+export function matchPixelColor(tempImage, pixelPos, color) {
+    let r = tempImage.data[pixelPos];
+    let g = tempImage.data[pixelPos + 1];
+    let b = tempImage.data[pixelPos + 2];
+    let a = tempImage.data[pixelPos + 3];
+    return matchColor(color, [r,g,b,a]);
+}
+
+export function matchColor(color1, color2) {
+    return (color1[0] === color2[0] && color1[1] === color2[1] && color1[2] === color2[2] && color1[3] === color2[3]);
+}
+
+export function coordColor(img, x,y,width) {
+    const red = y * (width * 4) + x * 4;
+    return [img.data[red], img.data[red + 1], img.data[red + 2], img.data[red + 3]];
+}
