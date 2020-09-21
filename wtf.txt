@@ -1,64 +1,80 @@
 Hey, so this is a lot of new code so I think I should add a little about what I'm trying to do here.
-I'm kinda writing this as I'm sketching up the beginnings but this is a big project, so this might be a weird and
-completely incorrect document by the time that I'm done, so I'm sorry about this, but I need this to keep my train of
-thought rolling as fast as other stuff during my country's 2nd covid lockdown.
 
-I tried to keep things as close as possible to the original app, but to completely overhaul the insides.
-My goal was to make the code more modular, modern, approachable to new developers and easier to improve on.
-Since I opted for a very different approach to most things, there is very little original code left,
-but I hope you like the changes enough to keep at least some of them.
+** disclaimer.. **
+  I'm kinda writing this as I'm sketching up the beginnings but this is a big project, so this might be a weird and
+  completely incorrect document by the time that I'm done, so I'm sorry about this. I didn't test it at all beyond just
+  common usage and it's all quick & dirty programming done in a few days while smoking a lot of weed. If it's any less
+  buggy than before that's due to luck mostly.
 
-general goals
-- I removed gulp global inclusions and replaced it with webpack w/ standard ES6 imports - no more global code.
+** goal **
+  I tried to keep things as close as possible to the original app, but to completely overhaul the insides.
+  My goal was to make the code more modular, modern, approachable to new developers and easier to improve on.
+  Since I opted for a very different approach to most things, there is very little original code left,
+  but I hope you like the changes enough to keep at least some of them.
+
+** big ass changes **
+- I removed gulp global inclusions and replaced it with webpack w/ standard ES6 imports - no more global code!
   The most difficult part in recreating this app is many arbitrary function calls that I didn't know existed earlier.
   this is the most crucial design change in the app, and everything else kinda branches from it.
 - The existing HTML template is extremely heavy and difficult to understand. I opted to replace all HTML related stuff
-  with a vueJS implementation, and get rid of Handlebars. I'm not a massive Vue fan, but I think it's appropriate
+  with a Vue JS implementation, and get rid of Handlebars. I'm not a massive Vue fan, but I think it's appropriate
   just because it's a pretty compact and well known library and it would really help to create small and modular
-  components for stuff like the Palette, that people can safely play around with or just ignore.
+  components for stuff like the Palette, that people can safely play around with or just ignore. Because it would rely
+  on the app's internal events system to update its components' state, it should leave a small footprint altogether.
 
-structure/design philosophy crap
-- I made a class out of everything that's reusable w/ functionality in it, a configuration for every stack of vars,
-  also because I hate global vars, but mostly since this helps a lot with serialization and portability. Since a File
-  is the biggest granular object in the hierarchy, I put everything that could possibly be related to the current image
-  on it, and it includes instances of a Layer.
-- Tools: originally split into small Tool class wrapper variables, but most functionality was split between different
-  global handlers. I opted to improving the Tool class so it would encompass all tool functionality, basically so it
-  would be easier to add more tools or expand the existing ones. All 'facilities' should be in the parent Tool class
-  while all concrete functionality in the tools themselves. This called for additional big goals right away.
+** structural crap **
+  Some stuff about the different classes, folders and how they work together:
+
+- File: since it's the biggest granular object in the hierarchy, I put the currently viewed settings, layers and their
+  contents in a File class instance, and made a File a more coherent class. Much like before whenever a change is made
+  all the layers in the file are redrawn and copied to the main canvas. It also has a history object for undo/redo.
+- AppManager: a singleton state manager for the app, that I tried to keep kinda thin so the rest of the stuff are more
+  portable/serializable. It loads the app config files, holds for the main canvas and currently open file, and routes
+  incoming events from the input manager to the currently open file. It also handles main-canvas events pretty much in
+  the same fashion as input events, to only expose the main canvas to the file instance when a redraw is needed.
+- Tools: I opted to changing the Tool class so it would encompass all tool functionality, basically so it would be
+  easier to add more tools or expand the existing ones. To keep these classes small, all things you might want to do
+  with a tool should be available as *Canvas actions* and then you use them is in the tool class.
+- Canvas Actions: To avoid ctx2d code inside tools and allow adding more custom actions, I opted for just defining
+  Canvas action classes as parameterized actions you throw at a Canvas using a tool. This is to encourage recycling of
+  pre-wrapped, more proven actions as granular operations inside tools and used also by the wrappers themselves. Using
+  ctx2d actions outside Canvas Actions should generally be discouraged.
+- canvas wrapper: Provides an interface to use Canvas Actions on canvases. Wraps either the main canvas or those used
+  by the layers.
 - Event Bus: To prevent the huge if/else blocks when handling events, all 'global' app events will be handled using
-  an event bus. It is not unlike the 'On' function currently available, but more uh, my style :P
-- canvas wrapper: To prevent tons of complicated ctx2d code inside tools, a canvas wrapper that wraps all canvas
-  operations and simplifies them will provide an interface for all tools.
-- Actions: To avoid big if/else or switch statements and allow adding more custom actions, I opted for just defining
-  actions as hooks to different operations. File actions, Canvas actions, etc.. Composition is cooler than extensions.
-  so really none of the main classes has any concrete functionality and everything uses extendable actions unless it's
-  internal code or stuff that are really novel etc. The file class just binds together a bunch of actions, and more can
-  always be added. In the long term, this kinda rules out extending stuff more than once or twice and encourages more
-  tools and actions created from scratch, but for this kind of app there are some advantages in that.
-
-events and stuff
-- Input Manager: an input manager will wrap all the input and delegate it via custom events to the app. Since there is
+  an event bus, to let parts of the app pick what's relevant to them, and allow communication between the Vue-rendered
+  parts and the main canvas app. It is not unlike the 'On' function currently available, but more uh, my style :P
+- Input: an input manager will wrap all the input and delegate it via custom events to the app. Since there is
   only one canvas element and very few relevant keyboard and mouse input events, creating an input manager that will
   deal with all user input and delegate it with custom events will allow better performance and decrease the likelihood
   of things breaking.
-- App Manager: a singleton state manager for the app, that I tried to keep as thin as possible (basically just a holder
-  for the currently active file, so that actions can be routed properly) to make things more portable/serializable.
 
+events and stuff
 
-events list
+** events list **
+  Events are used with EventBus to capture things that go on and reflect them inside unrelated places in the app.
+  For example, to intercept input relevant to a specific tool or file, or sending events from and to the canvas app
+  state to draw in the HTML panels via Vue
 
-input-mouse-up
-input-mouse-down
-input-mouse-move
-input-key-down
-load-file
-new-file
-
-canvas-clear
-
+  config events
+      set-tools
+  files events
+      load-file
+      new-file
+  editor events
+      redraw-canvas
+      try-selecting-tool (try selecting a tool)
+      select-tool (actual selection)
+      try-selecting-layer (try selecting a layer)
+      select-layer (actual selection)
+  input events
+      input-mouse-up
+      input-mouse-down
+      input-mouse-move
+      input-key-down
+      input-key-combination
 
 a little about me,
-I'm an aging developer/drummer/punker from the middle east, I spent a lot of time trying to make pixel editors
-in Javascript throughout the years, but always kinda gave up because I never had a lot of free time on my hands.
-I still don't, but nvm.
+  I'm an aging developer/drummer/punker from the middle east, I spent a lot of time trying to make pixel editors
+  in Javascript throughout the years, but always kinda gave up because I never had a lot of free time on my hands.
+  I still don't, but nvm.

@@ -1,0 +1,35 @@
+@import "vars";
+
+.tools-panel {
+  position: absolute;
+  left: 0;
+
+  background-color: $panelBg;
+  color: $panelColor;
+  width: 64px;
+  height: 100%;
+  display: flex;
+
+  .tool {
+    width: 64px;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+
+    &:hover {
+      background-color: transparentize($panelSelectedBg, 0.5);
+    }
+
+    &.selected {
+      background-color: $panelSelectedBg;
+    }
+
+    img {
+      opacity: 0.6;
+      width: 32px;
+    }
+  }
+
+}

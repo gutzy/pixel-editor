@@ -3,13 +3,12 @@ import {FileAction} from "./abstracts/Actions";
 import EventBus from "../utils/EventBus";
 import ClearCanvas from "../actions/canvas/ClearCanvas";
 import DrawMainCanvasBoundaries from "../actions/canvas/DrawMainCanvasBoundaries";
-import PutImage from "../actions/canvas/PutImage";
 import {getCenterRect} from "../utils/CanvasUtils";
 import DrawImage from "../actions/canvas/DrawImage";
-import Pencil from "../tools/Pencil";
-import PaintBucket from "../tools/PaintBucket";
 import History from "./History";
 import {comboIs} from "../utils/InputUtils";
+import Canvas from "./Canvas";
+import GetImage from "../actions/canvas/GetImage";
 
 const DEBUG = false;
 
@@ -26,6 +25,7 @@ export default class File {
         this.history = new History();
         this.historyIndex = 0;
         this.layers = [];
+        this.toolCanvas = null;
 
         this.activeLayer = null;
         this.selectedTool = null;
@@ -48,15 +48,6 @@ export default class File {
     }
 
     bindListeners() {
-        EventBus.$on('input-key-down', (key) => {
-            if (!this.isActiveFile) return false;
-
-            switch (key) {
-                case 'p': this.setTool(Pencil); break;
-                case 'f': this.setTool(PaintBucket); break;
-            }
-        });
-
         EventBus.$on('input-key-combination', (combo) => {
             if (!this.isActiveFile) return false;
 
@@ -68,7 +59,19 @@ export default class File {
         EventBus.$on('save-history', () => {
             if (!this.isActiveFile) return false;
             this.saveHistory();
-        })
+        });
+
+        EventBus.$on('try-selecting-layer', (layerName) => {
+            if (!this.isActiveFile) return false;
+
+            for (let l = 0; l < this.layers.length; l++) {
+                if (this.layers[l].name === layerName) {
+                    this.activeLayer = l;
+                    EventBus.$emit('select-layer', this.layers[l]);
+                    return true;
+                }
+            }
+        });
     }
 
     doAction(action, ...params) {
@@ -89,13 +92,11 @@ export default class File {
 
     saveHistory() {
         this.historyIndex = this.history.saveState(this.layers, this.historyIndex);
-        console.log("Saving", this.historyIndex)
     }
 
     undo() {
         if (this.historyIndex > 1) {
             this.historyIndex--;
-            console.log(this.historyIndex);
             const state = this.history.getState(this.historyIndex-1);
             this.resetLayers();
             this.loadContents({name: this.name, layers: state});
@@ -104,10 +105,8 @@ export default class File {
     }
 
     redo() {
-        console.log(this.history, this.historyIndex);
         if (this.historyIndex < this.history.snapshots.length) {
             this.historyIndex++;
-            console.log(this.historyIndex);
             const state = this.history.getState(this.historyIndex-1);
             this.resetLayers();
             this.loadContents({name: this.name, layers: state});
@@ -126,6 +125,8 @@ export default class File {
             this.layers.push(layer);
             this.activeLayer = this.layers.length-1;
         }
+
+        EventBus.$emit("update-layers", this.layers);
     }
 
     redraw(canvas) {
@@ -138,15 +139,19 @@ export default class File {
             img = this.layers[i].getImage();
             canvas.doAction(DrawImage, img, r[0],r[1]);
         }
+        if (this.toolCanvas) {
+            canvas.doAction(DrawImage, this.toolCanvas.el, r[0], r[1]);
+        }
     }
 
     setTool(tool, ...params) {
-        this.selectedTool = new tool(...params);
-        console.log(this.selectedTool);
+        this.selectedTool = tool;
+        tool.params = params;
     }
 
     async startTool(x, y) {
         if (DEBUG) console.log("Start tool on",x,y);
+        this.toolCanvas = new Canvas(null, this.width, this.height);
         if (this.selectedTool && this.activeLayer > -1) {
             await this.selectedTool.start(this, this.layers[this.activeLayer].canvas, x, y);
         }
@@ -154,6 +159,7 @@ export default class File {
 
     async stopTool(x, y) {
         if (DEBUG) console.log("Stop tool on",x,y);
+        this.toolCanvas = null;
         if (this.selectedTool && this.activeLayer > -1) {
             EventBus.$emit('save-history');
             await this.selectedTool.stop(this, this.layers[this.activeLayer].canvas, x, y);
@@ -163,7 +169,7 @@ export default class File {
     async useTool(x, y) {
         if (DEBUG) console.log("Use tool on",x,y);
         if (this.selectedTool && this.activeLayer > -1) {
-            await this.selectedTool.use(this, this.layers[this.activeLayer].canvas, x, y);
+            await this.selectedTool.use(this, this.layers[this.activeLayer].canvas, x, y, this.toolCanvas);
         }
     }
 

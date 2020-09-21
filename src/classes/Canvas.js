@@ -21,9 +21,6 @@ export default class Canvas {
 
         this.ctx = this.el.getContext('2d');
 
-        if (data) {
-            this.ctx
-        }
     }
 
     doAction(action, ...params) {

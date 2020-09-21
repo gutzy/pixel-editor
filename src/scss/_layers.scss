@@ -1,0 +1,48 @@
+@import "vars";
+
+.layers-panel {
+  position: absolute;
+  right: 0;
+
+  background-color: $panelBg;
+  color: $panelColor;
+  width: 200px;
+  height: 100%;
+  display: flex;
+
+  .list {
+    width: 100%;
+  }
+
+  .layer {
+    width: 100%;
+    height: 60px;
+    display: flex;
+    cursor: pointer;
+    background-color: transparentize($panelSelectedBg, 0.5);
+    margin-bottom: 2px;
+
+    &.selected {
+      color: #ffffff;
+      background-color: $panelSelectedBg;
+
+      .layer-thumb {
+        background-color: $panelSelectedBg2;
+      }
+    }
+
+    &-thumb {
+      background-color: $panelSelectedBg;
+      width: 60px;
+    }
+
+    p {
+      display: flex;
+      align-items: center;
+      font-size: 14px;
+      margin-left: 10px;
+    }
+
+  }
+
+}
