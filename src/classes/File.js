@@ -18,6 +18,7 @@ export default class File {
 
         this.isActiveFile = false;
         this.name = null;
+        this.palette = null;
         this.width = width;
         this.height = height;
         this.editorMode = editorMode;
@@ -52,6 +53,7 @@ export default class File {
     bindListeners() {
         EventBus.$on('input-key-combination', this.onKeyCombination.bind(this));
         EventBus.$on('save-history', this.onSaveHistoryRequest.bind(this));
+        EventBus.$on('try-selecting-color', this.onTrySelectingColor.bind(this));
         EventBus.$on('try-selecting-layer', this.onTrySelectingLayer.bind(this));
         EventBus.$on('try-adding-layer', this.onTryAddingLayer.bind(this));
         EventBus.$on('try-deleting-layer', this.onTryDeletingLayer.bind(this));
@@ -192,6 +194,7 @@ export default class File {
 
     loadContents(contents) {
         if (contents.name) this.name = contents.name;
+        if (contents.palette) this.palette = contents.palette;
         if (contents.layers)
             for (let l = 0; l < contents.layers.length; l++) {
                 const layer = new Layer(this, contents.layers[l].contents, contents.layers[l].name);
@@ -213,6 +216,10 @@ export default class File {
     onSaveHistoryRequest() {
         if (!this.isActiveFile) return false;
         this.saveHistory();
+    }
+
+    onTrySelectingColor(color) {
+        this.color = color;
     }
 
     onTrySelectingLayer(layerName) {

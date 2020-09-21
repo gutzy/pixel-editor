@@ -19,7 +19,8 @@ class _AppManager {
         this.bindElements(canvasEl);
         this.bindListeners();
 
-        const file = this.newFile(320, 240, 'advanced', 'Funky test');
+        const file = this.newFile(320, 240, 'advanced', 'Funky test', ["#ff0000", "#ffffff", "#000000"]);
+
         file.color = '#ff0000';
     }
 
@@ -46,9 +47,11 @@ class _AppManager {
         EventBus.$on('try-selecting-tool', this.onSelectTool.bind(this));
     }
 
-    newFile(width, height, editorMode, name = 'Untitled') {
+    newFile(width, height, editorMode, name = 'Untitled', palette) {
         const file = new File(width, height, editorMode);
         file.name = name;
+        file.palette = palette;
+        EventBus.$emit('set-palette', palette);
         EventBus.$emit("new-file", this.file);
         this.loadFile(file);
         return file;

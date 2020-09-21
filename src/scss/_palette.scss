@@ -1,0 +1,23 @@
+.color-palette-panel {
+
+  position: absolute;
+  right: 200px;
+
+  background-color: $panelSelectedBg;
+  color: $panelColor;
+  width: 48px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+
+  .colors {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .color {
+    flex: 1;
+  }
+
+}

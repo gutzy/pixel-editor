@@ -1,4 +1,8 @@
 {
+	"1.4.0 - 9/21/29" :[
+		{"change":  "Recreated app w/ webpack, refactored all the code", "author" : "gutzy"}
+	],
+
 	"1.3.0 - 9/8/20": [
 		{"change": "Added layers", "author": "Unsettled"}
 	],
