@@ -17,6 +17,7 @@
     align-items: center;
     justify-content: center;
     cursor: pointer;
+    transition: all 0.2s;
 
     &:hover {
       background-color: transparentize($panelSelectedBg, 0.5);
@@ -24,11 +25,16 @@
 
     &.selected {
       background-color: $panelSelectedBg;
+
+      img {
+        opacity: 1;
+      }
     }
 
     img {
       opacity: 0.6;
       width: 32px;
+      filter: brightness(0) invert(1);
     }
   }
 

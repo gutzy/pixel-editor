@@ -1,6 +1,5 @@
 import Canvas from "./Canvas";
 import GetImage from "../actions/canvas/GetImage";
-import PutImage from "../actions/canvas/PutImage";
 import {LayerAction} from "./abstracts/Actions";
 import DrawImage from "../actions/canvas/DrawImage";
 
@@ -11,6 +10,7 @@ export default class Layer {
         this.contents = contents;
         this.name = name;
 
+        this.locked = false;
         this.visible = true;
         this.canvas = null;
         this.data = null;

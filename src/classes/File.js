@@ -42,7 +42,8 @@ export default class File {
             this.loadContents(this.contents);
         }
         else {
-            this.addLayer('Background');
+            const layer = this.addLayer('Layer 1');
+            EventBus.$emit('select-layer', layer);
             this.saveHistory();
         }
     }
@@ -127,6 +128,7 @@ export default class File {
         }
 
         EventBus.$emit("update-layers", this.layers);
+        return layer;
     }
 
     redraw(canvas) {

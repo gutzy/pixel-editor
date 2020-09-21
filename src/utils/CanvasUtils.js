@@ -1,6 +1,6 @@
 export function getCenterRect(canvas, width, height, scale = 1) {
     const cw = canvas.width, ch = canvas.height;
-    return [cw/2-width*scale/2, ch/2-height*scale/2, width*scale, height*scale];
+    return [Math.floor(cw/2-width*scale/2), Math.floor(ch/2-height*scale/2), Math.floor(width*scale), Math.floor(height*scale)];
 }
 
 export function screenToRectXY(r, x, y) {

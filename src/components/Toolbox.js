@@ -29,7 +29,7 @@ export default {
     <div class="tools-panel">
         <div v-if="tools" class="tools">
             <div :class="'tool'+(selectedTool==tool.name?' selected':'')" v-for="tool of tools">
-                <img :src="tool.icon" :title="tool.name" v-on:click="selectTool(tool)" />
+                <img :src="tool.icon" :title="tool.name" v-on:mousedown="selectTool(tool)" />
             </div>
         </div>
     </div>
