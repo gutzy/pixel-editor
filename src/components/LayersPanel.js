@@ -40,6 +40,13 @@ export default {
         mergeBelow(layer) {
             EventBus.$emit('try-merging-layer-below', layer.name);
         },
+        flattenVisible() {
+            EventBus.$emit('try-flatten-visible-layers');
+        },
+        flattenAll() {
+            EventBus.$emit('try-flatten-all-layers');
+        },
+
         selectLayerToRename(layer) {
             this.renaming = layer.name;
             this.newLayerName = layer.name;
@@ -74,8 +81,8 @@ export default {
                     <button @mousedown="deleteLayer(layer)">Delete</button>
                     <button @mousedown="selectLayerToRename(layer)">Rename</button>
                     <button v-if="index < layers.length-1" @mousedown="mergeBelow(layer)">Merge Below</button>
-                    <button>Flatten Visible</button>
-                    <button>Flatten All</button>
+                    <button @mousedown="flattenVisible()">Flatten Visible</button>
+                    <button @mousedown="flattenAll()">Flatten All</button>
                 </div>
                 <div class="layer-thumb">
                     <img :src="layer.thumb" />

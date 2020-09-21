@@ -12,6 +12,8 @@ export default class History {
         for (let l = 0; l < layers.length; l++) {
             d.push({
                 name : layers[l].name,
+                locked: layers[l].locked,
+                visible: layers[l].visible,
                 data : layers[l].getImageData()
             })
         }

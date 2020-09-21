@@ -57,6 +57,8 @@ export default class File {
         EventBus.$on('try-deleting-layer', this.onTryDeletingLayer.bind(this));
         EventBus.$on('try-renaming-layer', this.onTryRenamingLayer.bind(this));
         EventBus.$on('try-merging-layer-below', this.onTryMergingLayerBelow.bind(this));
+        EventBus.$on('try-flatten-visible-layers', this.onTryFlattenVisibleLayers.bind(this));
+        EventBus.$on('try-flatten-all-layers', this.onTryFlattenAllLayers.bind(this));
         EventBus.$on('try-toggling-layer-visibility', this.onTryTogglingLayerVisibility.bind(this));
         EventBus.$on('try-toggling-layer-lock', this.onTryTogglingLayerLock.bind(this));
     }
@@ -193,7 +195,9 @@ export default class File {
         if (contents.layers)
             for (let l = 0; l < contents.layers.length; l++) {
                 const layer = new Layer(this, contents.layers[l].contents, contents.layers[l].name);
-                layer.inflate(contents.layers[l].data)
+                layer.locked = contents.layers[l].locked;
+                layer.visible = contents.layers[l].visible;
+                layer.inflate(contents.layers[l].data);
                 this.layers.push(layer);
                 this.activeLayer = l;
             }
@@ -258,6 +262,7 @@ export default class File {
             if (this.layers[l].name === layerName) {
                 this.layers[l].locked = !(this.layers[l].locked);
                 EventBus.$emit('update-layers', this.layers);
+                EventBus.$emit('save-history');
                 return true;
             }
         }
@@ -270,6 +275,7 @@ export default class File {
             if (this.layers[l].name === layerName) {
                 this.layers[l].visible = !(this.layers[l].visible);
                 EventBus.$emit('update-layers', this.layers);
+                EventBus.$emit('save-history');
                 return true;
             }
         }
@@ -289,6 +295,33 @@ export default class File {
                 return true;
             }
         }
+    }
+
+    onTryFlattenVisibleLayers() {
+        let lowest = 9999;
+        for (let l = this.layers.length-1; l >= 0; l--) {
+            if (this.layers[l].visible) lowest = l;
+        }
+        for (let l = this.layers.length-1; l > lowest; l--) {
+            if (this.layers[l].visible) {
+                this.layers[lowest].canvasAction(DrawImage, this.layers[l].getImage());
+                this.layers.splice(l, 1);
+            }
+        }
+        this.activeLayer = lowest;
+        EventBus.$emit('update-layers', this.layers);
+        EventBus.$emit('save-history');
+    }
+
+    onTryFlattenAllLayers() {
+        for (let l = this.layers.length-1; l > 0; l--) {
+            this.layers[0].canvasAction(DrawImage, this.layers[l].getImage());
+            this.layers.splice(l, 1);
+        }
+        this.layers[0].visible = true;
+        this.activeLayer = 0;
+        EventBus.$emit('update-layers', this.layers);
+        EventBus.$emit('save-history');
     }
 
 
