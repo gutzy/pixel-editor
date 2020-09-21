@@ -4,7 +4,8 @@ let tool = {};
 export default class Tool {
 
     constructor() {
-        this.params = []
+        this.params = [];
+        this.name = "Untitled Tool";
     }
 
     start() { throw new Error("Tool start action not implemented") }
