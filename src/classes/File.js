@@ -7,7 +7,7 @@ import PutImage from "../actions/canvas/PutImage";
 import {getCenterRect} from "../utils/CanvasUtils";
 import DrawImage from "../actions/canvas/DrawImage";
 import Pencil from "../tools/Pencil";
-import Fill from "../tools/Fill";
+import PaintBucket from "../tools/PaintBucket";
 
 const DEBUG = false;
 
@@ -31,7 +31,7 @@ export default class File {
         EventBus.$on('input-key-down', (key) => {
             switch (key) {
                 case 'p': this.setTool(Pencil); break;
-                case 'f': this.setTool(Fill); break;
+                case 'f': this.setTool(PaintBucket); break;
             }
         })
     }

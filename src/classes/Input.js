@@ -1,4 +1,5 @@
 import EventBus from "../utils/EventBus";
+import {getEventXY} from "../utils/InputUtils";
 
 export default class Input {
 
@@ -17,20 +18,20 @@ export default class Input {
     }
 
     onMouseUp(e) {
-        const {pageX, pageY} = e;
+        const xy = getEventXY(e, this._canvas.el);
         this._mouseDown = false;
-        EventBus.$emit('input-mouse-up', pageX, pageY);
+        EventBus.$emit('input-mouse-up', ...xy);
     }
 
     onMouseDown(e) {
-        const {pageX, pageY} = e;
+        const xy = getEventXY(e, this._canvas.el);
         this._mouseDown = true;
-        EventBus.$emit('input-mouse-down', pageX, pageY);
+        EventBus.$emit('input-mouse-down', ...xy);
     }
 
     onMouseMove(e) {
-        const {pageX, pageY} = e;
-        EventBus.$emit('input-mouse-move', pageX, pageY);
+        const xy = getEventXY(e, this._canvas.el);
+        EventBus.$emit('input-mouse-move', ...xy);
     }
 
     onKeyUp(e) {

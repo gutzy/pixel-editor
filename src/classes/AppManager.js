@@ -3,7 +3,7 @@ import Input from "./Input";
 import File from "./File";
 import MainCanvas from "./MainCanvas";
 import {getCenterRect, screenToRectXY} from "../utils/CanvasUtils";
-import Fill from "../tools/Fill";
+import PaintBucket from "../tools/PaintBucket";
 import Pencil from "../tools/Pencil";
 
 class _AppManager {
