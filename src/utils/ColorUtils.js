@@ -5,15 +5,11 @@ export function hexToRgba(hex, divisor) {
     //split given hex code into array of 3 values
     let result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex.trim());
 
-    //console.log('hex: '+hex)
-    //console.log([parseInt(result[1], 16)/divisor, parseInt(result[2], 16)/divisor, parseInt(result[3], 16)/divisor])
-    //console.log(result)
 
     return result ? {
         r: parseInt(result[1], 16)/divisor,
         g: parseInt(result[2], 16)/divisor,
         b: parseInt(result[3], 16)/divisor,
-        a: 255
     } : null;
 }
 

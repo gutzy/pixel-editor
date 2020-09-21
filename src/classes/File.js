@@ -9,7 +9,7 @@ import DrawImage from "../actions/canvas/DrawImage";
 import Pencil from "../tools/Pencil";
 import Fill from "../tools/Fill";
 
-const DEBUG = true;
+const DEBUG = false;
 
 export default class File {
 
@@ -29,7 +29,6 @@ export default class File {
         this.init();
 
         EventBus.$on('input-key-down', (key) => {
-            console.log(key);
             switch (key) {
                 case 'p': this.setTool(Pencil); break;
                 case 'f': this.setTool(Fill); break;

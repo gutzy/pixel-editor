@@ -8,9 +8,7 @@ export default class FillArea extends CanvasAction {
     }
 }
 function fill(el, ctx, x, y, fillColor) {
-
     //changes a pixels color
-    console.log(x, y);
     function colorPixel(tempImage, pixelPos, fillColor) {
         tempImage.data[pixelPos] = fillColor.r;
         tempImage.data[pixelPos + 1] = fillColor.g;
