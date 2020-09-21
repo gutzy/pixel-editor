@@ -45,24 +45,25 @@ export default class Input {
 
     onKeyDown(e) {
         if (e.key === this._lastKeyDown) return;
-
         this._keyDown[e.key] = true;
         let combo = this.onKeyCombination(e);
         if (!combo) EventBus.$emit('input-key-down', e.key);
         this._lastKeyDown = e.key;
+
     }
 
     onKeyCombination(e) {
-        const alt = this.isKeyDown("Alt"), shift = this.isKeyDown("Shift"), ctrl = this.isKeyDown("Control");
+        const alt = this.isKeyDown("Alt"), shift = this.isKeyDown("Shift"), ctrl = this.isKeyDown("Control") || this.isKeyDown("Meta");
 
-        if ((alt || shift || ctrl) && (e.key !== "Alt" && e.key !== "Shift" && e.key !== "Control")) {
+        if ((alt || shift || ctrl) && (e.key !== "Alt" && e.key !== "Shift" && e.key !== "Control" && e.key !== "Meta")) {
             let res = [e.key];
             if (alt) res.push('alt');
             if (shift) res.push('shift');
             if (ctrl) res.push('ctrl');
             EventBus.$emit('input-key-combination', res);
-            return true;
+            e.preventDefault();
         }
+        return false;
 
     }
 

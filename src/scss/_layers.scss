@@ -9,6 +9,25 @@
   min-width: 200px;
   height: 100%;
   display: flex;
+  flex-direction: column;
+
+  .add-layer {
+    cursor: pointer;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+
+    &:hover {
+      background-color: transparentize($white, 0.9);
+    }
+
+    img {
+      width: 20px;
+      margin-right: 10px;
+    }
+  }
 
   .list {
     width: 100%;
@@ -51,6 +70,7 @@
         flex: 1;
         display: flex;
         justify-content: center;
+        transition: all 0.2s;
 
         &:hover {
           background-color: transparentize($white, 0.5);

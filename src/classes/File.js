@@ -27,7 +27,7 @@ export default class File {
         this.layers = [];
         this.toolCanvas = null;
 
-        this.activeLayer = null;
+        this.activeLayer = -1;
         this.selectedTool = null;
         this.color = null;
 
@@ -49,30 +49,12 @@ export default class File {
     }
 
     bindListeners() {
-        EventBus.$on('input-key-combination', (combo) => {
-            if (!this.isActiveFile) return false;
-
-            if (comboIs(combo, 'ctrl','z')) { this.undo(); }
-            else if (comboIs(combo, 'ctrl','shift', 'z') || comboIs(combo, 'ctrl','y')) { this.redo(); }
-
-        });
-
-        EventBus.$on('save-history', () => {
-            if (!this.isActiveFile) return false;
-            this.saveHistory();
-        });
-
-        EventBus.$on('try-selecting-layer', (layerName) => {
-            if (!this.isActiveFile) return false;
-
-            for (let l = 0; l < this.layers.length; l++) {
-                if (this.layers[l].name === layerName) {
-                    this.activeLayer = l;
-                    EventBus.$emit('select-layer', this.layers[l]);
-                    return true;
-                }
-            }
-        });
+        EventBus.$on('input-key-combination', this.onKeyCombination.bind(this));
+        EventBus.$on('save-history', this.onSaveHistoryRequest.bind(this));
+        EventBus.$on('try-selecting-layer', this.onTrySelectingLayer.bind(this));
+        EventBus.$on('try-adding-layer', this.onTryAddingLayer.bind(this));
+        EventBus.$on('try-toggling-layer-visibility', this.onTryTogglingLayerVisibility.bind(this));
+        EventBus.$on('try-toggling-layer-lock', this.onTryTogglingLayerLock.bind(this));
     }
 
     doAction(action, ...params) {
@@ -116,6 +98,22 @@ export default class File {
     }
 
     addLayer(name = 'Untitled Layer', index = -1) {
+
+        if (index === -1) index = this.activeLayer+1;
+
+        console.log(index);
+        let existing = this.layers.find(l => l.name === name);
+        while (existing) {
+            let match = name.match(/([0-9]+)$/);
+            if (match) {
+                name = name.replace(/([0-9]+)$/, match[0]*1+1)
+            }
+            else {
+                name = name + ' 2';
+            }
+            existing = this.layers.find(l => l.name === name);
+        }
+
         const layer = new Layer(this, null, name);
         layer.inflate();
         if (index > -1) {
@@ -128,6 +126,7 @@ export default class File {
         }
 
         EventBus.$emit("update-layers", this.layers);
+        EventBus.$emit('select-layer', this.layers[this.activeLayer]);
         return layer;
     }
 
@@ -138,8 +137,10 @@ export default class File {
         canvas.ctx.globalAlpha = 255;
         canvas.doAction(DrawMainCanvasBoundaries, this.width, this.height);
         for (let i = 0; i < this.layers.length; i++) {
-            img = this.layers[i].getImage();
-            canvas.doAction(DrawImage, img, r[0],r[1]);
+            if (this.layers[i].visible) {
+                img = this.layers[i].getImage();
+                canvas.doAction(DrawImage, img, r[0],r[1]);
+            }
         }
         if (this.toolCanvas) {
             canvas.doAction(DrawImage, this.toolCanvas.el, r[0], r[1]);
@@ -153,16 +154,16 @@ export default class File {
 
     async startTool(x, y) {
         if (DEBUG) console.log("Start tool on",x,y);
-        this.toolCanvas = new Canvas(null, this.width, this.height);
-        if (this.selectedTool && this.activeLayer > -1) {
+        if (this.selectedTool && this.activeLayer > -1 && !this.layers[this.activeLayer].locked) {
+            this.toolCanvas = new Canvas(null, this.width, this.height);
             await this.selectedTool.start(this, this.layers[this.activeLayer].canvas, x, y);
         }
     }
 
     async stopTool(x, y) {
         if (DEBUG) console.log("Stop tool on",x,y);
-        this.toolCanvas = null;
-        if (this.selectedTool && this.activeLayer > -1) {
+        if (this.selectedTool && this.activeLayer > -1 && !this.layers[this.activeLayer].locked) {
+            this.toolCanvas = null;
             EventBus.$emit('save-history');
             await this.selectedTool.stop(this, this.layers[this.activeLayer].canvas, x, y);
         }
@@ -170,7 +171,7 @@ export default class File {
 
     async useTool(x, y) {
         if (DEBUG) console.log("Use tool on",x,y);
-        if (this.selectedTool && this.activeLayer > -1) {
+        if (this.selectedTool && this.activeLayer > -1 && !this.layers[this.activeLayer].locked) {
             await this.selectedTool.use(this, this.layers[this.activeLayer].canvas, x, y, this.toolCanvas);
         }
     }
@@ -188,6 +189,57 @@ export default class File {
                 this.layers.push(layer);
                 this.activeLayer = l;
             }
+    }
+
+    onKeyCombination(combo) {
+        if (!this.isActiveFile) return false;
+
+        if (comboIs(combo, 'ctrl','z')) { this.undo(); }
+        else if (comboIs(combo, 'ctrl','shift', 'z') || comboIs(combo, 'ctrl','y')) { this.redo(); }
+    }
+
+    onSaveHistoryRequest() {
+        if (!this.isActiveFile) return false;
+        this.saveHistory();
+    }
+
+    onTrySelectingLayer(layerName) {
+        if (!this.isActiveFile) return false;
+
+        for (let l = 0; l < this.layers.length; l++) {
+            if (this.layers[l].name === layerName) {
+                this.activeLayer = l;
+                EventBus.$emit('select-layer', this.layers[l]);
+                return true;
+            }
+        }
+    }
+
+    onTryAddingLayer() {
+        this.addLayer('Layer 1');
+        EventBus.$emit('update-layers', this.layers);
+    }
+
+    onTryTogglingLayerLock(layerName) {
+        if (!this.isActiveFile) return false;
+        for (let l = 0; l < this.layers.length; l++) {
+            if (this.layers[l].name === layerName) {
+                this.layers[l].locked = !(this.layers[l].locked);
+                EventBus.$emit('update-layers', this.layers);
+                return true;
+            }
+        }
+    }
+
+    onTryTogglingLayerVisibility(layerName) {
+        if (!this.isActiveFile) return false;
+        for (let l = 0; l < this.layers.length; l++) {
+            if (this.layers[l].name === layerName) {
+                this.layers[l].visible = !(this.layers[l].visible);
+                EventBus.$emit('update-layers', this.layers);
+                return true;
+            }
+        }
     }
 
 
