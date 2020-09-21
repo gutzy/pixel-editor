@@ -5,7 +5,7 @@ import Eraser from "../tools/Eraser";
 
 export default [
     Pencil,
-    PaintBucket,
+    Eraser,
     Rectangle,
-    Eraser
+    PaintBucket,
 ];

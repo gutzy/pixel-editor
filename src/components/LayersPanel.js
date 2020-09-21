@@ -37,6 +37,9 @@ export default {
             EventBus.$emit('try-renaming-layer', layer.name, name);
             this.renaming = null;
         },
+        mergeBelow(layer) {
+            EventBus.$emit('try-merging-layer-below', layer.name);
+        },
         selectLayerToRename(layer) {
             this.renaming = layer.name;
             this.newLayerName = layer.name;
@@ -70,7 +73,7 @@ export default {
                 <div v-if="showMenu == layer.name" class="layer-menu">
                     <button @mousedown="deleteLayer(layer)">Delete</button>
                     <button @mousedown="selectLayerToRename(layer)">Rename</button>
-                    <button v-if="index < layers.length-1">Merge Below</button>
+                    <button v-if="index < layers.length-1" @mousedown="mergeBelow(layer)">Merge Below</button>
                     <button>Flatten Visible</button>
                     <button>Flatten All</button>
                 </div>

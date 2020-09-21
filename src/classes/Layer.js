@@ -16,6 +16,10 @@ export default class Layer {
         this.data = null;
     }
 
+    merge(layer) {
+
+    }
+
     doAction(action, ...params) {
         if (!(action instanceof LayerAction)) {
             throw new Error("Not a layer action!");
@@ -56,6 +60,10 @@ export default class Layer {
 
     getImageData() {
         return this.canvas.doAction(GetImage);
+    }
+
+    canvasAction(action, ...params) {
+        return this.canvas.doAction(action, ...params);
     }
 
 

@@ -26,6 +26,7 @@ export default class File {
         this.historyIndex = 0;
         this.layers = [];
         this.toolCanvas = null;
+        this.toolStarted = false;
 
         this.activeLayer = -1;
         this.selectedTool = null;
@@ -55,6 +56,7 @@ export default class File {
         EventBus.$on('try-adding-layer', this.onTryAddingLayer.bind(this));
         EventBus.$on('try-deleting-layer', this.onTryDeletingLayer.bind(this));
         EventBus.$on('try-renaming-layer', this.onTryRenamingLayer.bind(this));
+        EventBus.$on('try-merging-layer-below', this.onTryMergingLayerBelow.bind(this));
         EventBus.$on('try-toggling-layer-visibility', this.onTryTogglingLayerVisibility.bind(this));
         EventBus.$on('try-toggling-layer-lock', this.onTryTogglingLayerLock.bind(this));
     }
@@ -158,6 +160,7 @@ export default class File {
     async startTool(x, y) {
         if (DEBUG) console.log("Start tool on",x,y);
         if (this.selectedTool && this.activeLayer > -1 && !this.layers[this.activeLayer].locked) {
+            this.toolStarted = true;
             this.toolCanvas = new Canvas(null, this.width, this.height);
             await this.selectedTool.start(this, this.layers[this.activeLayer].canvas, x, y);
         }
@@ -165,11 +168,12 @@ export default class File {
 
     async stopTool(x, y) {
         if (DEBUG) console.log("Stop tool on",x,y);
-        if (this.selectedTool && this.activeLayer > -1 && !this.layers[this.activeLayer].locked) {
+        if (this.selectedTool && this.activeLayer > -1 && !this.layers[this.activeLayer].locked && this.toolStarted) {
+            this.toolStarted = false;
             this.toolCanvas = null;
+            await this.selectedTool.stop(this, this.layers[this.activeLayer].canvas, x, y);
             EventBus.$emit('update-layers', this.layers);
             EventBus.$emit('save-history');
-            await this.selectedTool.stop(this, this.layers[this.activeLayer].canvas, x, y);
         }
     }
 
@@ -261,10 +265,27 @@ export default class File {
 
     onTryTogglingLayerVisibility(layerName) {
         if (!this.isActiveFile) return false;
+
         for (let l = 0; l < this.layers.length; l++) {
             if (this.layers[l].name === layerName) {
                 this.layers[l].visible = !(this.layers[l].visible);
                 EventBus.$emit('update-layers', this.layers);
+                return true;
+            }
+        }
+    }
+
+    onTryMergingLayerBelow(layerName) {
+        if (!this.isActiveFile) return false;
+
+        for (let l = 0; l < this.layers.length; l++) {
+            if (this.layers[l].name === layerName) {
+                if (l <= 0) return false;
+
+                this.layers[l-1].canvasAction(DrawImage, this.layers[l].getImage());
+                this.layers.splice(l, 1);
+                EventBus.$emit('update-layers', this.layers);
+                EventBus.$emit('save-history');
                 return true;
             }
         }
