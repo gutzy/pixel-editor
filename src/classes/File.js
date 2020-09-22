@@ -4,8 +4,8 @@ import History from "./History";
 import {comboIs} from "../utils/InputUtils";
 import Canvas from "./Canvas";
 import SelectColor from "../actions/file/SelectColor";
-import SelectLayer from "../actions/file/AddLayer";
-import AddLayer from "../actions/file/SelectLayer";
+import SelectLayer from "../actions/file/SelectLayer";
+import AddLayer from "../actions/file/AddLayer";
 import DeleteLayer from "../actions/file/DeleteLayer";
 import RenameLayer from "../actions/file/RenameLayer";
 import MergeLayerBelow from "../actions/file/MergeLayerBelow";
@@ -24,7 +24,7 @@ export default class File {
 
     constructor(width, height, editorMode, contents = null) {
 
-        this.isActiveFile = false;
+        this.isActiveFile = true;
         this.name = null;
         this.palette = null;
         this.width = width;
@@ -75,6 +75,7 @@ export default class File {
     }
 
     doAction(action, ...params) {
+        console.log(this);
         if (!this.isActiveFile) return false;
 
         const a = new action();

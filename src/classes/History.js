@@ -7,7 +7,6 @@ export default class History {
     }
 
     saveState(layers, index = -1) {
-        console.log(index);
         let d = [];
         for (let l = 0; l < layers.length; l++) {
             d.push({
@@ -32,7 +31,6 @@ export default class History {
     }
 
     getState(index) {
-        console.log(index);
         return this.snapshots[index];
     }
 

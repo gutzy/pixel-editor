@@ -3,10 +3,10 @@ import EventBus from "../../utils/EventBus";
 import Layer from "../../classes/Layer";
 
 export default class AddLayer extends FileAction {
-	do(file, index) {
-		if (index === -1) index = this.activeLayer+1;
+	do(file, name, index = -1) {
+		if (index === -1) index = file.activeLayer+1;
 
-		let existing = this.layers.find(l => l.name === name);
+		let existing = file.layers.find(l => l.name === name);
 		while (existing) {
 			let match = name.match(/([0-9]+)$/);
 			if (match) {
@@ -15,22 +15,22 @@ export default class AddLayer extends FileAction {
 			else {
 				name = name + ' 2';
 			}
-			existing = this.layers.find(l => l.name === name);
+			existing = file.layers.find(l => l.name === name);
 		}
-
-		const layer = new Layer(this, null, name);
+		
+		const layer = new Layer(file, null, name);
 		layer.inflate();
 		if (index > -1) {
-			this.layers.splice(index,0,layer);
-			this.activeLayer = index;
+			file.layers.splice(index,0,layer);
+			file.activeLayer = index;
 		}
 		else {
-			this.layers.push(layer);
-			this.activeLayer = this.layers.length-1;
+			file.layers.push(layer);
+			file.activeLayer = file.layers.length-1;
 		}
 
-		EventBus.$emit("update-layers", this.layers);
-		EventBus.$emit('select-layer', this.layers[this.activeLayer]);
+		EventBus.$emit("update-layers", file.layers);
+		EventBus.$emit('select-layer', file.layers[file.activeLayer]);
 		return layer;
 	}
 }

@@ -30,7 +30,6 @@ export default {
             EventBus.$emit('try-toggling-layer-visibility', layer.name);
         },
         deleteLayer(layer) {
-            console.log("del", layer.name);
             EventBus.$emit('try-deleting-layer', layer.name);
         },
         renameLayer(layer, name) {
@@ -56,7 +55,7 @@ export default {
             },0)
         },
         addLayer() {
-            EventBus.$emit('try-adding-layer');
+            EventBus.$emit('try-adding-layer', 'Layer 1');
         },
         rightClick(layer) {
             this.showMenu = layer.name;
