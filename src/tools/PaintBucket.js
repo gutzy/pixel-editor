@@ -1,6 +1,7 @@
 import FillArea from "../actions/canvas/FillArea";
 import Tool from "../classes/abstracts/Tool";
 import PaintBucketIcon from "../assets/svg/fill.svg";
+import PaintBucketCursor from "../assets/png/fill.png"
 
 export default class PaintBucket extends Tool {
 
@@ -9,6 +10,8 @@ export default class PaintBucket extends Tool {
 
         this.name = "Paint Bucket";
         this.icon = PaintBucketIcon;
+        this.cursor = PaintBucketCursor;
+        this.cursorOffset = [0, 10];
         this.hotkey = 'g';
     }
 

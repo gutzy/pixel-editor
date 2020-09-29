@@ -4,6 +4,7 @@ import File from "./File";
 import MainCanvas from "./MainCanvas";
 import {getCenterRect, screenToRectXY} from "../utils/CanvasUtils";
 import Tools from "../config/Tools";
+import SetCursor from "../actions/canvas/SetCursor";
 
 class _AppManager {
 
@@ -68,7 +69,9 @@ class _AppManager {
 
     async onMouseDown(x,y) {
         let pos = screenToRectXY(getCenterRect(this.canvas.el, this.file.width,this.file.height), x, y);
-        if (this.file && pos) await this.file.startTool(pos.x, pos.y);
+        if (this.file && pos) {
+        	await this.file.startTool(pos.x, pos.y);
+		}
         EventBus.$emit('redraw-canvas');
     }
 
@@ -80,6 +83,13 @@ class _AppManager {
 
     async onMouseMove(x,y) {
         let pos = screenToRectXY(getCenterRect(this.canvas.el, this.file.width,this.file.height), x, y);
+        if (pos && this.file && this.file.selectedTool) {
+        	if (this.file.selectedTool.cursor) { this.canvas.doAction(SetCursor, this.file.selectedTool.cursor, this.file.selectedTool.cursorOffset) }
+        	else this.canvas.doAction(SetCursor, 'default');
+		}
+        else if (!pos) {
+            this.canvas.doAction(SetCursor, 'default');
+        }
         if (this.input.isMouseDown() && this.file && pos) {
             await this.file.useTool(pos.x, pos.y);
             EventBus.$emit('redraw-canvas');

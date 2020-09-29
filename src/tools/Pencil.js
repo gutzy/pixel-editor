@@ -1,10 +1,9 @@
 import Tool from "../classes/abstracts/Tool";
-import Line from "../actions/canvas/Line";
-import MoveTo from "../actions/canvas/MoveTo";
 import PencilIcon from "../assets/svg/pencil.svg";
-import Rectangle from "./Rectangle";
+import PencilCursor from "../assets/png/pencil.png";
 import DrawRect from "../actions/canvas/DrawRect";
-import {pixelsBetween} from "../utils/CanvasUtils";
+import { pixelsBetween } from "../utils/CanvasUtils";
+
 export default class Pencil extends Tool {
 
     constructor() {
@@ -12,6 +11,8 @@ export default class Pencil extends Tool {
 
         this.name = "Pencil Tool";
         this.icon = PencilIcon;
+        this.cursor = 'crosshair';
+        this.cursorOffset = [0, 0];
         this.hotkey = 'b';
     }
 
