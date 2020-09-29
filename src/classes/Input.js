@@ -55,6 +55,7 @@ export default class Input {
     onResize(e) {
         this._canvas.el.setAttribute('width', this._canvas.el.offsetWidth*1+'');
         this._canvas.el.setAttribute('height', this._canvas.el.offsetHeight*1+'');
+        console.log("Resizea");
         EventBus.$emit('redraw-canvas');
     }
 

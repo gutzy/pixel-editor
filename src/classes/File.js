@@ -75,7 +75,6 @@ export default class File {
     }
 
     doAction(action, ...params) {
-        console.log(this);
         if (!this.isActiveFile) return false;
 
         const a = new action();

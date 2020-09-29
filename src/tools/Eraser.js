@@ -2,7 +2,6 @@ import Tool from "../classes/abstracts/Tool";
 import EraserIcon from "../assets/svg/eraser.svg";
 import ClearRect from "../actions/canvas/ClearRect";
 import {pixelsBetween} from "../utils/CanvasUtils";
-import DrawRect from "../actions/canvas/DrawRect";
 
 export default class Pencil extends Tool {
 
