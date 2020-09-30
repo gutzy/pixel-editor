@@ -4,6 +4,7 @@ import File from "./File";
 import MainCanvas from "./MainCanvas";
 import {getCenterRect, screenToRectXY} from "../utils/CanvasUtils";
 import Tools from "../config/Tools";
+import Menu from "../config/Menu";
 import SetCursor from "../actions/canvas/SetCursor";
 
 class _AppManager {
@@ -13,6 +14,7 @@ class _AppManager {
         this.input = null;
         this.file = null;
         this.tools = null;
+        this.menu = null;
     }
 
     init(canvasEl) {
@@ -28,6 +30,9 @@ class _AppManager {
     loadAppConfig() {
         this.tools = Tools.map(t => new t());
         EventBus.$emit("set-tools", this.tools);
+
+        this.menu = Menu;
+        EventBus.$emit("set-menu", this.menu);
     }
 
     bindElements(canvasEl) {

@@ -4,6 +4,7 @@ import AppManager from "./classes/AppManager";
 import LayersPanel from "./components/LayersPanel";
 import Toolbox from "./components/Toolbox";
 import ColorPalette from "./components/ColorPalette";
+import MenuBar from "./components/MenuBar";
 
 const vm = new Vue({
 
@@ -20,12 +21,12 @@ const vm = new Vue({
 			AppManager.init(this.$refs.canvas);
 		},
 
-		components : { LayersPanel, Toolbox, ColorPalette },
+		components : { LayersPanel, Toolbox, ColorPalette, MenuBar },
 
 		template : `
             <div class="app">
             	<div class="header">
-            	
+            		<menu-bar />
 				</div>
 				<div class="main-content">
 					<toolbox />

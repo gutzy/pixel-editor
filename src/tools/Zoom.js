@@ -26,7 +26,7 @@ export default class Zoom extends Tool {
 
 	onKeyDown(key, input) {
 		if (!this.selected) return;
-		if (input.isKeyDown('Alt')) {
+		if (input.isKeyDown('Alt') || input.isKeyDown('Shift')) {
 			this.direction = -1;
 			EventBus.$emit('set-tool-cursor', ZoomOutCursor)
 		}

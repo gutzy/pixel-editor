@@ -1,0 +1,35 @@
+@import "vars";
+
+.menubar {
+
+  background-color: $panelBg;
+  height: 48px;
+  display: flex;
+  align-items: stretch;
+  padding: 0 10px;
+
+  &-content {
+    display: flex;
+
+    nav {
+      flex: 1;
+      display: flex;
+    }
+  }
+
+  &-item {
+    color: $panelColor;
+
+    &:hover {
+      background-color: $panelSelectedBg;
+    }
+  }
+
+  h1 {
+    text-transform: uppercase;
+    font-size: 14px;
+    color: $panelSelectedBg;
+    align-content: center;
+  }
+
+}

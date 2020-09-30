@@ -1,9 +1,9 @@
 import {FileAction} from "../../classes/abstracts/Actions";
-import EventBus from "../../utils/EventBus";
 import {getCenterRect} from "../../utils/CanvasUtils";
 import ClearCanvas from "../canvas/ClearCanvas";
 import DrawMainCanvasBoundaries from "../canvas/DrawMainCanvasBoundaries";
 import DrawImage from "../canvas/DrawImage";
+import PixelGrid from "../canvas/PixelGrid";
 
 export default class Redraw extends FileAction {
 	do(file, canvas) {
@@ -18,8 +18,13 @@ export default class Redraw extends FileAction {
 				canvas.doAction(DrawImage, img, r[0],r[1], file.zoom);
 			}
 		}
+
 		if (file.toolCanvas) {
 			canvas.doAction(DrawImage, file.toolCanvas.el, r[0], r[1], file.zoom);
+		}
+
+		if (file.zoom >= 8) {
+			canvas.doAction(PixelGrid, file.zoom);
 		}
 	}
 }

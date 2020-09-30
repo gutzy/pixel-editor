@@ -5,6 +5,7 @@ import PanCursorActive from "../assets/png/pan-held.png"
 import GetColor from "../actions/canvas/GetColor";
 import SelectColor from "../actions/file/SelectColor";
 import DrawRect from "../actions/canvas/DrawRect";
+import EventBus from "../utils/EventBus";
 
 export default class Pan extends Tool {
 
