@@ -15,6 +15,7 @@ export default {
 			EventBus.$emit("run-menu-item", menuItem);
 		},
 		openSubMenu(name) {
+			console.log(name);
 			this.open = this.open === name ? null : name;
 		},
 		onHover(name) {
@@ -29,6 +30,7 @@ export default {
 
 		// blur click behavior
 		this.$refs.panel.addEventListener('mousedown', e => e.stopPropagation());
+		this.$refs.panel.addEventListener('click', e => e.stopPropagation());
 
 		window.addEventListener('click', () => {
 			this.openSubMenu(null)
