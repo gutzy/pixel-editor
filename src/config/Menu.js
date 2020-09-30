@@ -60,21 +60,23 @@ export default {
 		{
 			name: "Delete",
 			scope: "layer",
-			action: DeleteLayer
+			action: DeleteLayer,
+			scopeParam: "name"
 		},
 		{
 			name: "Merge Below",
 			scope: "layer",
-			action: MergeLayerBelow
+			action: MergeLayerBelow,
+			scopeParam: "name"
 		},
 		{
 			name: "Flatten Visible",
-			scope: "layer",
+			scope: "file",
 			action: FlattenVisibleLayers
 		},
 		{
 			name: "Flatten All",
-			scope: "layer",
+			scope: "file",
 			action: FlattenAllLayers
 		}
 	],

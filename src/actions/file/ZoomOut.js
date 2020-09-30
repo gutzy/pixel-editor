@@ -9,6 +9,7 @@ export default class ZoomOut extends FileAction {
 			else break;
 		}
 		file.zoom = zoom;
+		EventBus.$emit('zoom', file.zoom);
 		EventBus.$emit('redraw-canvas');
 	}
 }

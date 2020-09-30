@@ -1,11 +1,9 @@
 import EventBus from "../utils/EventBus";
 import Input from "./Input";
-import File from "./File";
 import MainCanvas from "./MainCanvas";
 import {getCenterRect, screenToRectXY} from "../utils/CanvasUtils";
 import Tools from "../config/Tools";
 import Menu from "../config/Menu";
-import SetCursor from "../actions/canvas/SetCursor";
 import {AppAction} from "./abstracts/Actions";
 import NewFile from "../actions/app/NewFile";
 import SetToolCursor from "../actions/app/SetToolCursor";
@@ -135,14 +133,21 @@ class _AppManager {
         switch (item.scope) {
             case "app":
                 if (item.action) this.doAction(item.action);
+                if (item.emit) EventBus.$emit(item.emit);
                 break;
             case "file":
                 if (!this.file) return false;
                 if (item.action) this.file.doAction(item.action);
+                if (item.emit) EventBus.$emit(item.emit);
                 break;
             case "layer":
                 if (!this.file) return false;
-                if (item.action) this.file.doAction(item.action, this.file.layers[this.file.activeLayer]);
+                let tgt = this.file.layers[this.file.activeLayer];
+                if (item.scopeParam) tgt = tgt[item.scopeParam];
+
+                if (item.action) this.file.doAction(item.action, tgt);
+                if (item.emit) EventBus.$emit(item.emit, tgt);
+                break;
         }
     }
 }

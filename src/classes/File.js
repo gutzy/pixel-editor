@@ -89,7 +89,9 @@ export default class File {
 
     focus() {
         this.isActiveFile = true;
+        EventBus.$emit("zoom", this.zoom);
         EventBus.$emit("reset-canvas", this.width, this.height);
+
     }
 
     blur() {

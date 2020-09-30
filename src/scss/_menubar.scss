@@ -5,9 +5,9 @@
   background-color: $panelBg;
   height: 48px;
   display: flex;
-  padding: 0 10px;
 
   &-content {
+    flex: 1;
     display: flex;
 
     nav {
@@ -31,6 +31,7 @@
   }
 
   h1 {
+    padding: 0 10px;
     display: flex;
     align-items: center;
     text-transform: uppercase;
@@ -57,6 +58,19 @@
       &:hover{
         background-color: $panelSelectedBg;
       }
+    }
+  }
+
+  &-status {
+    display: flex;
+    font-size: 13px;
+    color: $panelColor;
+
+    .status {
+      display: flex;
+      background-color: $panelHoverBg;
+      align-items: center;
+      padding: 0 10px;
     }
   }
 }

@@ -8,6 +8,7 @@ export default class ZoomIn extends FileAction {
 			if (file.zoom < zoomLevels[l]) { zoom = zoomLevels[l]; break; }
 		}
 		file.zoom = zoom;
+		EventBus.$emit('zoom', file.zoom);
 		EventBus.$emit('redraw-canvas');
 	}
 }

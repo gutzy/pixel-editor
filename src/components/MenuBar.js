@@ -6,6 +6,7 @@ export default {
 		return {
 			menu : [],
 			open: null,
+			zoom: 1,
 		}
 	},
 
@@ -26,11 +27,21 @@ export default {
 			this.menu = menu;
 		});
 
+		// blur click behavior
 		const nav = this.$refs.nav;
 		nav.addEventListener('click', (e) => { e.stopPropagation() });
 		window.addEventListener('click', () => {
 			this.openSubMenu(null)
 		})
+
+		// status updates
+		EventBus.$on('zoom', (zoom) => this.zoom = zoom);
+	},
+
+	computed : {
+		zoomLevel : function() {
+			return parseFloat(this.zoom * 100).toFixed(2)+'%';
+		}
 	},
 
 	template : `
@@ -47,6 +58,11 @@ export default {
 					</div>
 				</div>
 			</nav>
+			<div class="menubar-status">
+				<div class="status">
+					<span>Zoom: {{zoomLevel}}</span>
+				</div>
+			</div>
 		</div>
     </div>
     `
