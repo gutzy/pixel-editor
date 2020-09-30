@@ -20,7 +20,7 @@ class _AppManager {
         this.bindElements(canvasEl);
         this.bindListeners();
 
-        const file = this.newFile(320, 240, 'advanced', 'Funky test', ["#ff0000", "#ffffff", "#000000"]);
+        const file = this.newFile(320, 240, 'advanced', 'Funky test', ["#ff0000", "#ffe21f", "#46ca35", "#ffffff", "#000000"]);
 
         file.color = '#ff0000';
     }

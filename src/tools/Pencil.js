@@ -32,5 +32,4 @@ export default class Pencil extends Tool {
         canvas.doAction(DrawRect,x, y,1,1, file.color);
         this.pos = {x,y};
     }
-
 }

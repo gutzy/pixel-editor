@@ -3,7 +3,7 @@ import EraserIcon from "../assets/svg/eraser.svg";
 import ClearRect from "../actions/canvas/ClearRect";
 import {pixelsBetween} from "../utils/CanvasUtils";
 
-export default class Pencil extends Tool {
+export default class Eraser extends Tool {
 
     constructor() {
         super();
