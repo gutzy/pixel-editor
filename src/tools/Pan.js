@@ -18,15 +18,17 @@ export default class Pan extends Tool {
 		this.cursor = PanCursor;
 		this.cursorOffset = [8, 8];
 		this.hotkey = 'p';
-		this.spicykey = ' ';
+		this.spicykey = ' '; // spicy key = hotkey to switch to tool temporarily, only while this key is held
 		this.useOutside = true;
 	}
 
 	start(file, canvas, x, y) {
 		EventBus.$emit('set-tool-cursor', PanCursorActive);
+
 		this.startPos = {x, y};
 		this.startOffset = { x: file.dragOffset.x/file.zoom || 0, y: file.dragOffset.y/file.zoom || 0 }
 	}
+
 	stop(file, canvas, x, y) {
 		EventBus.$emit('set-tool-cursor', PanCursor);
 	}
