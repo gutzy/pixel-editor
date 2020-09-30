@@ -76,7 +76,7 @@ class _AppManager {
     }
 
     async onMouseDown(x,y) {
-        let pos = screenToRectXY(getCenterRect(this.canvas.el, this.file.width,this.file.height), x, y);
+        let pos = screenToRectXY(getCenterRect(this.canvas.el, this.file.width,this.file.height, this.file.zoom), x, y);
         if (this.file && pos) {
         	await this.file.startTool(pos.x, pos.y);
 		}
@@ -85,14 +85,14 @@ class _AppManager {
     }
 
     async onMouseUp(x,y) {
-        let pos = screenToRectXY(getCenterRect(this.canvas.el, this.file.width,this.file.height), x, y);
+        let pos = screenToRectXY(getCenterRect(this.canvas.el, this.file.width,this.file.height, this.file.zoom), x, y);
         if (this.file) await this.file.stopTool(pos.x, pos.y);
 
         EventBus.$emit('redraw-canvas');
     }
 
     async onMouseMove(x,y) {
-        let pos = screenToRectXY(getCenterRect(this.canvas.el, this.file.width,this.file.height), x, y);
+        let pos = screenToRectXY(getCenterRect(this.canvas.el, this.file.width,this.file.height, this.file.zoom), x, y);
         if (this.input.isMouseDown() && this.file && pos) {
             await this.file.useTool(pos.x, pos.y);
             EventBus.$emit('redraw-canvas');

@@ -7,7 +7,7 @@ import DrawImage from "../canvas/DrawImage";
 
 export default class Redraw extends FileAction {
 	do(file, canvas) {
-		const r = getCenterRect(canvas.el, file.width, file.height);
+		const r = getCenterRect(canvas.el, file.width, file.height, file.zoom);
 		let img;
 		canvas.doAction(ClearCanvas);
 		canvas.ctx.globalAlpha = 255;
@@ -15,11 +15,11 @@ export default class Redraw extends FileAction {
 		for (let i = 0; i < file.layers.length; i++) {
 			if (file.layers[i].visible) {
 				img = file.layers[i].getImage();
-				canvas.doAction(DrawImage, img, r[0],r[1]);
+				canvas.doAction(DrawImage, img, r[0],r[1], file.zoom);
 			}
 		}
 		if (file.toolCanvas) {
-			canvas.doAction(DrawImage, file.toolCanvas.el, r[0], r[1]);
+			canvas.doAction(DrawImage, file.toolCanvas.el, r[0], r[1], file.zoom);
 		}
 	}
 }

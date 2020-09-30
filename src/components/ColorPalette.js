@@ -21,7 +21,6 @@ export default {
 		});
 		EventBus.$on('select-color', selectedColor => {
 			this.selectedColor = selectedColor;
-			console.log(this.selectedColor);
 		});
 	},
 

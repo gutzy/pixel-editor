@@ -118,7 +118,7 @@ export default class File {
         if (this.selectedTool && this.activeLayer > -1 && !this.layers[this.activeLayer].locked) {
             this.toolStarted = true;
             this.toolCanvas = new Canvas(null, this.width, this.height);
-            await this.selectedTool.start(this, this.layers[this.activeLayer].canvas, x, y);
+            await this.selectedTool.start(this, this.layers[this.activeLayer].canvas, x / this.zoom, y / this.zoom);
         }
     }
 
@@ -127,7 +127,7 @@ export default class File {
         if (this.selectedTool && this.activeLayer > -1 && !this.layers[this.activeLayer].locked && this.toolStarted) {
             this.toolStarted = false;
             this.toolCanvas = null;
-            await this.selectedTool.stop(this, this.layers[this.activeLayer].canvas, x, y);
+            await this.selectedTool.stop(this, this.layers[this.activeLayer].canvas, x / this.zoom, y / this.zoom);
             EventBus.$emit('update-layers', this.layers);
             EventBus.$emit('save-history');
         }
@@ -136,7 +136,7 @@ export default class File {
     async useTool(x, y) {
         if (DEBUG) console.log("Use tool on",x,y);
         if (this.selectedTool && this.activeLayer > -1 && !this.layers[this.activeLayer].locked) {
-            await this.selectedTool.use(this, this.layers[this.activeLayer].canvas, x, y, this.toolCanvas);
+            await this.selectedTool.use(this, this.layers[this.activeLayer].canvas, x / this.zoom, y / this.zoom, this.toolCanvas);
         }
     }
 

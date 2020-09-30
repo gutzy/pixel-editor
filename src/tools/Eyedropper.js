@@ -20,7 +20,6 @@ export default class EyeDropper extends Tool {
 
     start(file, canvas, x, y) {
         const color = canvas.doAction(GetColor, x, y);
-        console.log(color);
     }
     stop(file, canvas, x, y) {
         const color = canvas.doAction(GetColor, x, y);
