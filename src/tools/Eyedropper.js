@@ -3,6 +3,8 @@ import Tool from "../classes/abstracts/Tool";
 import EyedropperIcon from "../assets/svg/eyedropper.svg";
 import EyedropperCursor from "../assets/png/eyedropper.png"
 import DrawRect from "../actions/canvas/DrawRect";
+import GetColor from "../actions/canvas/GetColor";
+import SelectColor from "../actions/file/SelectColor";
 
 export default class EyeDropper extends Tool {
 
@@ -12,14 +14,19 @@ export default class EyeDropper extends Tool {
         this.name = "Eyedropper";
         this.icon = EyedropperIcon;
         this.cursor = EyedropperCursor;
-        this.cursorOffset = [0, 14];
-        this.hotkey = 'g';
+        this.cursorOffset = [0, 0];
+        this.hotkey = 'i';
     }
 
     start(file, canvas, x, y) {
-        canvas.doAction(GetC, x, y, file.color);
+        const color = canvas.doAction(GetColor, x, y);
+        console.log(color);
     }
     stop(file, canvas, x, y) {
+        const color = canvas.doAction(GetColor, x, y);
+        if (color) {
+            file.doAction(SelectColor, color);
+        }
     }
 
     use(file, canvas, x, y, toolCanvas) {
