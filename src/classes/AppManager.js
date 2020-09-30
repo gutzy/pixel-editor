@@ -46,6 +46,7 @@ class _AppManager {
         EventBus.$on("reset-canvas", this.onResetCanvas.bind(this));
         EventBus.$on("redraw-canvas", this.onRedrawCanvas.bind(this));
         EventBus.$on('try-selecting-tool', this.onSelectTool.bind(this));
+        EventBus.$on('set-tool-cursor', this.onSetToolCursor.bind(this));
     }
 
     newFile(width, height, editorMode, name = 'Untitled', palette) {
@@ -67,8 +68,10 @@ class _AppManager {
         EventBus.$emit("load-file", this.file);
     }
 
-    setToolCursor(tool) {
-        if (tool.cursor) this.canvas.doAction(SetCursor, tool.cursor, tool.cursorOffset);
+    setToolCursor(tool, cursor = null, cursorOffset = null) {
+        cursor = (cursor === null ? tool.cursor : cursor);
+        cursorOffset = (cursorOffset === null ? tool.cursorOffset : cursorOffset);
+        if (tool.cursor) this.canvas.doAction(SetCursor, cursor, cursorOffset);
         else this.canvas.doAction(SetCursor, 'default');
     }
 
@@ -79,7 +82,6 @@ class _AppManager {
 		}
 
         EventBus.$emit('redraw-canvas');
-        if (this.file && this.file.selectedTool) { this.setToolCursor(this.file.selectedTool) }
     }
 
     async onMouseUp(x,y) {
@@ -87,7 +89,6 @@ class _AppManager {
         if (this.file) await this.file.stopTool(pos.x, pos.y);
 
         EventBus.$emit('redraw-canvas');
-        if (this.file && this.file.selectedTool) { this.setToolCursor(this.file.selectedTool) }
     }
 
     async onMouseMove(x,y) {
@@ -96,7 +97,6 @@ class _AppManager {
             await this.file.useTool(pos.x, pos.y);
             EventBus.$emit('redraw-canvas');
         }
-        if (this.file && this.file.selectedTool) { this.setToolCursor(this.file.selectedTool) }
     }
 
     onResetCanvas(width, height) {
@@ -132,6 +132,11 @@ class _AppManager {
             if (tool.cursor) {  this.setToolCursor(tool) }
 
         }
+    }
+
+    onSetToolCursor(cursor) {
+        if (!this.file) return false;
+        if (this.file && this.file.selectedTool) { this.setToolCursor(this.file.selectedTool, cursor) }
     }
 }
 

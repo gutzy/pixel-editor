@@ -11,7 +11,7 @@ export default class Redraw extends FileAction {
 		let img;
 		canvas.doAction(ClearCanvas);
 		canvas.ctx.globalAlpha = 255;
-		canvas.doAction(DrawMainCanvasBoundaries, file.width, file.height);
+		canvas.doAction(DrawMainCanvasBoundaries, file.width, file.height, file.zoom, file.dragOffset);
 		for (let i = 0; i < file.layers.length; i++) {
 			if (file.layers[i].visible) {
 				img = file.layers[i].getImage();

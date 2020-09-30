@@ -38,7 +38,7 @@ export default class Input {
 
     onKeyUp(e) {
         if (this._keyDown[e.key]) delete this._keyDown[e.key];
-        EventBus.$emit('input-key-up', e.key);
+        EventBus.$emit('input-key-up', e.key, this);
         if (e.key === this._lastKeyDown) {
             this._lastKeyDown = null;
         }
@@ -48,14 +48,13 @@ export default class Input {
         if (e.key === this._lastKeyDown) return;
         this._keyDown[e.key] = true;
         let combo = this.onKeyCombination(e);
-        if (!combo) EventBus.$emit('input-key-down', e.key);
+        if (!combo) EventBus.$emit('input-key-down', e.key, this);
         this._lastKeyDown = e.key;
     }
 
     onResize(e) {
         this._canvas.el.setAttribute('width', this._canvas.el.offsetWidth*1+'');
         this._canvas.el.setAttribute('height', this._canvas.el.offsetHeight*1+'');
-        console.log("Resizea");
         EventBus.$emit('redraw-canvas');
     }
 
@@ -67,7 +66,7 @@ export default class Input {
             if (alt) res.push('alt');
             if (shift) res.push('shift');
             if (ctrl) res.push('ctrl');
-            EventBus.$emit('input-key-combination', res);
+            EventBus.$emit('input-key-combination', res, this);
         }
         return false;
 

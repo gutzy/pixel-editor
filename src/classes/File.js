@@ -31,9 +31,12 @@ export default class File {
         this.height = height;
         this.editorMode = editorMode;
         this.contents = contents;
-        this.history = new History();
         this.historyIndex = 0;
         this.layers = [];
+        this.zoom = 1;
+        this.dragOffset = [0, 0];
+
+        this.history = new History();
         this.toolCanvas = null;
         this.toolStarted = false;
 
@@ -102,8 +105,12 @@ export default class File {
     redraw(canvas) { this.doAction(Redraw, canvas) }
 
     setTool(tool, ...params) {
+        if (this.selectedTool) {
+            this.selectedTool.selected = false;
+        }
         this.selectedTool = tool;
         tool.params = params;
+        tool.selected = true;
     }
 
     async startTool(x, y) {

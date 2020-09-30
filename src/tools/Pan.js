@@ -19,10 +19,10 @@ export default class Pan extends Tool {
 	}
 
 	start(file, canvas, x, y) {
-		this.cursor = PanCursorActive;
+		EventBus.$emit('set-tool-cursor', PanCursorActive);
 	}
 	stop(file, canvas, x, y) {
-		this.cursor = PanCursor;
+		EventBus.$emit('set-tool-cursor', PanCursor);
 	}
 
 	use(file, canvas, x, y, toolCanvas) {
