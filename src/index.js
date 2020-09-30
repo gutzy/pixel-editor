@@ -24,13 +24,17 @@ const vm = new Vue({
 
 		template : `
             <div class="app">
-            	<div class="canvas-wrapper">
-            		<canvas id="main-canvas" ref="canvas"></canvas>
+            	<div class="header">
+            	
 				</div>
-				<color-palette />
-				<toolbox />
-				<toolbox />
-            	<layers-panel />
+				<div class="main-content">
+					<toolbox />
+	            	<div class="canvas-wrapper">
+    	        		<canvas id="main-canvas" ref="canvas"></canvas>
+					</div>
+					<color-palette />
+            		<layers-panel />
+				</div>
 		    </div>`
 	},
 ).$mount('#app');

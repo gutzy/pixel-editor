@@ -1,9 +1,6 @@
 @import "vars";
 
 .layers-panel {
-  position: absolute;
-  right: 0;
-
   background-color: $panelBg;
   color: $panelColor;
   min-width: 200px;
