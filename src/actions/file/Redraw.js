@@ -7,7 +7,7 @@ import PixelGrid from "../canvas/PixelGrid";
 
 export default class Redraw extends FileAction {
 	do(file, canvas) {
-		const r = getCenterRect(canvas.el, file.width, file.height, file.zoom);
+		const r = getCenterRect(canvas.el, file.width, file.height, file.zoom, file.dragOffset);
 		let img;
 		canvas.doAction(ClearCanvas);
 		canvas.ctx.globalAlpha = 255;

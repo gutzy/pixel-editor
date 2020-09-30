@@ -1,10 +1,20 @@
-export function getCenterRect(canvas, width, height, scale = 1) {
+export function getCenterRect(canvas, width, height, scale = 1, offset = null) {
     const cw = canvas.width, ch = canvas.height;
-    return [Math.floor(cw/2-(width*scale)/2), Math.floor(ch/2-(height*scale)/2), Math.floor(width*scale), Math.floor(height*scale)];
+
+    const res = [Math.floor(cw/2-(width*scale)/2), Math.floor(ch/2-(height*scale)/2), Math.floor(width*scale), Math.floor(height*scale)];
+
+    if (offset && typeof offset.x !== 'undefined') {
+        res[0] -= offset.x;
+        res[1] -= offset.y;
+    }
+    return res;
+}
+
+export function isXYinRect(r, x, y) {
+    return !(x < r[0] || y < r[1] || x > r[0]+r[2] || y > r[1]+r[3]) ;
 }
 
 export function screenToRectXY(r, x, y) {
-    if (x < r[0] || y < r[1] || x > r[0]+r[2] || y > r[1]+r[3]) return false;
 
     x = x-r[0];
     y = y-r[1];

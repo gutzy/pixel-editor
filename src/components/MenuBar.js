@@ -28,8 +28,8 @@ export default {
 		});
 
 		// blur click behavior
-		const nav = this.$refs.nav;
-		nav.addEventListener('click', (e) => { e.stopPropagation() });
+		this.$refs.panel.addEventListener('mousedown', e => e.stopPropagation());
+
 		window.addEventListener('click', () => {
 			this.openSubMenu(null)
 		})
@@ -45,7 +45,7 @@ export default {
 	},
 
 	template : `
-    <div class="menubar">
+    <div class="menubar" ref="panel">
         <h1>Lospec Pixel Editor</h1>
         <div class="menubar-content">
         	<nav ref="nav">

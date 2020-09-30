@@ -22,10 +22,12 @@ export default {
 		EventBus.$on('select-color', selectedColor => {
 			this.selectedColor = selectedColor;
 		});
+
+		this.$refs.panel.addEventListener('mousedown', e => e.stopPropagation());
 	},
 
 	template : `
-    <div class="color-palette-panel">
+    <div class="color-palette-panel" ref="panel">
         <div v-if="colors" class="colors">
             <div :class="'color' + (color == selectedColor?' selected':'')" v-for="color of colors" :style="{'background-color': color}" @click="selectColor(color)">
                

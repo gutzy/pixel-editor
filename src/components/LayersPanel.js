@@ -75,11 +75,13 @@ export default {
         });
         EventBus.$on('start-renaming-layer', layer => {
             this.setLayerRename(layer);
-        })
+        });
+
+        this.$refs.panel.addEventListener('mousedown', e => e.stopPropagation())
     },
 
     template : `
-    <div class="layers-panel">
+    <div class="layers-panel" ref="panel">
         <div v-if="layers" class="list">
             <div :class="'layer'+(selectedLayer==layer.name?' selected':'')" v-for="(layer, index) in layers" @mousedown="selectLayer(layer)" @contextmenu.prevent="rightClick(layer)">
                 <div v-if="showMenu == layer.name" class="layer-menu">

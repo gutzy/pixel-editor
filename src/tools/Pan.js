@@ -6,6 +6,7 @@ import GetColor from "../actions/canvas/GetColor";
 import SelectColor from "../actions/file/SelectColor";
 import DrawRect from "../actions/canvas/DrawRect";
 import EventBus from "../utils/EventBus";
+import SetDragOffset from "../actions/file/SetDragOffset";
 
 export default class Pan extends Tool {
 
@@ -17,18 +18,25 @@ export default class Pan extends Tool {
 		this.cursor = PanCursor;
 		this.cursorOffset = [8, 8];
 		this.hotkey = 'p';
+		this.spicykey = ' ';
+		this.useOutside = true;
 	}
 
 	start(file, canvas, x, y) {
 		EventBus.$emit('set-tool-cursor', PanCursorActive);
+		this.startPos = {x, y};
+		this.startOffset = { x: file.dragOffset.x/file.zoom || 0, y: file.dragOffset.y/file.zoom || 0 }
 	}
 	stop(file, canvas, x, y) {
 		EventBus.$emit('set-tool-cursor', PanCursor);
 	}
 
 	use(file, canvas, x, y, toolCanvas) {
-		// the following code will help debugging the cursor position:
-		// toolCanvas.doAction(DrawRect, x, y, 1, 1, null, '#008833')
+		let dragOffset = {x: Math.floor(this.startPos.x - x), y: Math.floor(this.startPos.y - y)};
+		dragOffset.x += this.startOffset.x; dragOffset.y += this.startOffset.y;
+		dragOffset.x *= file.zoom; dragOffset.y *= file.zoom;
+
+		file.doAction(SetDragOffset, dragOffset);
 	}
 
 }

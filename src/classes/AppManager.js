@@ -1,7 +1,7 @@
 import EventBus from "../utils/EventBus";
 import Input from "./Input";
 import MainCanvas from "./MainCanvas";
-import {getCenterRect, screenToRectXY} from "../utils/CanvasUtils";
+import {getCenterRect, isXYinRect, screenToRectXY} from "../utils/CanvasUtils";
 import Tools from "../config/Tools";
 import Menu from "../config/Menu";
 import {AppAction} from "./abstracts/Actions";
@@ -48,6 +48,7 @@ class _AppManager {
         EventBus.$on("input-mouse-down", this.onMouseDown.bind(this));
         EventBus.$on("input-mouse-up", this.onMouseUp.bind(this));
         EventBus.$on("input-key-down", this.onKeyDown.bind(this));
+        EventBus.$on("input-key-up", this.onKeyUp.bind(this));
         EventBus.$on("input-mouse-move", this.onMouseMove.bind(this));
         EventBus.$on("reset-canvas", this.onResetCanvas.bind(this));
         EventBus.$on("redraw-canvas", this.onRedrawCanvas.bind(this));
@@ -66,25 +67,33 @@ class _AppManager {
     }
 
     async onMouseDown(x,y) {
-        let pos = screenToRectXY(getCenterRect(this.canvas.el, this.file.width,this.file.height, this.file.zoom), x, y);
-        if (this.file && pos) {
-        	await this.file.startTool(pos.x, pos.y);
+        const r = getCenterRect(this.canvas.el, this.file.width,this.file.height, this.file.zoom, this.file.dragOffset);
+        let pos = screenToRectXY(r, x, y);
+        if (this.file && this.file.selectedTool && (isXYinRect(r,x,y) || (this.file.selectedTool && this.file.selectedTool.useOutside))) {
+        	if (this.file.selectedTool.useOutside) await this.file.startTool(x, y);
+            else await this.file.startTool(pos.x, pos.y);
 		}
 
         EventBus.$emit('redraw-canvas');
     }
 
     async onMouseUp(x,y) {
-        let pos = screenToRectXY(getCenterRect(this.canvas.el, this.file.width,this.file.height, this.file.zoom), x, y);
-        if (this.file) await this.file.stopTool(pos.x, pos.y);
+        const r = getCenterRect(this.canvas.el, this.file.width,this.file.height, this.file.zoom, this.file.dragOffset);
+        let pos = screenToRectXY(r, x, y);
+        if (this.file) {
+            if (this.file.selectedTool && this.file.selectedTool.useOutside) await this.file.stopTool(x, y);
+            else await this.file.stopTool(pos.x, pos.y);
+        }
 
         EventBus.$emit('redraw-canvas');
     }
 
     async onMouseMove(x,y) {
-        let pos = screenToRectXY(getCenterRect(this.canvas.el, this.file.width,this.file.height, this.file.zoom), x, y);
-        if (this.input.isMouseDown() && this.file && pos) {
-            await this.file.useTool(pos.x, pos.y);
+        const r = getCenterRect(this.canvas.el, this.file.width,this.file.height, this.file.zoom, this.file.dragOffset);
+        let pos = screenToRectXY(r, x, y);
+        if (this.input.isMouseDown() && this.file && (isXYinRect(r,x,y) || (this.file.selectedTool && this.file.selectedTool.useOutside))) {
+            if (this.file.selectedTool && this.file.selectedTool.useOutside) await this.file.useTool(x, y);
+            else await this.file.useTool(pos.x, pos.y);
             EventBus.$emit('redraw-canvas');
         }
     }
@@ -103,6 +112,22 @@ class _AppManager {
                 this.file.setTool(tool);
                 EventBus.$emit('try-selecting-tool', tool.name);
                 return true;
+            }
+            if (tool.spicykey === key) {
+                this.file.spicy = this.file.selectedTool;
+                this.file.setTool(tool);
+                EventBus.$emit('try-selecting-tool', tool.name);
+                return true;
+            }
+        }
+    }
+
+    onKeyUp(key) {
+        for (let tool of this.tools) {
+            if (tool.spicykey === key && this.file.spicy) {
+                this.file.setTool(this.file.spicy);
+                EventBus.$emit('try-selecting-tool', this.file.spicy.name);
+                this.file.spicy = null;
             }
         }
     }
