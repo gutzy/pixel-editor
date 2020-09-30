@@ -10,6 +10,11 @@ export function getCenterRect(canvas, width, height, scale = 1, offset = null) {
     return res;
 }
 
+export function getRect(xy1, xy2) {
+    return [  Math.min(xy1.x, xy2.x), Math.min(xy1.y, xy2.y),
+        Math.max(xy1.x, xy2.x), Math.max(xy1.y, xy2.y)];
+}
+
 export function isXYinRect(r, x, y) {
     return !(x < r[0] || y < r[1] || x > r[0]+r[2] || y > r[1]+r[3]) ;
 }

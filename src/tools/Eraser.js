@@ -11,6 +11,7 @@ export default class Eraser extends Tool {
         this.name = "Eraser Tool";
         this.icon = EraserIcon;
         this.hotkey = 'e';
+        this.save = true;
     }
 
     start(file, canvas, x, y) {

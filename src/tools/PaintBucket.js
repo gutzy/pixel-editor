@@ -14,6 +14,7 @@ export default class PaintBucket extends Tool {
         this.cursor = PaintBucketCursor;
         this.cursorOffset = [0, 14];
         this.hotkey = 'f';
+        this.save = true;
     }
 
     start(file, canvas, x, y) {

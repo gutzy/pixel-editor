@@ -14,6 +14,7 @@ export default class Pencil extends Tool {
         this.cursor = 'crosshair';
         this.cursorOffset = [0, 0];
         this.hotkey = 'b';
+        this.save = true;
     }
 
     start(file, canvas, x, y) {

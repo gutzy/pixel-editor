@@ -2,9 +2,6 @@ import Tool from "../classes/abstracts/Tool";
 import PanIcon from "../assets/svg/pan.svg";
 import PanCursor from "../assets/png/pan.png"
 import PanCursorActive from "../assets/png/pan-held.png"
-import GetColor from "../actions/canvas/GetColor";
-import SelectColor from "../actions/file/SelectColor";
-import DrawRect from "../actions/canvas/DrawRect";
 import EventBus from "../utils/EventBus";
 import SetDragOffset from "../actions/file/SetDragOffset";
 

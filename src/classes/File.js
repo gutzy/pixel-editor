@@ -43,6 +43,7 @@ export default class File {
         this.activeLayer = -1;
         this.selectedTool = null;
         this.color = null;
+        this.persistenceTimeout = null;
 
         this.init();
     }
@@ -113,14 +114,28 @@ export default class File {
         this.selectedTool = tool;
         tool.params = params;
         tool.selected = true;
+        this.toolCanvas = null;
+        clearTimeout(this.persistenceTimeout);
+        this.doToolPersistence();
+    }
+
+    doToolPersistence() {
+        clearTimeout(this.persistenceTimeout);
+        const tool = this.selectedTool;
+        if (tool.persistent) {
+            tool.persist(this.toolCanvas);
+            this.persistenceTimeout = setTimeout(this.doToolPersistence.bind(this), 50);
+            EventBus.$emit('redraw-canvas')
+        }
     }
 
     async startTool(x, y) {
         if (DEBUG) console.log("Start tool on",x,y);
         if (this.selectedTool && this.activeLayer > -1 && !this.layers[this.activeLayer].locked) {
             this.toolStarted = true;
-            this.toolCanvas = new Canvas(null, this.width, this.height);
+            if (!this.selectedTool.persistent || !this.toolCanvas) this.toolCanvas = new Canvas(null, this.width, this.height);
             await this.selectedTool.start(this, this.layers[this.activeLayer].canvas, x / this.zoom, y / this.zoom);
+            if (this.selectedTool.persist) this.selectedTool.persist(this.toolCanvas, true);
         }
     }
 
@@ -128,10 +143,11 @@ export default class File {
         if (DEBUG) console.log("Stop tool on",x,y);
         if (this.selectedTool && this.activeLayer > -1 && !this.layers[this.activeLayer].locked && this.toolStarted) {
             this.toolStarted = false;
-            this.toolCanvas = null;
+            if (!this.selectedTool.persistent) this.toolCanvas = null;
             await this.selectedTool.stop(this, this.layers[this.activeLayer].canvas, x / this.zoom, y / this.zoom);
+            if (this.selectedTool.persist) this.selectedTool.persist(this.toolCanvas, true);
             EventBus.$emit('update-layers', this.layers);
-            EventBus.$emit('save-history');
+            if (this.selectedTool.save) EventBus.$emit('save-history');
         }
     }
 
@@ -139,6 +155,7 @@ export default class File {
         if (DEBUG) console.log("Use tool on",x,y);
         if (this.selectedTool && this.activeLayer > -1 && !this.layers[this.activeLayer].locked) {
             await this.selectedTool.use(this, this.layers[this.activeLayer].canvas, x / this.zoom, y / this.zoom, this.toolCanvas);
+            if (this.selectedTool.persist) this.selectedTool.persist(this.toolCanvas, true);
         }
     }
 
