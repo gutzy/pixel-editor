@@ -32,6 +32,14 @@ export default {
         deleteLayer(layer) {
             EventBus.$emit('try-deleting-layer', layer.name);
         },
+        setLayerRename(layer) {
+            this.renaming = layer.name;
+            this.newLayerName = layer.name;
+            setTimeout(() => {
+                this.$refs.layerNameInput[0].focus();
+                this.$refs.layerNameInput[0].select();
+            },0)
+        },
         renameLayer(layer, name) {
             EventBus.$emit('try-renaming-layer', layer.name, name);
             this.renaming = null;
@@ -47,12 +55,7 @@ export default {
         },
 
         selectLayerToRename(layer) {
-            this.renaming = layer.name;
-            this.newLayerName = layer.name;
-            setTimeout(() => {
-                this.$refs.layerNameInput[0].focus();
-                this.$refs.layerNameInput[0].select();
-            },0)
+            EventBus.$emit('start-renaming-layer', layer)
         },
         addLayer() {
             EventBus.$emit('try-adding-layer', 'Layer 1');
@@ -70,6 +73,9 @@ export default {
         EventBus.$on('select-layer', layer => {
             this.selectedLayer = layer.name;
         });
+        EventBus.$on('start-renaming-layer', layer => {
+            this.setLayerRename(layer);
+        })
     },
 
     template : `

@@ -5,7 +5,6 @@
   background-color: $panelBg;
   height: 48px;
   display: flex;
-  align-items: stretch;
   padding: 0 10px;
 
   &-content {
@@ -18,18 +17,46 @@
   }
 
   &-item {
+    padding: 0 17px;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
     color: $panelColor;
+    cursor: default;
+    position: relative;
 
     &:hover {
-      background-color: $panelSelectedBg;
+      background-color: $panelHoverBg;
     }
   }
 
   h1 {
+    display: flex;
+    align-items: center;
     text-transform: uppercase;
     font-size: 14px;
-    color: $panelSelectedBg;
+    color: $titleColor;
     align-content: center;
+    margin-right: 10px;
   }
 
+  &-sub-items {
+    background-color: $panelHoverBg;
+    position: absolute;
+    z-index: 6;
+    top: 48px;
+    left: 0;
+    display: flex;
+    flex-direction: column;
+
+    .menubar-item {
+      flex: 0 0 32px;
+      white-space: nowrap;
+      font-size: 14px;
+
+      &:hover{
+        background-color: $panelSelectedBg;
+      }
+    }
+  }
 }

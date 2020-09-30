@@ -25,8 +25,13 @@ export default {
         <h1>Lospec Pixel Editor</h1>
         <div class="menubar-content">
         	<nav>
-        		<div v-for="(item, name) in menu" class="menubar-item">
+        		<div v-for="(group, name) in menu" class="menubar-item">
         			{{name}}
+        			<div class="menubar-sub-items" v-if="group.length > 0">
+        				<div class="menubar-item" v-for="item in group">
+        				{{item.name}}
+        				</div>
+					</div>
 				</div>
 			</nav>
 		</div>
