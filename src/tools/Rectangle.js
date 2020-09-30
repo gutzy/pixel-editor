@@ -10,6 +10,7 @@ export default class Rectangle extends Tool {
 
         this.name = "Rectangle Tool";
         this.icon = RectangleIcon;
+        this.cursor = "crosshair";
         this.hotkey = 'r';
     }
 

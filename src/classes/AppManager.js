@@ -67,33 +67,36 @@ class _AppManager {
         EventBus.$emit("load-file", this.file);
     }
 
+    setToolCursor(tool) {
+        if (tool.cursor) this.canvas.doAction(SetCursor, tool.cursor, tool.cursorOffset);
+        else this.canvas.doAction(SetCursor, 'default');
+    }
+
     async onMouseDown(x,y) {
         let pos = screenToRectXY(getCenterRect(this.canvas.el, this.file.width,this.file.height), x, y);
         if (this.file && pos) {
         	await this.file.startTool(pos.x, pos.y);
 		}
+
         EventBus.$emit('redraw-canvas');
+        if (this.file && this.file.selectedTool) { this.setToolCursor(this.file.selectedTool) }
     }
 
     async onMouseUp(x,y) {
         let pos = screenToRectXY(getCenterRect(this.canvas.el, this.file.width,this.file.height), x, y);
         if (this.file) await this.file.stopTool(pos.x, pos.y);
+
         EventBus.$emit('redraw-canvas');
+        if (this.file && this.file.selectedTool) { this.setToolCursor(this.file.selectedTool) }
     }
 
     async onMouseMove(x,y) {
         let pos = screenToRectXY(getCenterRect(this.canvas.el, this.file.width,this.file.height), x, y);
-        if (pos && this.file && this.file.selectedTool) {
-        	if (this.file.selectedTool.cursor) { this.canvas.doAction(SetCursor, this.file.selectedTool.cursor, this.file.selectedTool.cursorOffset) }
-        	else this.canvas.doAction(SetCursor, 'default');
-		}
-        else if (!pos) {
-            this.canvas.doAction(SetCursor, 'default');
-        }
         if (this.input.isMouseDown() && this.file && pos) {
             await this.file.useTool(pos.x, pos.y);
             EventBus.$emit('redraw-canvas');
         }
+        if (this.file && this.file.selectedTool) { this.setToolCursor(this.file.selectedTool) }
     }
 
     onResetCanvas(width, height) {
@@ -108,7 +111,7 @@ class _AppManager {
         for (let tool of this.tools) {
             if (tool.hotkey === key) {
                 this.file.setTool(tool);
-                EventBus.$emit('select-tool', tool.name);
+                EventBus.$emit('try-selecting-tool', tool.name);
                 return true;
             }
         }
@@ -126,6 +129,8 @@ class _AppManager {
         if (tool) {
             this.file.setTool(tool, ...params);
             EventBus.$emit('select-tool', toolName);
+            if (tool.cursor) {  this.setToolCursor(tool) }
+
         }
     }
 }
