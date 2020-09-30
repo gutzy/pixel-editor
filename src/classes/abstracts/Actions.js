@@ -4,6 +4,7 @@ class AbstractAction {
 
 export class CanvasAction extends AbstractAction {}
 export class DialogAction extends AbstractAction {}
+export class AppAction extends AbstractAction {}
 export class FileAction extends AbstractAction {}
 export class InputAction extends AbstractAction {}
 export class LayerAction extends AbstractAction {}

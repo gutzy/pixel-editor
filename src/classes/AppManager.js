@@ -6,6 +6,9 @@ import {getCenterRect, screenToRectXY} from "../utils/CanvasUtils";
 import Tools from "../config/Tools";
 import Menu from "../config/Menu";
 import SetCursor from "../actions/canvas/SetCursor";
+import {AppAction} from "./abstracts/Actions";
+import NewFile from "../actions/app/NewFile";
+import SetToolCursor from "../actions/app/SetToolCursor";
 
 class _AppManager {
 
@@ -22,7 +25,7 @@ class _AppManager {
         this.bindElements(canvasEl);
         this.bindListeners();
 
-        const file = this.newFile(320, 240, 'advanced', 'Funky test', ["#ff0000", "#ffe21f", "#46ca35", "#ffffff", "#000000"]);
+        const file = this.doAction(NewFile,320, 240, 'advanced', 'Funky test', ["#ff0000", "#ffe21f", "#46ca35", "#ffffff", "#000000"]);
 
         file.color = '#ff0000';
     }
@@ -52,32 +55,16 @@ class _AppManager {
         EventBus.$on("redraw-canvas", this.onRedrawCanvas.bind(this));
         EventBus.$on('try-selecting-tool', this.onSelectTool.bind(this));
         EventBus.$on('set-tool-cursor', this.onSetToolCursor.bind(this));
+        EventBus.$on('run-menu-item', this.onRunMenuItem.bind(this));
     }
 
-    newFile(width, height, editorMode, name = 'Untitled', palette) {
-        const file = new File(width, height, editorMode);
-        file.name = name;
-        file.palette = palette;
-        EventBus.$emit('set-palette', palette);
-        EventBus.$emit("new-file", this.file);
-        this.loadFile(file);
-        return file;
-    }
+    doAction(action, ...params) {
 
-    loadFile(file) {
-        if (this.file) this.file.blur();
-
-        this.file = file;
-        this.file.focus();
-
-        EventBus.$emit("load-file", this.file);
-    }
-
-    setToolCursor(tool, cursor = null, cursorOffset = null) {
-        cursor = (cursor === null ? tool.cursor : cursor);
-        cursorOffset = (cursorOffset === null ? tool.cursorOffset : cursorOffset);
-        if (tool.cursor) this.canvas.doAction(SetCursor, cursor, cursorOffset);
-        else this.canvas.doAction(SetCursor, 'default');
+        const a = new action();
+        if (!(a instanceof AppAction)) {
+            throw new Error("Not an app action!");
+        }
+        return a.do(this, ...params);
     }
 
     async onMouseDown(x,y) {
@@ -134,14 +121,22 @@ class _AppManager {
         if (tool) {
             this.file.setTool(tool, ...params);
             EventBus.$emit('select-tool', toolName);
-            if (tool.cursor) {  this.setToolCursor(tool) }
+            if (tool.cursor) {  this.doAction(SetToolCursor, tool) }
 
         }
     }
 
     onSetToolCursor(cursor) {
         if (!this.file) return false;
-        if (this.file && this.file.selectedTool) { this.setToolCursor(this.file.selectedTool, cursor) }
+        if (this.file && this.file.selectedTool) { this.doAction(SetToolCursor, this.file.selectedTool, cursor) }
+    }
+
+    onRunMenuItem(item) {
+        console.log(item);
+        switch (item.scope) {
+            case "app":
+                if (item.action) this.doAction(item.action)
+        }
     }
 }
 

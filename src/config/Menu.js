@@ -11,7 +11,26 @@ import FlattenVisibleLayers from "../actions/file/FlattenVisibleLayers";
 export default {
 
 	"File" : [
-
+		{
+			name: "New",
+			scope: "app",
+		},
+		{
+			name: "Save Project",
+			scope: "app",
+		},
+		{
+			name: "Open",
+			scope: "app",
+		},
+		{
+			name: "Export",
+			scope: "app",
+		},
+		{
+			name: "Exit",
+			scope: "app",
+		}
 	],
 	"Edit" : [
 		{
@@ -60,13 +79,46 @@ export default {
 		}
 	],
 	"Selection" : [
-
+		{
+			name: "Copy",
+			scope: "layer",
+		},
+		{
+			name: "Cut",
+			scope: "layer",
+		},
+		{
+			name: "Paste",
+			scope: "layer",
+		},
+		{
+			name: "Clear Selection",
+			scope: "layer",
+		}
 	],
 	"Editor" : [
-
+		{
+			name: "Switch to Basic Mode",
+			scope: "app",
+		},
 	],
 	"Help" : [
-
+		{
+			name: "Settings",
+			scope: "app"
+		},
+		{
+			name: "Help",
+			scope: "app"
+		},
+		{
+			name: "About",
+			scope: "app"
+		},
+		{
+			name: "Changelog",
+			scope: "app"
+		}
 	]
 
 }
