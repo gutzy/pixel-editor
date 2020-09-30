@@ -3,7 +3,7 @@ import EventBus from "../../utils/EventBus";
 import Layer from "../../classes/Layer";
 
 export default class AddLayer extends FileAction {
-	do(file, name, index = -1) {
+	do(file, name = "Untitled Layer", index = -1) {
 		if (index === -1) index = file.activeLayer+1;
 
 		let existing = file.layers.find(l => l.name === name);
@@ -17,7 +17,7 @@ export default class AddLayer extends FileAction {
 			}
 			existing = file.layers.find(l => l.name === name);
 		}
-		
+
 		const layer = new Layer(file, null, name);
 		layer.inflate();
 		if (index > -1) {
@@ -30,6 +30,7 @@ export default class AddLayer extends FileAction {
 		}
 
 		EventBus.$emit("update-layers", file.layers);
+		EventBus.$emit('save-history');
 		EventBus.$emit('select-layer', file.layers[file.activeLayer]);
 		return layer;
 	}

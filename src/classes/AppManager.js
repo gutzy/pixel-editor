@@ -132,10 +132,17 @@ class _AppManager {
     }
 
     onRunMenuItem(item) {
-        console.log(item);
         switch (item.scope) {
             case "app":
-                if (item.action) this.doAction(item.action)
+                if (item.action) this.doAction(item.action);
+                break;
+            case "file":
+                if (!this.file) return false;
+                if (item.action) this.file.doAction(item.action);
+                break;
+            case "layer":
+                if (!this.file) return false;
+                if (item.action) this.file.doAction(item.action, this.file.layers[this.file.activeLayer]);
         }
     }
 }
