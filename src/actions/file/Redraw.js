@@ -24,7 +24,7 @@ export default class Redraw extends FileAction {
 		}
 
 		if (file.zoom >= 8) {
-			canvas.doAction(PixelGrid, file.zoom);
+			canvas.doAction(PixelGrid, file.zoom, Math.min(0, r[0]), Math.min(0, r[1]));
 		}
 	}
 }
