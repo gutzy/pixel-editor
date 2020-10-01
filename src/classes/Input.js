@@ -90,7 +90,6 @@ export default class Input {
     }
 
     isKeyDown(key) {
-        console.log(this._keyDown);
         return (typeof this._keyDown[key] !== "undefined");
     }
 

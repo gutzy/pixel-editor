@@ -1,5 +1,4 @@
 import {AppAction} from "../../classes/abstracts/Actions";
-import EventBus from "../../utils/EventBus";
 import SetCursor from "../canvas/SetCursor";
 
 export default class SetToolCursor extends AppAction {

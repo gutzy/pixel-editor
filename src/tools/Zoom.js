@@ -7,6 +7,9 @@ import EventBus from "../utils/EventBus";
 import ZoomOut from "../actions/file/ZoomOut";
 
 import { ZoomConfig } from "../config/Tools";
+import ToolInfo from "../actions/tool/ToolInfo";
+import WatchKey from "../actions/tool/WatchKey";
+import TrySettingCursor from "../actions/tool/TrySettingCursor";
 
 export default class Zoom extends Tool {
 
@@ -20,34 +23,19 @@ export default class Zoom extends Tool {
 		this.hotkey = 'z';
 		this.direction = 1;
 
-		EventBus.$on('input-key-down', this.onKeyChanges.bind(this));
-		EventBus.$on('input-key-up', this.onKeyChanges.bind(this));
-		EventBus.$on('focus', this.onFocus.bind(this));
-	}
+		this.doAction(WatchKey, ['Alt', 'Shift'], (altIsDown) => {
+			this.direction = altIsDown ? -1 : 1;
+			this.doAction(TrySettingCursor, this.direction > 0 ? ZoomInCursor : ZoomOutCursor);
 
-	onFocus(input) { this.onKeyChanges(null, input); }
-
-	onKeyChanges(key, input) {
-		if (!this.selected) return;
-		if (input.isKeyDown('Alt') || input.isKeyDown('Shift')) {
-			this.direction = -1;
-			EventBus.$emit('set-tool-cursor', ZoomOutCursor)
-		}
-		else {
-			this.direction = 1;
-			EventBus.$emit('set-tool-cursor', ZoomInCursor)
-		}
-
-		EventBus.$emit('tool-info', {"Direction" : (this.direction>0)?"Zoom in":"Zoom out"})
+			this.doAction(ToolInfo,{"Mode" : (this.direction>0)?"Zoom in":"Zoom out"});
+		});
 	}
 
 	select() {
-		EventBus.$emit('tool-info', {"Direction" : (this.direction>0)?"Zoom in":"Zoom out"});
+		this.doAction(ToolInfo,{"Mode" : (this.direction>0)?"Zoom in":"Zoom out"});
 	}
 
-	start(file, canvas, x, y) {
-		// this.cursor = ZoomCursorActive;
-	}
+	start(file, canvas, x, y) {	}
 	stop(file, canvas, x, y) {
 		file.doAction(this.direction > 0 ? ZoomIn : ZoomOut, ZoomConfig.ZoomLevels);
 	}

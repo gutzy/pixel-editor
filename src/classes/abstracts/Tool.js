@@ -1,4 +1,4 @@
-let tool = {};
+import {ToolAction} from "./Actions";
 
 //class for tools
 export default class Tool {
@@ -13,5 +13,14 @@ export default class Tool {
     stop() { throw new Error("Tool stop action not implemented") }
     use() { throw new Error("Tool use action not implemented") }
     select() { }
+
+    doAction(action, ...params) {
+
+        const a = new action();
+        if (!(a instanceof ToolAction)) {
+            throw new Error("Not a tool action!");
+        }
+        return a.do(this, ...params);
+    }
 
 }

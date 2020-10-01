@@ -1,7 +1,6 @@
 import {FileAction} from "../../classes/abstracts/Actions";
-import Canvas from "../../classes/Canvas";
-import EventBus from "../../utils/EventBus";
 import RunToolPersistence from "./RunToolPersistence";
+import ToolInfo from "../tool/ToolInfo";
 
 export default class SetTool extends FileAction {
     async do(file, tool, ...params) {
@@ -11,7 +10,7 @@ export default class SetTool extends FileAction {
         file.selectedTool = tool;
         tool.params = params;
         tool.selected = true;
-        EventBus.$emit('tool-info', null);
+        tool.doAction(ToolInfo, null);
         tool.select();
         file.toolCanvas = null;
         clearTimeout(file.persistenceTimeout);

@@ -3,48 +3,41 @@ import SelectIcon from "../assets/svg/rectselect.svg";
 import EventBus from "../utils/EventBus";
 import ClearCanvas from "../actions/canvas/ClearCanvas";
 import DrawRect from "../actions/canvas/DrawRect";
-import {getRect, isXYinRect, rectApplyOffset, rectToAbsolute} from "../utils/CanvasUtils";
+import {getRect, isXYinRect, rectApplyOffset} from "../utils/CanvasUtils";
 import GetRectImage from "../actions/canvas/GetRectImage";
 import DrawImage from "../actions/canvas/DrawImage";
-import Canvas from "../classes/Canvas";
 import ClearMarquee from "../actions/canvas/ClearMarquee";
 import ImgDataToCanvas from "../actions/canvas/ImgDataToCanvas";
 import ClearRect from "../actions/canvas/ClearRect";
+import ToolInfo from "../actions/tool/ToolInfo";
+import WatchKey from "../actions/tool/WatchKey";
 
 export default class Select extends Tool {
 
     constructor() {
         super();
 
-        // tool settings
         this.name = "Select Tool";
         this.icon = SelectIcon;
         this.cursor = 'crosshair';
         this.hotkey = 'm';
         this.persistent = true;
 
-        // internally used properties
         this.dashIndex = 0;
         this.mode = 'cut';
 
-        // handle custom events
-        EventBus.$on('input-key-down', this.onKeyChanges.bind(this));
-        EventBus.$on('input-key-up', this.onKeyChanges.bind(this));
-        EventBus.$on('focus', this.onFocus.bind(this));
-    }
-
-    onFocus(input) { this.onKeyChanges(null, input); }
-
-    onKeyChanges(key, input) {
-        if (!this.selected) return;
-        if (!this.moving) { this.mode = !!input.isKeyDown('Alt') ? 'copy':'cut'; }
-        this.lockAxis = !!input.isKeyDown('Shift');
-
-        EventBus.$emit('tool-info', {"Mode" : this.mode, "Axis": this.lockAxis?"Locked":"Both"})
+        this.doAction(WatchKey, 'Alt', isAltDown => {
+            if (!this.moving) this.mode = isAltDown ? 'copy':'cut';
+            this.doAction(ToolInfo,{"Mode" : this.mode, "Axis": this.lockAxis?"Locked":"Both"});
+        });
+        this.doAction(WatchKey, 'Shift', isShiftDown => {
+            this.lockAxis = isShiftDown;
+            this.doAction(ToolInfo,{"Mode" : this.mode, "Axis": this.lockAxis?"Locked":"Both"});
+        });
     }
 
     select() {
-        EventBus.$emit('tool-info', {"Mode" : this.mode, "Axis": this.lockAxis?"Locked":"Both"})
+        this.doAction(ToolInfo,{"Mode" : this.mode, "Axis": this.lockAxis?"Locked":"Both"});
     }
 
     start(file, canvas, x, y, toolCanvas) {
@@ -105,7 +98,7 @@ export default class Select extends Tool {
                 }
                 else { this.axis = 0; this.axisOffset++; } // accumulate axis offset
 
-                EventBus.$emit('tool-info', {"Mode" : this.mode, "Axis": this.axis?(this.axis>0?"X":"Y"):"Locked"});
+                this.doAction(ToolInfo,{"Mode" : this.mode, "Axis": this.axis?(this.axis>0?"X":"Y"):"Locked"});
 
             } else { this.axis = 0; } // no lock, no axis.
 

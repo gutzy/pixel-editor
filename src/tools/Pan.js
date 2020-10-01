@@ -4,6 +4,7 @@ import PanCursor from "../assets/png/pan.png"
 import PanCursorActive from "../assets/png/pan-held.png"
 import EventBus from "../utils/EventBus";
 import SetDragOffset from "../actions/file/SetDragOffset";
+import TrySettingCursor from "../actions/tool/TrySettingCursor";
 
 export default class Pan extends Tool {
 
@@ -20,14 +21,14 @@ export default class Pan extends Tool {
 	}
 
 	start(file, canvas, x, y) {
-		EventBus.$emit('set-tool-cursor', PanCursorActive);
+		this.doAction(TrySettingCursor, PanCursorActive);
 
 		this.startPos = {x, y};
 		this.startOffset = { x: file.dragOffset.x/file.zoom || 0, y: file.dragOffset.y/file.zoom || 0 }
 	}
 
 	stop(file, canvas, x, y) {
-		EventBus.$emit('set-tool-cursor', PanCursor);
+		this.doAction(TrySettingCursor, PanCursor);
 	}
 
 	use(file, canvas, x, y, toolCanvas) {
