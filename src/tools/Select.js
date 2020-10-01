@@ -11,6 +11,7 @@ import DrawImage from "../actions/canvas/DrawImage";
 import CutImage from "../actions/canvas/CutImage";
 import GetMaskImage from "../actions/canvas/GetMaskImage";
 import IsOpaque from "../actions/canvas/IsOpaque";
+import FirstOpaqueXY from "../actions/canvas/FirstOpaqueXY";
 
 export default class Select extends Tool {
 
@@ -47,7 +48,7 @@ export default class Select extends Tool {
             if (file.selectionCanvas.doAction(IsOpaque, x, y)) { // inside current selection
                 this.dragging = {x, y};
                 if (this.mode === "copy") { this._doCopy(canvas, file, this.rect); }
-                else if (!this.cut) { this._doCut(canvas, file, this.rect) }
+                else if (!this.cut) { this._doCut(canvas, file, x, y) }
             }
             else { // outside selection
                 this.dragging = false;
@@ -78,7 +79,7 @@ export default class Select extends Tool {
         }
 
         if (this.dragging) {
-            console.log(":_)")
+            // ...
         }
         else if (this.startPos && this.newPos) {
             this.rect = [...this.tempRect];
@@ -113,7 +114,8 @@ export default class Select extends Tool {
 
     _onFinished(canvas, file) {
         if (this.cut) {
-            canvas.doAction(DrawImage, this.cut.el, this.rect[0], this.rect[1]);
+            const first = file.selectionCanvas.doAction(FirstOpaqueXY);
+            canvas.doAction(DrawImage, this.cut.el, first.x-this.cutOffset.x, first.y-this.cutOffset.y);
             EventBus.$emit('save-history');
         }
         this.dragging = false;
@@ -126,9 +128,7 @@ export default class Select extends Tool {
                 if (!this.axis) { this.axis = (Math.abs(offset.x) > Math.abs(offset.y)) ? 1:-1; }
             }
             else { this.axis = 0; this.axisOffset++; } // accumulate axis offset
-
             this.doAction(ToolInfo,{"Mode" : this.mode, "Axis": this.axis?(this.axis>0?"X":"Y"):"Locked"});
-
         } else { this.axis = 0; } // no lock, no axis.
     }
 
@@ -142,8 +142,9 @@ export default class Select extends Tool {
         }
     }
 
-    _doCut(canvas, file, rect) {
+    _doCut(canvas, file, x, y) {
         this.cut = canvas.doAction(ImgDataToCanvas, canvas.doAction(GetMaskImage, file.selectionCanvas.el));
+        this.cutOffset = this.cut.doAction(FirstOpaqueXY);
         canvas.doAction(CutImage, file.selectionCanvas.el);
     }
 }
