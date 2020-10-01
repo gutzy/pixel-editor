@@ -34,7 +34,7 @@ export default class Select extends Tool {
         this.lockAxis = !!input.isKeyDown('shift');
     }
 
-    start(file, canvas, x, y) {
+    start(file, canvas, x, y, toolCanvas) {
         if (this.startPos && this.endPos) {
             const rect = getRect(this.startPos, this.endPos, true);
             if (isXYinRect(rect, x, y)) {
@@ -46,15 +46,26 @@ export default class Select extends Tool {
 
                 const c = new Canvas(null, imgData.width, imgData.height, imgData);
                 this.img = c.el;
+                this.dragOffset = {x:0, y:0};
 
                 if (this.mode !== "copy") {
                     canvas.doAction(ClearRect, ...rect);
+                    toolCanvas.doAction(DrawImage, this.img, this.startPos.x - this.dragOffset.x, this.startPos.y - this.dragOffset.y);
                 }
             }
             else {
-                console.log("!!!!")
-                setTimeout(() => EventBus.$emit('save-history'), 1);
-                this.finishedDragging = true;
+                console.log("!!!!");
+                    if (this.img) {
+                        toolCanvas.doAction(ClearCanvas);
+                        toolCanvas.doAction(DrawImage, this.img, this.startPos.x - this.dragOffset.x, this.startPos.y - this.dragOffset.y);
+                        canvas.doAction(DrawImage, toolCanvas.el);
+                        toolCanvas.doAction(ClearCanvas);
+                    }
+                    this.dragging = this.finishedDragging = false;
+                    this.startPos = this.endPos = this.newPos = this.dragStart = this.dragOffset = this.img = null;
+                    EventBus.$emit('select-area', null);
+
+                this.startPos = {x, y};
                 this.newPos = this.endPos = null;
             }
         }
@@ -65,17 +76,6 @@ export default class Select extends Tool {
     }
 
     stop(file, canvas, x, y, toolCanvas) {
-
-        if (this.finishedDragging) {
-            if (this.img) {
-                canvas.doAction(DrawImage, toolCanvas.el);
-                toolCanvas.doAction(ClearCanvas);
-            }
-            this.dragging = this.finishedDragging = false;
-            this.startPos = this.endPos = this.newPos = this.dragStart = this.dragOffset = this.img = null;
-            EventBus.$emit('select-area', null);
-            return;
-        }
 
         if (this.dragging) {
             this.startPos = {x: this.startPos.x - this.dragOffset.x, y: this.startPos.y - this.dragOffset.y};
@@ -92,6 +92,7 @@ export default class Select extends Tool {
     }
 
     use(file, canvas, x, y, toolCanvas) {
+        if (this.finishedDragging) return;
         if (this.dragging) {
             this.dragOffset = {x: this.dragStart.x - x, y: this.dragStart.y - y};
             toolCanvas.doAction(ClearCanvas);
@@ -108,13 +109,14 @@ export default class Select extends Tool {
         if (!toolCanvas) return;
         toolCanvas.doAction(ClearCanvas);
         let tgt = this.newPos ? this.newPos : this.endPos;
-            console.log(this.newPos);
         if (this.startPos && tgt) {
 
             if (!hard) this.dashIndex++;
 
+            if (this.img && this.dragOffset) {
+                toolCanvas.doAction(DrawImage, this.img, this.startPos.x - this.dragOffset.x, this.startPos.y - this.dragOffset.y);
+            }
             const rect = getRect(this.startPos, tgt);
-
             toolCanvas.doAction(DrawRect, rect[0], rect[1], rect[2]-rect[0], rect[3]-rect[1], null, "#aaaaaa");
             // clear the ants!
             for (let x = rect[0]; x < rect[2]; x += 8) {
@@ -125,9 +127,6 @@ export default class Select extends Tool {
                 toolCanvas.doAction(ClearRect, rect[0]-1, y - this.dashIndex % 8, 2, 4);
                 toolCanvas.doAction(ClearRect, rect[2]-1, y + this.dashIndex % 8, 2, 4);
             }
-        }
-        if (this.img && this.dragOffset) {
-            toolCanvas.doAction(DrawImage, this.img, this.startPos.x - this.dragOffset.x, this.startPos.y - this.dragOffset.y);
         }
     }
 
