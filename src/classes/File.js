@@ -121,7 +121,7 @@ export default class File {
         clearTimeout(this.persistenceTimeout);
         const tool = this.selectedTool;
         if (tool.persistent) {
-            tool.persist(this.toolCanvas);
+            if (this.toolCanvas) tool.persist(this.toolCanvas);
             this.persistenceTimeout = setTimeout(this.doToolPersistence.bind(this), 50);
             EventBus.$emit('redraw-canvas')
         }
@@ -133,7 +133,7 @@ export default class File {
             this.toolStarted = true;
             if (!this.selectedTool.persistent || !this.toolCanvas) this.toolCanvas = new Canvas(null, this.width, this.height);
             await this.selectedTool.start(this, this.layers[this.activeLayer].canvas, x / this.zoom, y / this.zoom, this.toolCanvas);
-            if (this.selectedTool.persist) this.selectedTool.persist(this.toolCanvas, true);
+            if (this.selectedTool.persistent) this.selectedTool.persist(this.toolCanvas, true);
         }
     }
 

@@ -10,11 +10,16 @@ export function getCenterRect(canvas, width, height, scale = 1, offset = null) {
     return res;
 }
 
-export function getRect(xy1, xy2, wh = false) {
+
+export function rectToRelative(rect) { return [rect[0], rect[1], rect[2]-rect[0], rect[3]-rect[1]] }
+export function rectToAbsolute(rect) { return [rect[0], rect[1], rect[2]+rect[0], rect[3]+rect[1]] }
+export function rectApplyOffset(rect, x = 0, y = 0, absolute = false) { return [rect[0]+x, rect[1]+y, rect[2]+(absolute?x:0), rect[3]+(absolute?y:0)] }
+
+export function getRect(xy1, xy2, absolute = false) {
     if (!xy1 || !xy2) return null;
     const res = [  Math.min(xy1.x, xy2.x), Math.min(xy1.y, xy2.y),
         Math.max(xy1.x, xy2.x), Math.max(xy1.y, xy2.y)];
-    if (wh) {
+    if (!absolute) {
         res[2] -= res[0]; res[3] -= res[1];
     }
 
