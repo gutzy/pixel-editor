@@ -10,6 +10,7 @@ import ClearRect from "../actions/canvas/ClearRect";
 import DrawImage from "../actions/canvas/DrawImage";
 import CutImage from "../actions/canvas/CutImage";
 import GetMaskImage from "../actions/canvas/GetMaskImage";
+import IsOpaque from "../actions/canvas/IsOpaque";
 
 export default class Select extends Tool {
 
@@ -43,12 +44,13 @@ export default class Select extends Tool {
         this.rectMode = 'reset';
 
         if (this.rect) { // a selection is defined
-            if (isXYinRect(this.rect, x, y)) { // inside current selection
+            if (file.selectionCanvas.doAction(IsOpaque, x, y)) { // inside current selection
                 this.dragging = {x, y};
                 if (this.mode === "copy") { this._doCopy(canvas, file, this.rect); }
                 else if (!this.cut) { this._doCut(canvas, file, this.rect) }
             }
             else { // outside selection
+                this.dragging = false;
                 if (this.lockAxis) { // shift pressed: expanding selection
                     this.rectMode = 'expand';
                 } else if (this.mode === 'copy') { // alt pressed: shrinking selection
@@ -69,13 +71,16 @@ export default class Select extends Tool {
 
     stop(file, canvas, x, y, toolCanvas) {
         this.moving = false;
+        EventBus.$emit('select-area-solidify');
         if (this.rectMode !== 'reset') {
-            EventBus.$emit('select-area-solidify');
             this.rectMode = 'reset';
             return;
         }
 
-        if (this.startPos && this.newPos) {
+        if (this.dragging) {
+            console.log(":_)")
+        }
+        else if (this.startPos && this.newPos) {
             this.rect = [...this.tempRect];
             this.startPos = {x: this.rect[0], y: this.rect[1]};
             this.newPos = {x: this.rect[0]+this.rect[2], y: this.rect[1]+this.rect[3]};
@@ -90,6 +95,7 @@ export default class Select extends Tool {
         if (this.dragging) {
             const offset = {x: x-this.dragging.x, y: y-this.dragging.y};
             this._detectAxis(offset);
+            file.selectionOffset = offset;
             this.tempRect = rectApplyOffset(getRect(this.startPos, this.newPos), this.axis===-1? 0 : offset.x, this.axis===1? 0 : offset.y);
         }
         else {

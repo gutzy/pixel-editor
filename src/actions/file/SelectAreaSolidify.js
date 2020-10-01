@@ -11,15 +11,16 @@ export default class SelectAreaSolidify extends FileAction {
 
 		if (!file.selectionOverlay) return;
 
+		let offset = file.selectionOffset ? file.selectionOffset : {x:0, y: 0};
 		file.selectionOverlay.doAction(ClearCanvas);
 		file.selectionOverlay.doAction(DrawImage, file.selectionCanvas.el);
 		if (file.expandArea) { file.selectionOverlay.doAction(DrawRect, ...file.expandArea, '#daba78');	}
 		else if (file.shrinkArea) { file.selectionOverlay.doAction(ClearRect, ...file.shrinkArea); }
 
 		file.selectionCanvas.doAction(ClearCanvas);
-		file.selectionCanvas.doAction(DrawImage, file.selectionOverlay.el);
+		file.selectionCanvas.doAction(DrawImage, file.selectionOverlay.el, offset.x, offset.y);
 
-		file.expandArea = file.shrinkArea = null;
+		file.expandArea = file.shrinkArea = file.selectionOffset = null;
 		EventBus.$emit('redraw-canvas');
 	}
 }

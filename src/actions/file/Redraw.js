@@ -29,7 +29,9 @@ export default class Redraw extends FileAction {
 			if (file.expandArea) { file.selectionOverlay.doAction(DrawRect, ...file.expandArea, '#daba78');	}
 			else if (file.shrinkArea) { file.selectionOverlay.doAction(ClearRect, ...file.shrinkArea); }
 
-			canvas.doAction(DrawImage, file.selectionOverlay.el, r[0], r[1], file.zoom);
+			let x = r[0], y = r[1];
+			if (file.selectionOffset) { x += file.selectionOffset.x; y += file.selectionOffset.y}
+			canvas.doAction(DrawImage, file.selectionOverlay.el, x, y, file.zoom);
 		}
 		else { file.selectionOverlay = null; }
 
