@@ -28,11 +28,14 @@ export default class Select extends Tool {
         this.mode = 'cut';
 
         // handle custom events
-        EventBus.$on('input-key-down', this.onKeyDown.bind(this));
-        EventBus.$on('input-key-up', this.onKeyDown.bind(this));
+        EventBus.$on('input-key-down', this.onKeyChanges.bind(this));
+        EventBus.$on('input-key-up', this.onKeyChanges.bind(this));
+        EventBus.$on('focus', this.onFocus.bind(this));
     }
 
-    onKeyDown(key, input) {
+    onFocus(input) { this.onKeyChanges(null, input); }
+
+    onKeyChanges(key, input) {
         if (!this.selected) return;
         if (!this.moving) { this.mode = !!input.isKeyDown('Alt') ? 'copy':'cut'; }
         this.lockAxis = !!input.isKeyDown('Shift');
@@ -98,9 +101,7 @@ export default class Select extends Tool {
             const offset = {x: x-this.dragging.x, y: y-this.dragging.y};
             if (this.lockAxis) {
                 if (this.axisOffset >= 3) { // try 3 iterations of generating offset before committing to an axis lock
-                    if (!this.axis) {
-                        this.axis = (Math.abs(offset.x) > Math.abs(offset.y)) ? 1:-1;
-                    }
+                    if (!this.axis) { this.axis = (Math.abs(offset.x) > Math.abs(offset.y)) ? 1:-1; }
                 }
                 else { this.axis = 0; this.axisOffset++; } // accumulate axis offset
 
@@ -117,6 +118,7 @@ export default class Select extends Tool {
     }
 
     persist(toolCanvas, hard = false) {
+        if (!toolCanvas) return;
         toolCanvas.doAction(ClearCanvas);
         if (this.tempRect) {
             if (!hard) this.dashIndex++;

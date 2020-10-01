@@ -20,11 +20,14 @@ export default class Zoom extends Tool {
 		this.hotkey = 'z';
 		this.direction = 1;
 
-		EventBus.$on('input-key-down', this.onKeyDown.bind(this));
-		EventBus.$on('input-key-up', this.onKeyDown.bind(this));
+		EventBus.$on('input-key-down', this.onKeyChanges.bind(this));
+		EventBus.$on('input-key-up', this.onKeyChanges.bind(this));
+		EventBus.$on('focus', this.onFocus.bind(this));
 	}
 
-	onKeyDown(key, input) {
+	onFocus(input) { this.onKeyChanges(null, input); }
+
+	onKeyChanges(key, input) {
 		if (!this.selected) return;
 		if (input.isKeyDown('Alt') || input.isKeyDown('Shift')) {
 			this.direction = -1;

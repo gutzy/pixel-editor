@@ -17,6 +17,7 @@ export default class Input {
         window.addEventListener('keyup', this.onKeyUp.bind(this));
         window.addEventListener('keydown', this.onKeyDown.bind(this));
         window.addEventListener('resize', this.onResize.bind(this));
+        window.addEventListener('focus', this.onFocus.bind(this));
     }
 
     onMouseUp(e) {
@@ -67,6 +68,13 @@ export default class Input {
         EventBus.$emit('redraw-canvas');
     }
 
+    onFocus() {
+        this._keyDown = {};
+        this._lastKeyDown = null;
+        this._mouseDown = false;
+        EventBus.$emit('focus', this);
+    }
+
     onKeyCombination(e) {
         const alt = this.isKeyDown("Alt"), shift = this.isKeyDown("Shift"), ctrl = this.isKeyDown("Control") || this.isKeyDown("Meta");
 
@@ -82,6 +90,7 @@ export default class Input {
     }
 
     isKeyDown(key) {
+        console.log(this._keyDown);
         return (typeof this._keyDown[key] !== "undefined");
     }
 

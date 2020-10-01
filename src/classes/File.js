@@ -39,8 +39,6 @@ export default class File {
 
         this.history = new History();
         this.toolCanvas = null;
-        this.selectionCanvas = null;
-        this.toolStarted = false;
 
         this.activeLayer = -1;
         this.selectedTool = null;
