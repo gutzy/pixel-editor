@@ -103,8 +103,6 @@ export default class File {
         this.historyIndex = this.history.saveState(this.layers, this.historyIndex);
     }
 
-    undo() {this.doAction(Undo) }
-    redo() { this.doAction(Redo) }
     redraw(canvas) { this.doAction(Redraw, canvas) }
 
     setTool(tool, ...params) {
@@ -134,7 +132,7 @@ export default class File {
         if (this.selectedTool && this.activeLayer > -1 && !this.layers[this.activeLayer].locked) {
             this.toolStarted = true;
             if (!this.selectedTool.persistent || !this.toolCanvas) this.toolCanvas = new Canvas(null, this.width, this.height);
-            await this.selectedTool.start(this, this.layers[this.activeLayer].canvas, x / this.zoom, y / this.zoom);
+            await this.selectedTool.start(this, this.layers[this.activeLayer].canvas, x / this.zoom, y / this.zoom, this.toolCanvas);
             if (this.selectedTool.persist) this.selectedTool.persist(this.toolCanvas, true);
         }
     }
@@ -143,9 +141,11 @@ export default class File {
         if (DEBUG) console.log("Stop tool on",x,y);
         if (this.selectedTool && this.activeLayer > -1 && !this.layers[this.activeLayer].locked && this.toolStarted) {
             this.toolStarted = false;
-            if (!this.selectedTool.persistent) this.toolCanvas = null;
-            await this.selectedTool.stop(this, this.layers[this.activeLayer].canvas, x / this.zoom, y / this.zoom);
-            if (this.selectedTool.persist) this.selectedTool.persist(this.toolCanvas, true);
+            await this.selectedTool.stop(this, this.layers[this.activeLayer].canvas, x / this.zoom, y / this.zoom, this.toolCanvas);
+
+            if (this.selectedTool.persistent) { this.selectedTool.persist(this.toolCanvas, true); }
+            else { this.toolCanvas = null; }
+
             EventBus.$emit('update-layers', this.layers);
             if (this.selectedTool.save) EventBus.$emit('save-history');
         }
@@ -170,8 +170,8 @@ export default class File {
     onKeyCombination(combo) {
         if (!this.isActiveFile) return false;
 
-        if (comboIs(combo, 'ctrl','z')) { this.undo(); }
-        else if (comboIs(combo, 'ctrl','shift', 'z') || comboIs(combo, 'ctrl','y')) { this.redo(); }
+        if (comboIs(combo, 'ctrl','z')) { this.doAction(Undo); }
+        else if (comboIs(combo, 'ctrl','shift', 'z') || comboIs(combo, 'ctrl','y')) { this.doAction(Redo); }
     }
 
     onSaveHistoryRequest() {

@@ -15,7 +15,6 @@ export default {
 			EventBus.$emit("run-menu-item", menuItem);
 		},
 		openSubMenu(name) {
-			console.log(name);
 			this.open = this.open === name ? null : name;
 		},
 		onHover(name) {

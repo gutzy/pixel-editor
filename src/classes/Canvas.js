@@ -3,6 +3,7 @@
  * This class holds a pointer to the main canvas element and can perform actions on it.
  */
 import {CanvasAction} from "./abstracts/Actions";
+import PutImage from "../actions/canvas/PutImage";
 
 export default class Canvas {
 
@@ -20,6 +21,10 @@ export default class Canvas {
         }
 
         this.ctx = this.el.getContext('2d');
+
+        if (data) {
+            this.doAction(PutImage, data, 0, 0);
+        }
 
     }
 
