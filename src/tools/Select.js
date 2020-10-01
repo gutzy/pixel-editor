@@ -4,12 +4,12 @@ import EventBus from "../utils/EventBus";
 import {getRect, isXYinRect, rectApplyOffset} from "../utils/CanvasUtils";
 import ToolInfo from "../actions/tool/ToolInfo";
 import WatchKey from "../actions/tool/WatchKey";
-import FillArea from "../actions/canvas/FillArea";
-import Canvas from "../classes/Canvas";
 import ImgDataToCanvas from "../actions/canvas/ImgDataToCanvas";
 import GetRectImage from "../actions/canvas/GetRectImage";
 import ClearRect from "../actions/canvas/ClearRect";
 import DrawImage from "../actions/canvas/DrawImage";
+import CutImage from "../actions/canvas/CutImage";
+import GetMaskImage from "../actions/canvas/GetMaskImage";
 
 export default class Select extends Tool {
 
@@ -55,9 +55,9 @@ export default class Select extends Tool {
                     this.rectMode = 'shrink';
                 } else { // default behavior: reset
                     this._onFinished(canvas, file);
-                    this.startPos = {x, y};
                     EventBus.$emit('select-area', 'selectionCanvas', [0,0,0,0]);
                 }
+                this.startPos = {x, y};
             }
         } else { // selection not defined
             this.dragging = false;
@@ -69,7 +69,6 @@ export default class Select extends Tool {
 
     stop(file, canvas, x, y, toolCanvas) {
         this.moving = false;
-
         if (this.rectMode !== 'reset') {
             EventBus.$emit('select-area-solidify');
             this.rectMode = 'reset';
@@ -100,7 +99,7 @@ export default class Select extends Tool {
 
         if (this.rectMode === 'reset') {
             file.expandArea = file.shrinkArea = null;
-            EventBus.$emit('select-area', 'selectionCanvas', ...this.tempRect);
+            if (!this.dragging) EventBus.$emit('select-area', 'selectionCanvas', ...this.tempRect);
         }
         else if (this.rectMode === 'expand') file.expandArea = this.tempRect;
         else if (this.rectMode === 'shrink') file.shrinkArea = this.tempRect;
@@ -138,8 +137,7 @@ export default class Select extends Tool {
     }
 
     _doCut(canvas, file, rect) {
-        this.cut = canvas.doAction(ImgDataToCanvas, canvas.doAction(GetRectImage, ...rect));
-        canvas.doAction(ClearRect, ...rect);
+        this.cut = canvas.doAction(ImgDataToCanvas, canvas.doAction(GetMaskImage, file.selectionCanvas.el));
+        canvas.doAction(CutImage, file.selectionCanvas.el);
     }
-
 }

@@ -5,6 +5,8 @@ import DrawMainCanvasBoundaries from "../canvas/DrawMainCanvasBoundaries";
 import DrawImage from "../canvas/DrawImage";
 import PixelGrid from "../canvas/PixelGrid";
 import Canvas from "../../classes/Canvas";
+import DrawRect from "../canvas/DrawRect";
+import ClearRect from "../canvas/ClearRect";
 
 export default class Redraw extends FileAction {
 	do(file, canvas) {
@@ -20,13 +22,14 @@ export default class Redraw extends FileAction {
 			}
 		}
 
-		if (file.selectionCanvas) {
+		if (file.selectionCanvas) { // TODO: This is ugly
 		    if (!file.selectionOverlay) file.selectionOverlay = new Canvas(null, this.width, this.height);
-			canvas.doAction(DrawImage, file.selectionCanvas.el, r[0], r[1], file.zoom);
+			file.selectionOverlay.doAction(ClearCanvas);
+			file.selectionOverlay.doAction(DrawImage, file.selectionCanvas.el);
+			if (file.expandArea) { file.selectionOverlay.doAction(DrawRect, ...file.expandArea, '#daba78');	}
+			else if (file.shrinkArea) { file.selectionOverlay.doAction(ClearRect, ...file.shrinkArea); }
 
-			if (file.expandArea) {
-
-			}
+			canvas.doAction(DrawImage, file.selectionOverlay.el, r[0], r[1], file.zoom);
 		}
 		else { file.selectionOverlay = null; }
 
