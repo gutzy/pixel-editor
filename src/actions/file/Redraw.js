@@ -4,6 +4,7 @@ import ClearCanvas from "../canvas/ClearCanvas";
 import DrawMainCanvasBoundaries from "../canvas/DrawMainCanvasBoundaries";
 import DrawImage from "../canvas/DrawImage";
 import PixelGrid from "../canvas/PixelGrid";
+import Canvas from "../../classes/Canvas";
 
 export default class Redraw extends FileAction {
 	do(file, canvas) {
@@ -20,8 +21,14 @@ export default class Redraw extends FileAction {
 		}
 
 		if (file.selectionCanvas) {
+		    if (!file.selectionOverlay) file.selectionOverlay = new Canvas(null, this.width, this.height);
 			canvas.doAction(DrawImage, file.selectionCanvas.el, r[0], r[1], file.zoom);
+
+			if (file.expandArea) {
+
+			}
 		}
+		else { file.selectionOverlay = null; }
 
 		if (file.toolCanvas) {
 			canvas.doAction(DrawImage, file.toolCanvas.el, r[0], r[1], file.zoom);

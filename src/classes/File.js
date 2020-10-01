@@ -15,6 +15,8 @@ import ToggleLayerLock from "../actions/file/ToggleLayerLock";
 import Undo from "../actions/file/Undo";
 import Redo from "../actions/file/Redo";
 import LoadContents from "../actions/file/LoadContents";
+import SelectArea from "../actions/file/SelectArea";
+import SelectAreaSolidify from "../actions/file/SelectAreaSolidify";
 
 const DEBUG = false;
 
@@ -74,6 +76,10 @@ export default class File {
         EventBus.$on('try-merging-layer-below', (...a) => this.doAction(MergeLayerBelow, ...a));
         EventBus.$on('try-flatten-visible-layers', (...a) => this.doAction(FlattenVisibleLayers, ...a));
         EventBus.$on('try-flatten-all-layers', (...a) => this.doAction(FlattenAllLayers, ...a));
+        EventBus.$on('select-area', (...a) => this.doAction(SelectArea, ...a));
+        EventBus.$on('shrink-area', (...a) => this.doAction(SelectArea, ...a));
+        EventBus.$on('expand-area', (...a) => this.doAction(SelectArea, ...a));
+        EventBus.$on('select-area-solidify', (...a) => this.doAction(SelectAreaSolidify, ...a));
     }
 
     doAction(action, ...params) {

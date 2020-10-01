@@ -3,7 +3,6 @@
  * It does what a canvas does..... and more!
  */
 import {CanvasAction} from "./abstracts/Actions";
-import EventBus from "../utils/EventBus";
 import ClearCanvas from "../actions/canvas/ClearCanvas";
 import Canvas from "./Canvas";
 import DrawMainCanvasBoundaries from "../actions/canvas/DrawMainCanvasBoundaries";
