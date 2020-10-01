@@ -7,6 +7,11 @@ import Menu from "../config/Menu";
 import {AppAction} from "./abstracts/Actions";
 import NewFile from "../actions/app/NewFile";
 import SetToolCursor from "../actions/app/SetToolCursor";
+import StartTool from "../actions/file/StartTool";
+import StopTool from "../actions/file/StopTool";
+import UseTool from "../actions/file/UseTool";
+import SetTool from "../actions/file/SetTool";
+import Redraw from "../actions/file/Redraw";
 
 class _AppManager {
 
@@ -70,8 +75,8 @@ class _AppManager {
         const r = getCenterRect(this.canvas.el, this.file.width,this.file.height, this.file.zoom, this.file.dragOffset);
         let pos = screenToRectXY(r, x, y);
         if (this.file && this.file.selectedTool && (isXYinRect(r,x,y) || (this.file.selectedTool && this.file.selectedTool.useOutside))) {
-        	if (this.file.selectedTool.useOutside) await this.file.startTool(x, y);
-            else await this.file.startTool(pos.x, pos.y);
+        	if (this.file.selectedTool.useOutside) await this.file.doAction(StartTool, x, y);
+            else await this.file.doAction(StartTool, pos.x, pos.y);
 		}
 
         EventBus.$emit('redraw-canvas');
@@ -81,8 +86,8 @@ class _AppManager {
         const r = getCenterRect(this.canvas.el, this.file.width,this.file.height, this.file.zoom, this.file.dragOffset);
         let pos = screenToRectXY(r, x, y);
         if (this.file) {
-            if (this.file.selectedTool && this.file.selectedTool.useOutside) await this.file.stopTool(x, y);
-            else await this.file.stopTool(pos.x, pos.y);
+            if (this.file.selectedTool && this.file.selectedTool.useOutside) await this.file.doAction(StopTool, x, y);
+            else await this.file.doAction(StopTool, pos.x, pos.y);
         }
 
         EventBus.$emit('redraw-canvas');
@@ -92,8 +97,8 @@ class _AppManager {
         const r = getCenterRect(this.canvas.el, this.file.width,this.file.height, this.file.zoom, this.file.dragOffset);
         let pos = screenToRectXY(r, x, y);
         if (this.input.isMouseDown() && this.file && (isXYinRect(r,x,y) || (this.file.selectedTool && this.file.selectedTool.useOutside))) {
-            if (this.file.selectedTool && this.file.selectedTool.useOutside) await this.file.useTool(x, y);
-            else await this.file.useTool(pos.x, pos.y);
+            if (this.file.selectedTool && this.file.selectedTool.useOutside) await this.file.doAction(UseTool, x, y);
+            else await this.file.doAction(UseTool,pos.x, pos.y);
             EventBus.$emit('redraw-canvas');
         }
     }
@@ -104,18 +109,19 @@ class _AppManager {
         }
     }
 
-    onKeyDown(key) {
+    onKeyDown(key, input) {
         if (!this.file) return false;
+        if (input.isKeyDown("Alt")) return false;
 
         for (let tool of this.tools) {
             if (tool.hotkey === key) {
-                this.file.setTool(tool);
+                this.file.doAction(SetTool, tool);
                 EventBus.$emit('try-selecting-tool', tool.name);
                 return true;
             }
             if (tool.spicykey === key) {
                 this.file.spicy = this.file.selectedTool;
-                this.file.setTool(tool);
+                this.file.doAction(SetTool, tool);
                 EventBus.$emit('try-selecting-tool', tool.name);
                 return true;
             }
@@ -125,7 +131,7 @@ class _AppManager {
     onKeyUp(key) {
         for (let tool of this.tools) {
             if (tool.spicykey === key && this.file.spicy) {
-                this.file.setTool(this.file.spicy);
+                this.file.doAction(SetTool, this.file.spicy);
                 EventBus.$emit('try-selecting-tool', this.file.spicy.name);
                 this.file.spicy = null;
             }
@@ -134,7 +140,7 @@ class _AppManager {
 
     onRedrawCanvas() {
         if (!this.file) return false;
-        this.file.redraw(this.canvas);
+        this.file.doAction(Redraw, this.canvas);
     }
 
     onSelectTool(toolName, ...params) {
@@ -142,7 +148,7 @@ class _AppManager {
         const tool = this.tools.find(t => t.name === toolName);
 
         if (tool) {
-            this.file.setTool(tool, ...params);
+            this.file.doAction(SetTool, tool, ...params);
             EventBus.$emit('select-tool', toolName);
             if (tool.cursor) {  this.doAction(SetToolCursor, tool) }
 

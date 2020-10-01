@@ -65,12 +65,21 @@
     display: flex;
     font-size: 13px;
     color: $panelColor;
+    direction: rtl;
 
     .status {
+      direction: ltr;
+      text-transform: uppercase;
       display: flex;
       background-color: $panelHoverBg;
       align-items: center;
       padding: 0 10px;
+      font-size: 10px;
+
+      &:nth-child(odd) {
+        background-color: $panelBg;
+      }
+
     }
   }
 }

@@ -34,6 +34,12 @@ export default class Zoom extends Tool {
 			this.direction = 1;
 			EventBus.$emit('set-tool-cursor', ZoomInCursor)
 		}
+
+		EventBus.$emit('tool-info', {"Direction" : (this.direction>0)?"Zoom in":"Zoom out"})
+	}
+
+	select() {
+		EventBus.$emit('tool-info', {"Direction" : (this.direction>0)?"Zoom in":"Zoom out"});
 	}
 
 	start(file, canvas, x, y) {

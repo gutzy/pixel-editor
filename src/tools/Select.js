@@ -24,9 +24,8 @@ export default class Select extends Tool {
         this.persistent = true;
 
         // internally used properties
-        this.rect = null;
-        this.dragging = false;
         this.dashIndex = 0;
+        this.mode = 'cut';
 
         // handle custom events
         EventBus.$on('input-key-down', this.onKeyDown.bind(this));
@@ -35,15 +34,18 @@ export default class Select extends Tool {
 
     onKeyDown(key, input) {
         if (!this.selected) return;
-        if (!this.moving) {
-            this.mode = !!input.isKeyDown('Alt') ? 'copy':'cut';
-        }
+        if (!this.moving) { this.mode = !!input.isKeyDown('Alt') ? 'copy':'cut'; }
         this.lockAxis = !!input.isKeyDown('Shift');
+
+        EventBus.$emit('tool-info', {"Mode" : this.mode, "Axis": this.lockAxis?"Locked":"Both"})
+    }
+
+    select() {
+        EventBus.$emit('tool-info', {"Mode" : this.mode, "Axis": this.lockAxis?"Locked":"Both"})
     }
 
     start(file, canvas, x, y, toolCanvas) {
-        this.finished = true;
-        this.moving = true;
+        this.finished = this.moving = true;
         this.axisOffset = 0;
 
         if (this.rect) {
@@ -79,6 +81,7 @@ export default class Select extends Tool {
 
     stop(file, canvas, x, y, toolCanvas) {
         this.moving = false;
+
         if (this.startPos && this.newPos) {
             this.rect = [...this.tempRect];
             this.startPos = {x: this.rect[0], y: this.rect[1]};
@@ -95,16 +98,16 @@ export default class Select extends Tool {
             const offset = {x: x-this.dragging.x, y: y-this.dragging.y};
             if (this.lockAxis) {
                 if (this.axisOffset >= 3) { // try 3 iterations of generating offset before committing to an axis lock
-                    if (!this.axis) this.axis = (Math.abs(offset.x) > Math.abs(offset.y)) ? 1:-1;
+                    if (!this.axis) {
+                        this.axis = (Math.abs(offset.x) > Math.abs(offset.y)) ? 1:-1;
+                    }
                 }
-                else {
-                    this.axis = 0;
-                    this.axisOffset++;
-                }
-            } else {
-                this.axis = 0;
-            }
-            console.log(this.axis, this.lockAxis);
+                else { this.axis = 0; this.axisOffset++; } // accumulate axis offset
+
+                EventBus.$emit('tool-info', {"Mode" : this.mode, "Axis": this.axis?(this.axis>0?"X":"Y"):"Locked"});
+
+            } else { this.axis = 0; } // no lock, no axis.
+
             this.tempRect = rectApplyOffset(getRect(this.startPos, this.newPos), this.axis===-1? 0 : offset.x, this.axis===1? 0 : offset.y);
         }
         else {
@@ -116,12 +119,9 @@ export default class Select extends Tool {
     persist(toolCanvas, hard = false) {
         toolCanvas.doAction(ClearCanvas);
         if (this.tempRect) {
-
             if (!hard) this.dashIndex++;
 
-            if (this.img) {
-                toolCanvas.doAction(DrawImage, this.img, this.tempRect[0], this.tempRect[1]);
-            }
+            if (this.img) { toolCanvas.doAction(DrawImage, this.img, this.tempRect[0], this.tempRect[1]); }
             toolCanvas.doAction(DrawRect, ...this.tempRect, null, "#aaaaaa");
             toolCanvas.doAction(ClearMarquee, 8, ...this.tempRect, this.dashIndex);
         }
@@ -130,9 +130,9 @@ export default class Select extends Tool {
     _onFinished(canvas) {
         if (this.img) {
             canvas.doAction(DrawImage, this.img, this.tempRect[0], this.tempRect[1]);
+            EventBus.$emit('save-history');
         }
         this.dragging = false;
         this.newPos = this.startPos = this.rect = this.tempRect = this.img = null;
     }
-
 }

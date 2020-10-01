@@ -7,6 +7,7 @@ export default {
 			menu : [],
 			open: null,
 			zoom: 1,
+			toolInfo: null,
 		}
 	},
 
@@ -37,6 +38,7 @@ export default {
 
 		// status updates
 		EventBus.$on('zoom', (zoom) => this.zoom = zoom);
+		EventBus.$on('tool-info', (toolInfo) => this.toolInfo = toolInfo);
 	},
 
 	computed : {
@@ -61,7 +63,10 @@ export default {
 			</nav>
 			<div class="menubar-status">
 				<div class="status">
-					<span>Zoom: {{zoomLevel}}</span>
+					<span>Zoom: <b>{{zoomLevel}}</b></span>
+				</div>
+				<div v-if="toolInfo" v-for="(info, key) in toolInfo" class="status">
+					<span>{{key}}: <b>{{info}}</b></span>
 				</div>
 			</div>
 		</div>

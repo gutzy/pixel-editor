@@ -28,8 +28,8 @@ export default {
     template : `
     <div class="tools-panel">
         <div v-if="tools" class="tools">
-            <div :class="'tool'+(selectedTool==tool.name?' selected':'')" v-for="tool of tools">
-                <img :src="tool.icon" :title="tool.name" @mousedown="selectTool(tool)" />
+            <div :class="'tool'+(selectedTool==tool.name?' selected':'')" v-for="tool of tools" @mousedown="selectTool(tool)">
+                <img :src="tool.icon" :title="tool.name" />
             </div>
         </div>
     </div>

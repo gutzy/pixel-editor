@@ -42,6 +42,10 @@ export default class Input {
         if (e.key === this._lastKeyDown) {
             this._lastKeyDown = null;
         }
+
+        // keys to prevent normal execution of
+        if (["Alt"].indexOf(e.key) > -1) { e.preventDefault() }
+
     }
 
     onKeyDown(e) {
@@ -50,6 +54,9 @@ export default class Input {
         let combo = this.onKeyCombination(e);
         if (!combo) EventBus.$emit('input-key-down', e.key, this);
         this._lastKeyDown = e.key;
+
+        // keys to prevent normal execution of
+        if (["Alt"].indexOf(e.key) > -1) { e.preventDefault() }
     }
 
     onResize(e) {

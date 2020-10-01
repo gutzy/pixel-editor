@@ -17,6 +17,7 @@ import Undo from "../actions/file/Undo";
 import Redo from "../actions/file/Redo";
 import Redraw from "../actions/file/Redraw";
 import LoadContents from "../actions/file/LoadContents";
+import RunToolPersistence from "../actions/file/RunToolPersistence";
 
 const DEBUG = false;
 
@@ -38,6 +39,7 @@ export default class File {
 
         this.history = new History();
         this.toolCanvas = null;
+        this.selectionCanvas = null;
         this.toolStarted = false;
 
         this.activeLayer = -1;
@@ -92,7 +94,6 @@ export default class File {
         this.isActiveFile = true;
         EventBus.$emit("zoom", this.zoom);
         EventBus.$emit("reset-canvas", this.width, this.height);
-
     }
 
     blur() {
@@ -101,62 +102,6 @@ export default class File {
 
     saveHistory() {
         this.historyIndex = this.history.saveState(this.layers, this.historyIndex);
-    }
-
-    redraw(canvas) { this.doAction(Redraw, canvas) }
-
-    setTool(tool, ...params) {
-        if (this.selectedTool) {
-            this.selectedTool.selected = false;
-        }
-        this.selectedTool = tool;
-        tool.params = params;
-        tool.selected = true;
-        this.toolCanvas = null;
-        clearTimeout(this.persistenceTimeout);
-        this.doToolPersistence();
-    }
-
-    doToolPersistence() {
-        clearTimeout(this.persistenceTimeout);
-        const tool = this.selectedTool;
-        if (tool.persistent) {
-            if (this.toolCanvas) tool.persist(this.toolCanvas);
-            this.persistenceTimeout = setTimeout(this.doToolPersistence.bind(this), 50);
-            EventBus.$emit('redraw-canvas')
-        }
-    }
-
-    async startTool(x, y) {
-        if (DEBUG) console.log("Start tool on",x,y);
-        if (this.selectedTool && this.activeLayer > -1 && !this.layers[this.activeLayer].locked) {
-            this.toolStarted = true;
-            if (!this.selectedTool.persistent || !this.toolCanvas) this.toolCanvas = new Canvas(null, this.width, this.height);
-            await this.selectedTool.start(this, this.layers[this.activeLayer].canvas, x / this.zoom, y / this.zoom, this.toolCanvas);
-            if (this.selectedTool.persistent) this.selectedTool.persist(this.toolCanvas, true);
-        }
-    }
-
-    async stopTool(x, y) {
-        if (DEBUG) console.log("Stop tool on",x,y);
-        if (this.selectedTool && this.activeLayer > -1 && !this.layers[this.activeLayer].locked && this.toolStarted) {
-            this.toolStarted = false;
-            await this.selectedTool.stop(this, this.layers[this.activeLayer].canvas, x / this.zoom, y / this.zoom, this.toolCanvas);
-
-            if (this.selectedTool.persistent) { this.selectedTool.persist(this.toolCanvas, true); }
-            else { this.toolCanvas = null; }
-
-            EventBus.$emit('update-layers', this.layers);
-            if (this.selectedTool.save) EventBus.$emit('save-history');
-        }
-    }
-
-    async useTool(x, y) {
-        if (DEBUG) console.log("Use tool on",x,y);
-        if (this.selectedTool && this.activeLayer > -1 && !this.layers[this.activeLayer].locked) {
-            await this.selectedTool.use(this, this.layers[this.activeLayer].canvas, x / this.zoom, y / this.zoom, this.toolCanvas);
-            if (this.selectedTool.persist) this.selectedTool.persist(this.toolCanvas, true);
-        }
     }
 
     resetLayers() {
