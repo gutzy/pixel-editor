@@ -19,6 +19,10 @@ export default class Redraw extends FileAction {
 			}
 		}
 
+		if (file.selectionCanvas) {
+			canvas.doAction(DrawImage, file.selectionCanvas.el, r[0], r[1], file.zoom);
+		}
+
 		if (file.toolCanvas) {
 			canvas.doAction(DrawImage, file.toolCanvas.el, r[0], r[1], file.zoom);
 		}

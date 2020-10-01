@@ -2,7 +2,6 @@ import {FileAction} from "./abstracts/Actions";
 import EventBus from "../utils/EventBus";
 import History from "./History";
 import {comboIs} from "../utils/InputUtils";
-import Canvas from "./Canvas";
 import SelectColor from "../actions/file/SelectColor";
 import SelectLayer from "../actions/file/SelectLayer";
 import AddLayer from "../actions/file/AddLayer";
@@ -15,9 +14,7 @@ import ToggleLayerVisibility from "../actions/file/ToggleLayerVisibility";
 import ToggleLayerLock from "../actions/file/ToggleLayerLock";
 import Undo from "../actions/file/Undo";
 import Redo from "../actions/file/Redo";
-import Redraw from "../actions/file/Redraw";
 import LoadContents from "../actions/file/LoadContents";
-import RunToolPersistence from "../actions/file/RunToolPersistence";
 
 const DEBUG = false;
 
@@ -39,6 +36,7 @@ export default class File {
 
         this.history = new History();
         this.toolCanvas = null;
+        this.selectionCanvas = null;
 
         this.activeLayer = -1;
         this.selectedTool = null;
