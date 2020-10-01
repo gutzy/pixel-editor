@@ -8,6 +8,8 @@ import GetRectImage from "../actions/canvas/GetRectImage";
 import DrawImage from "../actions/canvas/DrawImage";
 import Canvas from "../classes/Canvas";
 import ClearMarquee from "../actions/canvas/ClearMarquee";
+import ImgDataToCanvas from "../actions/canvas/ImgDataToCanvas";
+import ClearRect from "../actions/canvas/ClearRect";
 
 export default class Select extends Tool {
 
@@ -33,27 +35,50 @@ export default class Select extends Tool {
 
     onKeyDown(key, input) {
         if (!this.selected) return;
-        if (!this.dragging) {
+        if (!this.moving) {
             this.mode = !!input.isKeyDown('Alt') ? 'copy':'cut';
-            this.lockAxis = !!input.isKeyDown('shift');
         }
+        this.lockAxis = !!input.isKeyDown('Shift');
     }
 
     start(file, canvas, x, y, toolCanvas) {
-        this.used = false;
-        if (this.rect && isXYinRect(this.rect, x, y)) {
-            this.dragging = {x, y};
+        this.finished = true;
+        this.moving = true;
+        this.axisOffset = 0;
+
+        if (this.rect) {
+            if (isXYinRect(this.rect, x, y)) {
+                this.dragging = {x, y};
+                if (!this.img) {
+                    this.img = canvas.doAction(ImgDataToCanvas, canvas.doAction(GetRectImage, ...this.rect));
+                    canvas.doAction(ClearRect, ...this.rect);
+                }
+                if (this.mode === "copy") {
+                    const start = {x: this.rect[0], y: this.rect[1]}, img = this.img,
+                        end = {x: this.rect[0]+this.rect[2], y: this.rect[1]+this.rect[3]};
+
+                    if (img) {
+                        this._onFinished(canvas);
+                        this.img = img;
+                    }
+                    this.dragging = {x, y};
+                    this.startPos = start;
+                    this.newPos = end;
+                }
+            }
+            else {
+                this._onFinished(canvas);
+                this.startPos = {x, y};
+            }
         } else {
             this.dragging = false;
-            this.rect = null;
+            this.rect = this.newPos = null;
             this.startPos = {x, y};
-            this.newPos = null;
         }
-
     }
 
     stop(file, canvas, x, y, toolCanvas) {
-
+        this.moving = false;
         if (this.startPos && this.newPos) {
             this.rect = [...this.tempRect];
             this.startPos = {x: this.rect[0], y: this.rect[1]};
@@ -61,17 +86,26 @@ export default class Select extends Tool {
             EventBus.$emit('select-area', this.rect);
         }
 
-        if (!this.used) {
-            this.dragging = false;
-            this.newPos = this.startPos = this.rect = this.tempRect = null;
-        }
+        if (this.finished) { this._onFinished(canvas); }
     }
 
     use(file, canvas, x, y, toolCanvas) {
-        this.used = true;
+        this.finished = false;
         if (this.dragging) {
             const offset = {x: x-this.dragging.x, y: y-this.dragging.y};
-            this.tempRect = rectApplyOffset(getRect(this.startPos, this.newPos), offset.x, offset.y);
+            if (this.lockAxis) {
+                if (this.axisOffset >= 3) { // try 3 iterations of generating offset before committing to an axis lock
+                    if (!this.axis) this.axis = (Math.abs(offset.x) > Math.abs(offset.y)) ? 1:-1;
+                }
+                else {
+                    this.axis = 0;
+                    this.axisOffset++;
+                }
+            } else {
+                this.axis = 0;
+            }
+            console.log(this.axis, this.lockAxis);
+            this.tempRect = rectApplyOffset(getRect(this.startPos, this.newPos), this.axis===-1? 0 : offset.x, this.axis===1? 0 : offset.y);
         }
         else {
             this.newPos = {x, y};
@@ -85,12 +119,20 @@ export default class Select extends Tool {
 
             if (!hard) this.dashIndex++;
 
-            if (this.img && this.dragOffset) {
-                toolCanvas.doAction(DrawImage, this.img, this.startPos.x - this.dragOffset.x, this.startPos.y - this.dragOffset.y);
+            if (this.img) {
+                toolCanvas.doAction(DrawImage, this.img, this.tempRect[0], this.tempRect[1]);
             }
             toolCanvas.doAction(DrawRect, ...this.tempRect, null, "#aaaaaa");
             toolCanvas.doAction(ClearMarquee, 8, ...this.tempRect, this.dashIndex);
         }
+    }
+
+    _onFinished(canvas) {
+        if (this.img) {
+            canvas.doAction(DrawImage, this.img, this.tempRect[0], this.tempRect[1]);
+        }
+        this.dragging = false;
+        this.newPos = this.startPos = this.rect = this.tempRect = this.img = null;
     }
 
 }
