@@ -11,6 +11,7 @@ export default class EyeDropper extends Tool {
     constructor() {
         super();
 
+        this.id = 'eyedropper';
         this.name = "Eyedropper";
         this.icon = EyedropperIcon;
         this.cursor = EyedropperCursor;

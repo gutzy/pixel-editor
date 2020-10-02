@@ -8,6 +8,7 @@ export default class Rectangle extends Tool {
     constructor() {
         super();
 
+        this.id = "rectangle";
         this.name = "Rectangle Tool";
         this.icon = RectangleIcon;
         this.cursor = "crosshair";

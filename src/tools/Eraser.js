@@ -8,8 +8,10 @@ export default class Eraser extends Tool {
     constructor() {
         super();
 
+        this.id = 'eraser';
         this.name = "Eraser Tool";
         this.icon = EraserIcon;
+        this.cursor = 'crosshair';
         this.hotkey = 'e';
         this.save = true;
     }

@@ -7,8 +7,9 @@ import CreateSelectionOverlay from "./CreateSelectionOverlay";
 
 export default class SelectArea extends FileAction {
 	do(file, fileProp,x, y, width, height) {
-		if (width===0||height===0) {
-			file.selectionCanvas = null;
+		if (width===0||height===0|| typeof width === "undefined") {
+		    console.log("resseeeet")
+			file[fileProp] = null;
 			return;
 		}
 		file[fileProp] = new Canvas(null, file.width, file.height);

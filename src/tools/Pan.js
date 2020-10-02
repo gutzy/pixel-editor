@@ -11,6 +11,7 @@ export default class Pan extends Tool {
 	constructor() {
 		super();
 
+		this.id = "pan";
 		this.name = "Pan";
 		this.icon = PanIcon;
 		this.cursor = PanCursor;

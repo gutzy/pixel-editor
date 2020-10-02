@@ -9,6 +9,8 @@ export default class PaintBucket extends Tool {
     constructor() {
         super();
 
+
+        this.id = "paint-bucket";
         this.name = "Paint Bucket";
         this.icon = PaintBucketIcon;
         this.cursor = PaintBucketCursor;

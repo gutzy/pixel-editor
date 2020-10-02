@@ -10,6 +10,7 @@ export default class Pencil extends Tool {
     constructor() {
         super();
 
+        this.id = "pencil";
         this.name = "Pencil Tool";
         this.icon = PencilIcon;
         this.cursor = 'crosshair';

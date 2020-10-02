@@ -18,6 +18,7 @@ export default class Select extends Tool {
     constructor() {
         super();
 
+        this.id = "select";
         this.name = "Select Tool";
         this.icon = SelectIcon;
         this.cursor = 'crosshair';
@@ -67,6 +68,7 @@ export default class Select extends Tool {
                     this.rectMode = 'shrink';
                 } else { // default behavior: reset
                     this._onFinished(canvas, file);
+                    console.log("res1");
                     EventBus.$emit('select-area', 'selectionCanvas', [0,0,0,0]);
                 }
                 this.startPos = {x, y};
@@ -75,6 +77,7 @@ export default class Select extends Tool {
             this.dragging = false;
             this.rect = this.newPos = null;
             this.startPos = {x, y};
+            console.log("res1");
             EventBus.$emit('select-area', 'selectionCanvas', [0,0,0,0]);
         }
     }

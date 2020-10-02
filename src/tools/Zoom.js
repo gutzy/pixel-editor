@@ -16,6 +16,7 @@ export default class Zoom extends Tool {
 	constructor() {
 		super();
 
+		this.id = "zoom";
 		this.name = "Zoom";
 		this.icon = ZoomIcon;
 		this.cursor = ZoomInCursor;

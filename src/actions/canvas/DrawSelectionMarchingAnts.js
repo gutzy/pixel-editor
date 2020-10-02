@@ -28,36 +28,11 @@ export default class DrawSelectionMarchingAnts extends CanvasAction {
             let x = (i/4) % w, y = Math.floor((i/4)/w);
 
             if (type(i) > 0) {
-                switch (type(i)) {
-                    case 1: //left
-                        if (did[type(i)] <= size) {
-                            if (did[type(i)] <= size / 2) target.doAction(DrawRect,x,y,1,1,'#000000');
-                            did[type(i)]++;
-                        }
-                        else did[type(i)] = 0;
-                        break;
-                    case 2: // top
-                        if (did[type(i)] <= size) {
-                            if (did[type(i)] <= size / 2) target.doAction(DrawRect,x,y,1,1,'#000000');
-                            did[type(i)]++;
-                        }
-                        else did[type(i)] = 0;
-                        break;
-                    case 3: // right
-                        if (did[type(i)] <= size) {
-                            if (did[type(i)] <= size / 2) target.doAction(DrawRect,x,y,1,1,'#000000');
-                            did[type(i)]++;
-                        }
-                        else did[type(i)] = 0;
-                        break;
-                    case 4: // bottom
-                        if (did[type(i)] <= size) {
-                            if (did[type(i)] <= size / 2) target.doAction(DrawRect,x,y,1,1,'#000000');
-                            did[type(i)]++;
-                        }
-                        else did[type(i)] = 0;
-                        break;
+                if (did[type(i)] <= size) {
+                    if (did[type(i)] <= size / 2) target.doAction(DrawRect,x,y,1,1,'#aaaaaa');
+                    did[type(i)]++;
                 }
+                else did[type(i)] = 0;
             }
         }
     }
