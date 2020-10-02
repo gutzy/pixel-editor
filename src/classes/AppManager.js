@@ -52,7 +52,7 @@ class _AppManager {
 
     startLoop() {
         clearTimeout(this.persistentLoop);
-        this.persistentLoop = setTimeout(() => this.loop(), 50);
+        this.persistentLoop = setTimeout(() => this.loop(), 25);
     }
 
     loop() {
@@ -63,7 +63,7 @@ class _AppManager {
 
         ++this.loopCount;
 
-        this.persistentLoop = setTimeout(() => this.loop(), 50);
+        this.persistentLoop = setTimeout(() => this.loop(), 25);
     }
 
     bindListeners() {

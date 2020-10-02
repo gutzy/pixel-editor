@@ -26,20 +26,24 @@ export default class Redraw extends FileAction {
 		}
 
 		if (file.selectionCanvas) {
-		    file.doAction(CreateSelectionOverlay);
-		    const c = new Canvas(null, file.width, file.height);
-		    c.doAction(DrawSelectionBorders, file.selectionOverlay);
-		    const d = new Canvas(null, file.width, file.height);
-		    d.doAction(DrawSelectionMarchingAnts, c, offset, 8);
+			const d = new Canvas(null, file.width, file.height);
+			d.doAction(DrawSelectionMarchingAnts, file.coloredSelectionData, offset, 8);
 
 			let x = r[0], y = r[1];
 			if (file.selectionOffset) {
+				file.lastSelectionOffset = null;
 				x += file.selectionOffset.x*file.zoom; y += file.selectionOffset.y*file.zoom;
 			}
+
 			if (file.cutSelection) {
 				const first = file.selectionCanvas.doAction(FirstOpaqueXY), dx = first.x-file.cutOffset.x, dy = first.y-file.cutOffset.y;
 				canvas.doAction(DrawImage, file.cutSelection.el, x+dx*file.zoom, y+dy*file.zoom, file.zoom);
 			}
+
+			if (file.lastSelectionOffset) {
+				x += file.lastSelectionOffset.x; y+= file.lastSelectionOffset.y;
+			}
+
 			canvas.doAction(DrawImage, d.el, x, y, file.zoom);
 
 		}

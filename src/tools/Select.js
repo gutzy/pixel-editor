@@ -55,7 +55,8 @@ export default class Select extends Tool {
         this.rectMode = 'reset';
 
         if (this.rect) { // a selection is defined
-            if (file.selectionCanvas.doAction(IsOpaque, x, y)) { // inside current selection
+            file.lastSelectionOffset = null;
+            if (file.selectionCanvas && file.selectionCanvas.doAction(IsOpaque, x, y)) { // inside current selection
                 this.dragging = {x, y};
                 if (this.mode === "copy") { this._doCopy(canvas, file); }
                 else if (!this.cut) { this._doCut(canvas, file) }
@@ -68,7 +69,6 @@ export default class Select extends Tool {
                     this.rectMode = 'shrink';
                 } else { // default behavior: reset
                     this._onFinished(canvas, file);
-                    console.log("res1");
                     EventBus.$emit('select-area', 'selectionCanvas', [0,0,0,0]);
                 }
                 this.startPos = {x, y};
@@ -77,7 +77,6 @@ export default class Select extends Tool {
             this.dragging = false;
             this.rect = this.newPos = null;
             this.startPos = {x, y};
-            console.log("res1");
             EventBus.$emit('select-area', 'selectionCanvas', [0,0,0,0]);
         }
     }
@@ -115,6 +114,7 @@ export default class Select extends Tool {
 
             this._detectAxis(offset);
             file.selectionOffset = offset;
+            file.lastSelectionOffset = null;
         }
         else {
             this.newPos = {x, y};

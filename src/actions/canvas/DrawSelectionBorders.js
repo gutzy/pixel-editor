@@ -1,6 +1,7 @@
 import {CanvasAction} from "../../classes/abstracts/Actions";
 import Canvas from "../../classes/Canvas";
 import DrawRect from "./DrawRect";
+import CachedData from "./CachedData";
 
 const borderColors = ['#ff0000','#00ff00','#0000ff','#ff00ff'];
 
@@ -15,7 +16,7 @@ export default class DrawSelectionBorders extends CanvasAction {
             d = (i) => i+w*4,
             hard =(i) => data[i+3] > 200;
 
-        const data = source.ctx.getImageData(0, 0, w, h).data;
+        const data = source.doAction(CachedData, w, h, true).data;
         for (let i = 0; i < data.length; i+= 4) {
             let x = (i/4) % w, y = Math.floor((i/4)/w),
                 b = 0; // border types: 1 = left, 2 = top, 3 = right, 4 = bottom

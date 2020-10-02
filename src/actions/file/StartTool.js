@@ -2,6 +2,7 @@ import {FileAction} from "../../classes/abstracts/Actions";
 import Canvas from "../../classes/Canvas";
 import SelectionMasking from "./SelectionMasking";
 import DrawImage from "../canvas/DrawImage";
+import CreateSelectionOverlay from "./CreateSelectionOverlay";
 
 export default class StartTool extends FileAction {
     async do(file, x, y) {
@@ -14,6 +15,8 @@ export default class StartTool extends FileAction {
                 file.toolSelectionCanvas = new Canvas(null, canvas.width, canvas.height);
                 file.toolSelectionCanvas.doAction(DrawImage, canvas.el, 0, 0);
                 editCanvas = file.toolSelectionCanvas;
+            } else if (file.selectionCanvas) {
+                file.doAction(CreateSelectionOverlay);
             }
 
             if (!file.selectedTool.persistent || !file.toolCanvas) file.toolCanvas = new Canvas(null, file.width, file.height);

@@ -8,7 +8,6 @@ import CreateSelectionOverlay from "./CreateSelectionOverlay";
 
 export default class SelectAreaSolidify extends FileAction {
 	do(file) {
-		console.log("Solidify......");
 
 		if (!file.selectionOverlay) return;
 
