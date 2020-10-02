@@ -9,10 +9,11 @@ export default class Tool {
         this.selected = false;
     }
 
-    start() { throw new Error("Tool start action not implemented") }
-    stop() { throw new Error("Tool stop action not implemented") }
-    use() { throw new Error("Tool use action not implemented") }
-    select() { }
+    start(file, canvas, x, y, toolCanvas) { throw new Error("Tool start action not implemented") }
+    stop(file, canvas, x, y, toolCanvas) { throw new Error("Tool stop action not implemented") }
+    use(file, canvas, x, y, toolCanvas) { throw new Error("Tool use action not implemented") }
+    select(file, canvas, x, y, toolCanvas) { }
+    hover(file, canvas, x, y, toolCanvas) { }
 
     doAction(action, ...params) {
 

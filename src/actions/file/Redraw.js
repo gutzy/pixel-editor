@@ -8,6 +8,7 @@ import CreateSelectionOverlay from "./CreateSelectionOverlay";
 import Canvas from "../../classes/Canvas";
 import DrawSelectionBorders from "../canvas/DrawSelectionBorders";
 import DrawSelectionMarchingAnts from "../canvas/DrawSelectionMarchingAnts";
+import FirstOpaqueXY from "../canvas/FirstOpaqueXY";
 
 export default class Redraw extends FileAction {
 
@@ -32,7 +33,13 @@ export default class Redraw extends FileAction {
 		    d.doAction(DrawSelectionMarchingAnts, c, offset, 8);
 
 			let x = r[0], y = r[1];
-			if (file.selectionOffset) { x += file.selectionOffset.x*file.zoom; y += file.selectionOffset.y*file.zoom}
+			if (file.selectionOffset) {
+				x += file.selectionOffset.x*file.zoom; y += file.selectionOffset.y*file.zoom;
+			}
+			if (file.cutSelection) {
+				const first = file.selectionCanvas.doAction(FirstOpaqueXY), dx = first.x-file.cutOffset.x, dy = first.y-file.cutOffset.y;
+				canvas.doAction(DrawImage, file.cutSelection.el, x+dx*file.zoom, y+dy*file.zoom, file.zoom);
+			}
 			canvas.doAction(DrawImage, d.el, x, y, file.zoom);
 
 		}

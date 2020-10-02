@@ -27,16 +27,25 @@ export default class Select extends Tool {
 
         this.doAction(WatchKey, 'Alt', isAltDown => {
             if (!this.moving) this.mode = isAltDown ? 'copy':'cut';
-            this.doAction(ToolInfo,{"Mode" : this.mode, "Axis": this.lockAxis?"Locked":"Both"});
+            this._resetInfo();
         });
         this.doAction(WatchKey, 'Shift', isShiftDown => {
             this.lockAxis = isShiftDown;
-            this.doAction(ToolInfo,{"Mode" : this.mode, "Axis": this.lockAxis?"Locked":"Both"});
+            this._resetInfo();
         });
     }
 
     select() {
-        this.doAction(ToolInfo,{"Mode" : this.mode, "Axis": this.lockAxis?"Locked":"Both"});
+        this._resetInfo();
+    }
+
+    hover(file,canvas,x,y,toolCanvas) {
+        if (file.selectionCanvas && file.selectionCanvas.doAction(IsOpaque, x, y)) { // inside current selection
+            this.context = 'object';
+        } else {
+            this.context = 'selection';
+        }
+        this._resetInfo();
     }
 
     start(file, canvas, x, y, toolCanvas) {
@@ -72,6 +81,7 @@ export default class Select extends Tool {
 
     stop(file, canvas, x, y, toolCanvas) {
         this.moving = false;
+
         EventBus.$emit('select-area-solidify');
         if (this.rectMode !== 'reset') {
             this.rectMode = 'reset';
@@ -94,9 +104,14 @@ export default class Select extends Tool {
         this.finished = false;
         if (this.dragging) {
             const offset = {x: x-this.dragging.x, y: y-this.dragging.y};
+
+            if (this.lockAxis && this.axis) {
+                if (this.axis === 1) offset.y = 0;
+                else if (this.axis === -1) offset.x = 0;
+            }
+
             this._detectAxis(offset);
             file.selectionOffset = offset;
-            this.tempRect = rectApplyOffset(getRect(this.startPos, this.newPos), this.axis===-1? 0 : offset.x, this.axis===1? 0 : offset.y);
         }
         else {
             this.newPos = {x, y};
@@ -112,7 +127,7 @@ export default class Select extends Tool {
     }
 
     _onFinished(canvas, file) {
-        if (this.cut) { this._applyContents(canvas, file); }
+        if (this.cut) { this._applyContents(canvas, file); this._clearCut(file); }
         this.dragging = false;
         this.newPos = this.startPos = this.rect = this.tempRect = this.img = this.cut = null;
     }
@@ -128,8 +143,8 @@ export default class Select extends Tool {
     }
 
     _doCopy(canvas, file) {
-        if (this.cut) this._applyContents(canvas, file); // an image is already there, stamp and move on
-        this._initCutImage(canvas, file); // otherwise, cut the image
+        if (!this.cut) this._initCutImage(canvas, file); // cut the image
+        else this._applyContents(canvas, file); // an image is already there, stamp and move on
     }
 
     _doCut(canvas, file) {
@@ -139,13 +154,32 @@ export default class Select extends Tool {
 
     _applyContents(canvas, file) {
         const first = file.selectionCanvas.doAction(FirstOpaqueXY);
-        canvas.doAction(DrawImage, this.cut.el, first.x-this.cutOffset.x, first.y-this.cutOffset.y);
-        this.cut = null;
+        canvas.doAction(DrawImage, this.cut.el, first.x-file.cutOffset.x, first.y-file.cutOffset.y);
         EventBus.$emit('save-history');
+    }
+
+    _clearCut(file) {
+        this.cut = null;
+        file.cutSelection = null;
     }
 
     _initCutImage(canvas, file) {
         this.cut = canvas.doAction(ImgDataToCanvas, canvas.doAction(GetMaskImage, file.selectionCanvas.el));
-        this.cutOffset = this.cut.doAction(FirstOpaqueXY);
+        file.cutSelection = this.cut;
+        file.cutOffset = file.selectionCanvas.doAction(FirstOpaqueXY);
+    }
+
+    _resetInfo() {
+        if (this.context === "selection") {
+            this.doAction(ToolInfo,{"Selection Mode" : this.mode==='copy'?"Shrink":(this.lockAxis?"Expand":"Reset")});
+        }
+        else {
+            if (this.lockAxis && this.axis) {
+                this.doAction(ToolInfo,{"Mode" : this.mode, "Axis": this.axis?(this.axis>0?"X":"Y"):"Locked"});
+            }
+            else {
+                this.doAction(ToolInfo,{"Mode" : this.mode, "Axis": this.lockAxis?"Locked":"Both"});
+            }
+        }
     }
 }

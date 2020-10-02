@@ -12,6 +12,7 @@ import StopTool from "../actions/file/StopTool";
 import UseTool from "../actions/file/UseTool";
 import SetTool from "../actions/file/SetTool";
 import Redraw from "../actions/file/Redraw";
+import HoverTool from "../actions/file/HoverTool";
 
 class _AppManager {
 
@@ -116,6 +117,7 @@ class _AppManager {
     async onMouseMove(x,y) {
         const r = getCenterRect(this.canvas.el, this.file.width,this.file.height, this.file.zoom, this.file.dragOffset);
         let pos = screenToRectXY(r, x, y);
+        this.file.doAction(HoverTool,pos.x, pos.y);
         if (this.input.isMouseDown() && this.file && (isXYinRect(r,x,y) || (this.file.selectedTool && this.file.selectedTool.useOutside))) {
             if (this.file.selectedTool && this.file.selectedTool.useOutside) await this.file.doAction(UseTool, x, y);
             else await this.file.doAction(UseTool,pos.x, pos.y);
