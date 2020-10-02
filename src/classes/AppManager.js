@@ -21,12 +21,16 @@ class _AppManager {
         this.file = null;
         this.tools = null;
         this.menu = null;
+
+        this.persistentLoop = null;
+        this.loopCount = 0;
     }
 
     init(canvasEl) {
         this.loadAppConfig();
         this.bindElements(canvasEl);
         this.bindListeners();
+        this.startLoop();
 
         const file = this.doAction(NewFile,320, 240, 'advanced', 'Funky test', ["#ff0000", "#ffe21f", "#46ca35", "#ffffff", "#000000"]);
 
@@ -43,6 +47,22 @@ class _AppManager {
 
     bindElements(canvasEl) {
         this.canvas = new MainCanvas(canvasEl);
+    }
+
+    startLoop() {
+        clearTimeout(this.persistentLoop);
+        this.persistentLoop = setTimeout(() => this.loop(), 50);
+    }
+
+    loop() {
+        clearTimeout(this.persistentLoop);
+        EventBus.$emit('loop', this.loopCount);
+
+        if (this.file && this.file.selectionCanvas) this.onRedrawCanvas();
+
+        ++this.loopCount;
+
+        this.persistentLoop = setTimeout(() => this.loop(), 50);
     }
 
     bindListeners() {
@@ -140,7 +160,7 @@ class _AppManager {
 
     onRedrawCanvas() {
         if (!this.file) return false;
-        this.file.doAction(Redraw, this.canvas);
+        this.file.doAction(Redraw, this.canvas, this.loopCount);
     }
 
     onSelectTool(toolName, ...params) {

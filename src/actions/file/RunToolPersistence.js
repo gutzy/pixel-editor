@@ -7,9 +7,13 @@ export default class RunToolPersistence extends FileAction {
         clearTimeout(file.persistenceTimeout);
         const tool = file.selectedTool;
         if (tool.persistent) {
-            if (file.toolCanvas) tool.persist(file.toolCanvas);
-            file.persistenceTimeout = setTimeout(() => this.do(file), 50);
-            EventBus.$emit('redraw-canvas')
+            this.subscribeToLoop(tool)
         }
+    }
+
+    subscribeToLoop(tool) {
+        EventBus.$on('loop', () => {
+            if (file.toolCanvas) tool.persist(file.toolCanvas);
+        });
     }
 }

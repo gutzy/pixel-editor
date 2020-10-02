@@ -47,8 +47,8 @@ export default class Select extends Tool {
         if (this.rect) { // a selection is defined
             if (file.selectionCanvas.doAction(IsOpaque, x, y)) { // inside current selection
                 this.dragging = {x, y};
-                if (this.mode === "copy") { this._doCopy(canvas, file, this.rect); }
-                else if (!this.cut) { this._doCut(canvas, file, x, y) }
+                if (this.mode === "copy") { this._doCopy(canvas, file); }
+                else if (!this.cut) { this._doCut(canvas, file) }
             }
             else { // outside selection
                 this.dragging = false;
@@ -88,7 +88,6 @@ export default class Select extends Tool {
             EventBus.$emit('select-area', 'selectionCanvas', ...this.rect);
         }
 
-        if (this.finished) { this._onFinished(canvas, file); }
     }
 
     use(file, canvas, x, y, toolCanvas) {
@@ -113,11 +112,7 @@ export default class Select extends Tool {
     }
 
     _onFinished(canvas, file) {
-        if (this.cut) {
-            const first = file.selectionCanvas.doAction(FirstOpaqueXY);
-            canvas.doAction(DrawImage, this.cut.el, first.x-this.cutOffset.x, first.y-this.cutOffset.y);
-            EventBus.$emit('save-history');
-        }
+        if (this.cut) { this._applyContents(canvas, file); }
         this.dragging = false;
         this.newPos = this.startPos = this.rect = this.tempRect = this.img = this.cut = null;
     }
@@ -132,19 +127,25 @@ export default class Select extends Tool {
         } else { this.axis = 0; } // no lock, no axis.
     }
 
-    _doCopy(canvas, file, rect) {
-        if (this.cut) {
-            canvas.doAction(DrawImage, this.cut.el, this.rect[0], this.rect[1]);
-            EventBus.$emit('save-history');
-        }
-        else {
-            this.cut = canvas.doAction(ImgDataToCanvas, canvas.doAction(GetRectImage, ...rect));
-        }
+    _doCopy(canvas, file) {
+        if (this.cut) this._applyContents(canvas, file); // an image is already there, stamp and move on
+        this._initCutImage(canvas, file); // otherwise, cut the image
     }
 
-    _doCut(canvas, file, x, y) {
+    _doCut(canvas, file) {
+       this._initCutImage(canvas, file);
+        canvas.doAction(CutImage, file.selectionCanvas.el); // remove the image from the layer
+    }
+
+    _applyContents(canvas, file) {
+        const first = file.selectionCanvas.doAction(FirstOpaqueXY);
+        canvas.doAction(DrawImage, this.cut.el, first.x-this.cutOffset.x, first.y-this.cutOffset.y);
+        this.cut = null;
+        EventBus.$emit('save-history');
+    }
+
+    _initCutImage(canvas, file) {
         this.cut = canvas.doAction(ImgDataToCanvas, canvas.doAction(GetMaskImage, file.selectionCanvas.el));
         this.cutOffset = this.cut.doAction(FirstOpaqueXY);
-        canvas.doAction(CutImage, file.selectionCanvas.el);
     }
 }
