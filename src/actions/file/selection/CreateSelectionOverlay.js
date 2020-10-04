@@ -1,12 +1,11 @@
-import {FileAction} from "../../classes/abstracts/Actions";
-import EventBus from "../../utils/EventBus";
-import Canvas from "../../classes/Canvas";
-import ClearCanvas from "../canvas/ClearCanvas";
-import DrawImage from "../canvas/DrawImage";
-import DrawRect from "../canvas/DrawRect";
-import ClearRect from "../canvas/ClearRect";
-import DrawSelectionBorders from "../canvas/DrawSelectionBorders";
-import GetRectImage from "../canvas/GetRectImage";
+import {FileAction} from "../../../classes/abstracts/Actions";
+import Canvas from "../../../classes/Canvas";
+import ClearCanvas from "../../canvas/ClearCanvas";
+import DrawImage from "../../canvas/DrawImage";
+import DrawRect from "../../canvas/DrawRect";
+import ClearRect from "../../canvas/ClearRect";
+import DrawSelectionBorders from "../../canvas/DrawSelectionBorders";
+import GetRectImage from "../../canvas/GetRectImage";
 
 export default class CreateSelectionOverlay extends FileAction {
     do(file) {

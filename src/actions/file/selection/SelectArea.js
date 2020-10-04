@@ -1,8 +1,8 @@
-import {FileAction} from "../../classes/abstracts/Actions";
-import EventBus from "../../utils/EventBus";
-import Canvas from "../../classes/Canvas";
-import FillArea from "../canvas/FillArea";
-import DrawRect from "../canvas/DrawRect";
+import {FileAction} from "../../../classes/abstracts/Actions";
+import EventBus from "../../../utils/EventBus";
+import Canvas from "../../../classes/Canvas";
+import FillArea from "../../canvas/FillArea";
+import DrawRect from "../../canvas/DrawRect";
 import CreateSelectionOverlay from "./CreateSelectionOverlay";
 
 export default class SelectArea extends FileAction {

@@ -1,6 +1,6 @@
-import {FileAction} from "../../classes/abstracts/Actions";
-import Canvas from "../../classes/Canvas";
-import EventBus from "../../utils/EventBus";
+import {FileAction} from "../../../classes/abstracts/Actions";
+import Canvas from "../../../classes/Canvas";
+import EventBus from "../../../utils/EventBus";
 
 export default class HoverTool extends FileAction {
     do(file, x ,y) {

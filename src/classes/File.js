@@ -2,21 +2,21 @@ import {FileAction} from "./abstracts/Actions";
 import EventBus from "../utils/EventBus";
 import History from "./History";
 import {comboIs} from "../utils/InputUtils";
-import SelectColor from "../actions/file/SelectColor";
-import SelectLayer from "../actions/file/SelectLayer";
-import AddLayer from "../actions/file/AddLayer";
-import DeleteLayer from "../actions/file/DeleteLayer";
-import RenameLayer from "../actions/file/RenameLayer";
-import MergeLayerBelow from "../actions/file/MergeLayerBelow";
-import FlattenVisibleLayers from "../actions/file/FlattenVisibleLayers";
-import FlattenAllLayers from "../actions/file/FlattenAllLayers";
-import ToggleLayerVisibility from "../actions/file/ToggleLayerVisibility";
-import ToggleLayerLock from "../actions/file/ToggleLayerLock";
-import Undo from "../actions/file/Undo";
-import Redo from "../actions/file/Redo";
-import LoadContents from "../actions/file/LoadContents";
-import SelectArea from "../actions/file/SelectArea";
-import SelectAreaSolidify from "../actions/file/SelectAreaSolidify";
+import SelectColor from "../actions/file/selection/SelectColor";
+import SelectLayer from "../actions/file/layers/SelectLayer";
+import AddLayer from "../actions/file/layers/AddLayer";
+import DeleteLayer from "../actions/file/layers/DeleteLayer";
+import RenameLayer from "../actions/file/layers/RenameLayer";
+import MergeLayerBelow from "../actions/file/layers/MergeLayerBelow";
+import FlattenVisibleLayers from "../actions/file/layers/FlattenVisibleLayers";
+import FlattenAllLayers from "../actions/file/layers/FlattenAllLayers";
+import ToggleLayerVisibility from "../actions/file/layers/ToggleLayerVisibility";
+import ToggleLayerLock from "../actions/file/layers/ToggleLayerLock";
+import Undo from "../actions/file/history/Undo";
+import Redo from "../actions/file/history/Redo";
+import LoadContents from "../actions/file/history/LoadContents";
+import SelectArea from "../actions/file/selection/SelectArea";
+import SelectAreaSolidify from "../actions/file/selection/SelectAreaSolidify";
 
 const DEBUG = false;
 
@@ -39,6 +39,7 @@ export default class File {
         this.history = new History();
         this.toolCanvas = null;
         this.selectionCanvas = null;
+        this.toolSelectionCanvas = null;
 
         this.activeLayer = -1;
         this.selectedTool = null;
@@ -103,7 +104,7 @@ export default class File {
     }
 
     saveHistory() {
-        this.historyIndex = this.history.saveState(this.layers, this.historyIndex);
+        this.historyIndex = this.history.saveState(this.layers, this.activeLayer, this.historyIndex, this.toolSelectionCanvas);
     }
 
     resetLayers() {

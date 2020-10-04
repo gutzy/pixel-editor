@@ -7,12 +7,12 @@ import Menu from "../config/Menu";
 import {AppAction} from "./abstracts/Actions";
 import NewFile from "../actions/app/NewFile";
 import SetToolCursor from "../actions/app/SetToolCursor";
-import StartTool from "../actions/file/StartTool";
-import StopTool from "../actions/file/StopTool";
-import UseTool from "../actions/file/UseTool";
-import SetTool from "../actions/file/SetTool";
+import StartTool from "../actions/file/tools/StartTool";
+import StopTool from "../actions/file/tools/StopTool";
+import UseTool from "../actions/file/tools/UseTool";
+import SetTool from "../actions/file/tools/SetTool";
 import Redraw from "../actions/file/Redraw";
-import HoverTool from "../actions/file/HoverTool";
+import HoverTool from "../actions/file/tools/HoverTool";
 
 class _AppManager {
 

@@ -1,12 +1,12 @@
-import Undo from "../actions/file/Undo";
-import Redo from "../actions/file/Redo";
-import CanUndo from "../actions/file/CanUndo";
-import CanRedo from "../actions/file/CanRedo";
-import AddLayer from "../actions/file/AddLayer";
-import DeleteLayer from "../actions/file/DeleteLayer";
-import MergeLayerBelow from "../actions/file/MergeLayerBelow";
-import FlattenAllLayers from "../actions/file/FlattenAllLayers";
-import FlattenVisibleLayers from "../actions/file/FlattenVisibleLayers";
+import Undo from "../actions/file/history/Undo";
+import Redo from "../actions/file/history/Redo";
+import CanUndo from "../actions/file/history/CanUndo";
+import CanRedo from "../actions/file/history/CanRedo";
+import AddLayer from "../actions/file/layers/AddLayer";
+import DeleteLayer from "../actions/file/layers/DeleteLayer";
+import MergeLayerBelow from "../actions/file/layers/MergeLayerBelow";
+import FlattenAllLayers from "../actions/file/layers/FlattenAllLayers";
+import FlattenVisibleLayers from "../actions/file/layers/FlattenVisibleLayers";
 
 export default {
 

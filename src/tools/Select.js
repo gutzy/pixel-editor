@@ -1,17 +1,15 @@
 import Tool from "../classes/abstracts/Tool";
 import SelectIcon from "../assets/svg/rectselect.svg";
 import EventBus from "../utils/EventBus";
-import {getRect, isXYinRect, rectApplyOffset} from "../utils/CanvasUtils";
+import {getRect} from "../utils/CanvasUtils";
 import ToolInfo from "../actions/tool/ToolInfo";
 import WatchKey from "../actions/tool/WatchKey";
 import ImgDataToCanvas from "../actions/canvas/ImgDataToCanvas";
-import GetRectImage from "../actions/canvas/GetRectImage";
-import ClearRect from "../actions/canvas/ClearRect";
 import DrawImage from "../actions/canvas/DrawImage";
 import CutImage from "../actions/canvas/CutImage";
 import GetMaskImage from "../actions/canvas/GetMaskImage";
 import IsOpaque from "../actions/canvas/IsOpaque";
-import FirstOpaqueXY from "../actions/canvas/FirstOpaqueXY";
+import OffsetImage from "../actions/canvas/OffsetImage";
 
 export default class Select extends Tool {
 
@@ -50,7 +48,7 @@ export default class Select extends Tool {
     }
 
     start(file, canvas, x, y, toolCanvas) {
-        this.finished = this.moving = true;
+        this.moving = true;
         this.axisOffset = 0;
         this.rectMode = 'reset';
 
@@ -68,8 +66,8 @@ export default class Select extends Tool {
                 } else if (this.mode === 'copy') { // alt pressed: shrinking selection
                     this.rectMode = 'shrink';
                 } else { // default behavior: reset
+                    this._onClear(canvas, file);
                     this._onFinished(canvas, file);
-                    EventBus.$emit('select-area', 'selectionCanvas', [0,0,0,0]);
                 }
                 this.startPos = {x, y};
             }
@@ -77,7 +75,7 @@ export default class Select extends Tool {
             this.dragging = false;
             this.rect = this.newPos = null;
             this.startPos = {x, y};
-            EventBus.$emit('select-area', 'selectionCanvas', [0,0,0,0]);
+            this._onClear(canvas, file);
         }
     }
 
@@ -100,10 +98,13 @@ export default class Select extends Tool {
             EventBus.$emit('select-area', 'selectionCanvas', ...this.rect);
         }
 
+        if (file.toolSelectionCanvas && file.lastSelectionOffset) {
+            file.toolSelectionCanvas.doAction(OffsetImage, file.lastSelectionOffset.x, file.lastSelectionOffset.y)
+        }
+
     }
 
     use(file, canvas, x, y, toolCanvas) {
-        this.finished = false;
         if (this.dragging) {
             const offset = {x: x-this.dragging.x, y: y-this.dragging.y};
 
@@ -129,10 +130,18 @@ export default class Select extends Tool {
         else if (this.rectMode === 'shrink') file.shrinkArea = this.tempRect;
     }
 
-    _onFinished(canvas, file) {
-        if (this.cut) { this._applyContents(canvas, file); this._clearCut(file); }
+    _onFinished() {
         this.dragging = false;
-        this.newPos = this.startPos = this.rect = this.tempRect = this.img = this.cut = null;
+        this.newPos = this.startPos = this.rect = this.tempRect = this.img = null;
+    }
+
+    _onClear(canvas, file) {
+        this._clearCut(file);
+        EventBus.$emit('select-area', 'selectionCanvas', [0,0,0,0]);
+        if (file.toolSelectionCanvas) {
+            this._drawToolCanvasOnLayer(file);
+            file.toolSelectionCanvas = this.cut = null;
+        }
     }
 
     _detectAxis(offset) {
@@ -146,8 +155,8 @@ export default class Select extends Tool {
     }
 
     _doCopy(canvas, file) {
-        if (!this.cut) this._initCutImage(canvas, file); // cut the image
-        else this._applyContents(canvas, file); // an image is already there, stamp and move on
+        if (!this.cut) this._initCutImage(canvas, file);
+        this._drawToolCanvasOnLayer(file);
     }
 
     _doCut(canvas, file) {
@@ -155,21 +164,22 @@ export default class Select extends Tool {
         canvas.doAction(CutImage, file.selectionCanvas.el); // remove the image from the layer
     }
 
-    _applyContents(canvas, file) {
-        const first = file.selectionCanvas.doAction(FirstOpaqueXY);
-        canvas.doAction(DrawImage, this.cut.el, first.x-file.cutOffset.x, first.y-file.cutOffset.y);
-        EventBus.$emit('save-history');
-    }
-
-    _clearCut(file) {
-        this.cut = null;
-        file.cutSelection = null;
-    }
+    _clearCut(file) {}
 
     _initCutImage(canvas, file) {
+        let extra = false;
+        if (file.toolSelectionCanvas) {
+            extra = canvas.doAction(ImgDataToCanvas, file.toolSelectionCanvas.doAction(GetMaskImage, file.selectionCanvas.el));
+        }
+
         this.cut = canvas.doAction(ImgDataToCanvas, canvas.doAction(GetMaskImage, file.selectionCanvas.el));
-        file.cutSelection = this.cut;
-        file.cutOffset = file.selectionCanvas.doAction(FirstOpaqueXY);
+        if (extra) {
+            EventBus.$emit('save-history');
+            this.cut.doAction(DrawImage, extra.el);
+        }
+
+        file.toolSelectionCanvas = this.cut;
+        EventBus.$emit('save-history');
     }
 
     _resetInfo() {
@@ -184,5 +194,12 @@ export default class Select extends Tool {
                 this.doAction(ToolInfo,{"Mode" : this.mode, "Axis": this.lockAxis?"Locked":"Both"});
             }
         }
+    }
+
+    _drawToolCanvasOnLayer(file) {
+        let tx = 0, ty = 0;
+        if (file.selectionOffset) { tx = file.selectionOffset.x; ty = file.selectionOffset.y; }
+        else if (file.lastSelectionOffset) { tx = file.lastSelectionOffset.x; ty = file.lastSelectionOffset.y; }
+        file.layers[file.activeLayer].canvas.doAction(DrawImage, file.toolSelectionCanvas.el,tx,ty);
     }
 }

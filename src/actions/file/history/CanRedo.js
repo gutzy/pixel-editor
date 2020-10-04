@@ -1,4 +1,4 @@
-import {FileAction} from "../../classes/abstracts/Actions";
+import {FileAction} from "../../../classes/abstracts/Actions";
 
 export default class CanRedo extends FileAction {
 	do(file) {

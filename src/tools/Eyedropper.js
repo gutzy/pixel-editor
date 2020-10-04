@@ -4,7 +4,7 @@ import EyedropperIcon from "../assets/svg/eyedropper.svg";
 import EyedropperCursor from "../assets/png/eyedropper.png"
 import DrawRect from "../actions/canvas/DrawRect";
 import GetColor from "../actions/canvas/GetColor";
-import SelectColor from "../actions/file/SelectColor";
+import SelectColor from "../actions/file/selection/SelectColor";
 
 export default class EyeDropper extends Tool {
 

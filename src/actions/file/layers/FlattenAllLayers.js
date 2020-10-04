@@ -1,6 +1,6 @@
-import {FileAction} from "../../classes/abstracts/Actions";
-import EventBus from "../../utils/EventBus";
-import DrawImage from "../canvas/DrawImage";
+import {FileAction} from "../../../classes/abstracts/Actions";
+import EventBus from "../../../utils/EventBus";
+import DrawImage from "../../canvas/DrawImage";
 
 export default class FlattenAllLayers extends FileAction {
 	do(file) {

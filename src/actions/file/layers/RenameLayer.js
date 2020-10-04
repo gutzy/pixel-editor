@@ -1,5 +1,5 @@
-import {FileAction} from "../../classes/abstracts/Actions";
-import EventBus from "../../utils/EventBus";
+import {FileAction} from "../../../classes/abstracts/Actions";
+import EventBus from "../../../utils/EventBus";
 
 export default class RenameLayer extends FileAction {
 	do(file, layerName, newLayerName) {

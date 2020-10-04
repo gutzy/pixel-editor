@@ -1,8 +1,8 @@
-import {FileAction} from "../../classes/abstracts/Actions";
-import Canvas from "../../classes/Canvas";
-import SelectionMasking from "./SelectionMasking";
-import DrawImage from "../canvas/DrawImage";
-import CreateSelectionOverlay from "./CreateSelectionOverlay";
+import {FileAction} from "../../../classes/abstracts/Actions";
+import Canvas from "../../../classes/Canvas";
+import SelectionMasking from "../selection/SelectionMasking";
+import DrawImage from "../../canvas/DrawImage";
+import CreateSelectionOverlay from "../selection/CreateSelectionOverlay";
 
 export default class StartTool extends FileAction {
     async do(file, x, y) {
@@ -12,18 +12,19 @@ export default class StartTool extends FileAction {
             let editCanvas = canvas;
 
             if (file.selectionCanvas && file.selectedTool.id !== 'select') {
-                file.toolSelectionCanvas = new Canvas(null, canvas.width, canvas.height);
+                if (!file.toolSelectionCanvas) file.toolSelectionCanvas = new Canvas(null, canvas.width, canvas.height);
                 file.toolSelectionCanvas.doAction(DrawImage, canvas.el, 0, 0);
                 editCanvas = file.toolSelectionCanvas;
             } else if (file.selectionCanvas) {
                 file.doAction(CreateSelectionOverlay);
             }
 
+
             if (!file.selectedTool.persistent || !file.toolCanvas) file.toolCanvas = new Canvas(null, file.width, file.height);
             await file.selectedTool.start(file, editCanvas, x / file.zoom, y / file.zoom, file.toolCanvas);
             if (file.selectedTool.persistent) file.selectedTool.persist(file.toolCanvas, true);
 
-            file.doAction(SelectionMasking,  canvas);
+            file.doAction(SelectionMasking,  editCanvas);
         }
     }
 }

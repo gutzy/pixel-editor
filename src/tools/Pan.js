@@ -3,7 +3,7 @@ import PanIcon from "../assets/svg/pan.svg";
 import PanCursor from "../assets/png/pan.png"
 import PanCursorActive from "../assets/png/pan-held.png"
 import EventBus from "../utils/EventBus";
-import SetDragOffset from "../actions/file/SetDragOffset";
+import SetDragOffset from "../actions/file/navigation/SetDragOffset";
 import TrySettingCursor from "../actions/tool/TrySettingCursor";
 
 export default class Pan extends Tool {

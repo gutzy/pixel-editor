@@ -1,3 +1,5 @@
+import GetImage from "../actions/canvas/GetImage";
+
 const MAX_SNAPSHOTS = 100;
 
 export default class History {
@@ -6,13 +8,23 @@ export default class History {
         this.snapshots = data;
     }
 
-    saveState(layers, index = -1) {
+    saveState(layers, activeLayer = -1, index = -1, selectionCanvas = null) {
         let d = [];
-        for (let l = 0; l < layers.length; l++) {
+        console.log("Saved state", selectionCanvas);
+
+        if (selectionCanvas) {
+            d.push({
+                name: '_selection-canvas',
+                data: selectionCanvas.doAction(GetImage)
+            })
+        }
+
+       for (let l = 0; l < layers.length; l++) {
             d.push({
                 name : layers[l].name,
                 locked: layers[l].locked,
                 visible: layers[l].visible,
+                active: (activeLayer === l),
                 data : layers[l].getImageData()
             })
         }

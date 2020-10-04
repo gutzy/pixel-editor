@@ -1,6 +1,6 @@
-import {FileAction} from "../../classes/abstracts/Actions";
-import EventBus from "../../utils/EventBus";
-import Layer from "../../classes/Layer";
+import {FileAction} from "../../../classes/abstracts/Actions";
+import EventBus from "../../../utils/EventBus";
+import Layer from "../../../classes/Layer";
 
 export default class AddLayer extends FileAction {
 	do(file, name = "Untitled Layer", index = -1) {

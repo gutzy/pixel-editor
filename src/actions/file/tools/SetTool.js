@@ -1,6 +1,6 @@
-import {FileAction} from "../../classes/abstracts/Actions";
+import {FileAction} from "../../../classes/abstracts/Actions";
 import RunToolPersistence from "./RunToolPersistence";
-import ToolInfo from "../tool/ToolInfo";
+import ToolInfo from "../../tool/ToolInfo";
 
 export default class SetTool extends FileAction {
     async do(file, tool, ...params) {
