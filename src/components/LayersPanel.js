@@ -17,6 +17,7 @@ export default {
             showMenu : null,
             renaming : null,
             newLayerName: '',
+            drag: false,
         }
     },
 
@@ -89,11 +90,22 @@ export default {
 
     components : { Draggable },
 
+    computed: {
+        dragOptions() {
+            return {
+                animation: 200,
+                group: "description",
+                disabled: false,
+                ghostClass: "ghost"
+            };
+        }
+    },
+
     template : `
     <div class="layers-panel" ref="panel">
         <div v-if="layers" class="list">
-            <draggable v-model="layers" @change="sortLayers">
-            <transition-group :name="'flip-list'">
+            <draggable v-model="layers" @change="sortLayers" v-bind="dragOptions" class="list-group" @start="drag = true" @end="drag = false">
+            <transition-group type="transition" :name="!drag ? 'flip-list' : null">
                 <div :key="index" :class="'layer'+(selectedLayer==layer.name?' selected':'')" v-for="(layer, index) in layers" @mousedown="selectLayer(layer)" @contextmenu.prevent="rightClick(layer)">
                     <div v-if="showMenu == layer.name" class="layer-menu">
                         <button @mousedown="deleteLayer(layer)">Delete</button>
