@@ -4,6 +4,7 @@ import DrawRect from "../actions/canvas/DrawRect";
 import { pixelsBetween } from "../utils/CanvasUtils";
 import EventBus from "../utils/EventBus";
 import ToolInfo from "../actions/tool/ToolInfo";
+import AxisLocking from "../actions/tool/AxisLocking";
 
 export default class Pencil extends Tool {
 
@@ -19,6 +20,8 @@ export default class Pencil extends Tool {
         this.save = true;
 
         this.size = 1;
+
+        this.doAction(AxisLocking);
     }
 
     select() {

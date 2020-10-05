@@ -10,6 +10,7 @@ import CutImage from "../actions/canvas/CutImage";
 import GetMaskImage from "../actions/canvas/GetMaskImage";
 import IsOpaque from "../actions/canvas/IsOpaque";
 import OffsetImage from "../actions/canvas/OffsetImage";
+import AxisLocking from "../actions/tool/AxisLocking";
 
 export default class Select extends Tool {
 
@@ -24,12 +25,13 @@ export default class Select extends Tool {
 
         this.mode = 'cut';
 
+        this.doAction(AxisLocking);
+
         this.doAction(WatchKey, 'Alt', isAltDown => {
             if (!this.moving) this.mode = isAltDown ? 'copy':'cut';
             this._resetInfo();
         });
-        this.doAction(WatchKey, 'Shift', isShiftDown => {
-            this.lockAxis = isShiftDown;
+        this.doAction(WatchKey, 'Shift', () => {
             this._resetInfo();
         });
     }
@@ -49,7 +51,6 @@ export default class Select extends Tool {
 
     start(file, canvas, x, y, toolCanvas) {
         this.moving = true;
-        this.axisOffset = 0;
         this.rectMode = 'reset';
 
         if (this.rect) { // a selection is defined
@@ -108,12 +109,6 @@ export default class Select extends Tool {
         if (this.dragging) {
             const offset = {x: x-this.dragging.x, y: y-this.dragging.y};
 
-            if (this.lockAxis && this.axis) {
-                if (this.axis === 1) offset.y = 0;
-                else if (this.axis === -1) offset.x = 0;
-            }
-
-            this._detectAxis(offset);
             file.selectionOffset = offset;
             file.lastSelectionOffset = null;
         }
@@ -142,16 +137,6 @@ export default class Select extends Tool {
             this._drawToolCanvasOnLayer(file);
             file.toolSelectionCanvas = this.cut = null;
         }
-    }
-
-    _detectAxis(offset) {
-        if (this.lockAxis) {
-            if (this.axisOffset >= 3) { // try 3 iterations of generating offset before committing to an axis lock
-                if (!this.axis) { this.axis = (Math.abs(offset.x) > Math.abs(offset.y)) ? 1:-1; }
-            }
-            else { this.axis = 0; this.axisOffset++; } // accumulate axis offset
-            this.doAction(ToolInfo,{"Mode" : this.mode, "Axis": this.axis?(this.axis>0?"X":"Y"):"Locked"});
-        } else { this.axis = 0; } // no lock, no axis.
     }
 
     _doCopy(canvas, file) {
