@@ -1,16 +1,8 @@
 import {CanvasAction} from "../../classes/abstracts/Actions";
-import Canvas from "../../classes/Canvas";
 import DrawRect from "./DrawRect";
 
-const borderColors = ['#ff0000','#00ff00','#0000ff','#ff00ff'];
-
-
 export default class DrawSelectionMarchingAnts extends CanvasAction {
-
-
     do(target, imgData, offset, size = 8) {
-
-
         function type(i) { // border types: 1 = left, 2 = top, 3 = right, 4 = bottom
             if (data[i] === 255 && data[i+2]===255) return 4;
             else if (data[i]===255) return 1;
@@ -40,5 +32,4 @@ export default class DrawSelectionMarchingAnts extends CanvasAction {
             }
         }
     }
-
 }

@@ -3,7 +3,6 @@ import ZoomIcon from "../assets/svg/zoom.svg";
 import ZoomInCursor from "../assets/png/zoom-in.png"
 import ZoomOutCursor from "../assets/png/zoom-out.png"
 import ZoomIn from "../actions/file/navigation/ZoomIn";
-import EventBus from "../utils/EventBus";
 import ZoomOut from "../actions/file/navigation/ZoomOut";
 
 import { ZoomConfig } from "../config/Tools";

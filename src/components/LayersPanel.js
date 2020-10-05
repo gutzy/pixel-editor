@@ -5,6 +5,8 @@ import LockedIcon from "../assets/svg/lockedpadlock.svg";
 import UnlockedIcon from "../assets/svg/unlockedpadlock.svg";
 import PlusIcon from "../assets/svg/plus.svg";
 
+import Draggable from 'vuedraggable';
+
 export default {
 
     data : function() {
@@ -54,6 +56,11 @@ export default {
             EventBus.$emit('try-flatten-all-layers');
         },
 
+        sortLayers(change) {
+            const {oldIndex, newIndex}  = (change.moved);
+            EventBus.$emit('sort-layers', oldIndex, newIndex);
+        },
+
         selectLayerToRename(layer) {
             EventBus.$emit('start-renaming-layer', layer)
         },
@@ -80,35 +87,41 @@ export default {
         this.$refs.panel.addEventListener('mousedown', e => e.stopPropagation())
     },
 
+    components : { Draggable },
+
     template : `
     <div class="layers-panel" ref="panel">
         <div v-if="layers" class="list">
-            <div :class="'layer'+(selectedLayer==layer.name?' selected':'')" v-for="(layer, index) in layers" @mousedown="selectLayer(layer)" @contextmenu.prevent="rightClick(layer)">
-                <div v-if="showMenu == layer.name" class="layer-menu">
-                    <button @mousedown="deleteLayer(layer)">Delete</button>
-                    <button @mousedown="selectLayerToRename(layer)">Rename</button>
-                    <button v-if="index < layers.length-1" @mousedown="mergeBelow(layer)">Merge Below</button>
-                    <button @mousedown="flattenVisible()">Flatten Visible</button>
-                    <button @mousedown="flattenAll()">Flatten All</button>
-                </div>
-                <div class="layer-thumb">
-                    <img :src="layer.thumb" />
-                </div>
-                <div class="layer-meta">
-                    <div :class="'layer-meta-btn' + (layer.locked?' active':'')" @mousedown.stop="toggleLayerLock(layer)">
-                        <img :src="layer.locked?LockedIcon:UnlockedIcon" />
+            <draggable v-model="layers" @change="sortLayers">
+            <transition-group :name="'flip-list'">
+                <div :key="index" :class="'layer'+(selectedLayer==layer.name?' selected':'')" v-for="(layer, index) in layers" @mousedown="selectLayer(layer)" @contextmenu.prevent="rightClick(layer)">
+                    <div v-if="showMenu == layer.name" class="layer-menu">
+                        <button @mousedown="deleteLayer(layer)">Delete</button>
+                        <button @mousedown="selectLayerToRename(layer)">Rename</button>
+                        <button v-if="index < layers.length-1" @mousedown="mergeBelow(layer)">Merge Below</button>
+                        <button @mousedown="flattenVisible()">Flatten Visible</button>
+                        <button @mousedown="flattenAll()">Flatten All</button>
                     </div>
-                    <div :class="'layer-meta-btn' + (layer.visible?' active':'')" @mousedown.stop="toggleLayerVisibility(layer)">
-                        <img :src="layer.visible?VisibleIcon:InvisibleIcon" />
+                    <div class="layer-thumb">
+                        <img :src="layer.thumb" />
                     </div>
+                    <div class="layer-meta">
+                        <div :class="'layer-meta-btn' + (layer.locked?' active':'')" @mousedown.stop="toggleLayerLock(layer)">
+                            <img :src="layer.locked?LockedIcon:UnlockedIcon" />
+                        </div>
+                        <div :class="'layer-meta-btn' + (layer.visible?' active':'')" @mousedown.stop="toggleLayerVisibility(layer)">
+                            <img :src="layer.visible?VisibleIcon:InvisibleIcon" />
+                        </div>
+                    </div>
+                    <p v-if="renaming != layer.name" @dblclick="selectLayerToRename(layer)">{{layer.name}}</p>
+                    <input v-if="renaming == layer.name" v-model="newLayerName" ref="layerNameInput" @keydown.enter="renameLayer(layer, newLayerName)" />
                 </div>
-                <p v-if="renaming != layer.name" @dblclick="selectLayerToRename(layer)">{{layer.name}}</p>
-                <input v-if="renaming == layer.name" v-model="newLayerName" ref="layerNameInput" @keydown.enter="renameLayer(layer, newLayerName)" />
+                </transition-group>
+            </draggable>
+            <div class="add-layer" @click="addLayer">
+                <img :src="PlusIcon" />
+                <span>Add Layer</span>
             </div>
-        </div>
-        <div class="add-layer" @click="addLayer">
-            <img :src="PlusIcon" />
-            <span>Add Layer</span>
         </div>
     </div>
     `

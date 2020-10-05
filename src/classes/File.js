@@ -17,6 +17,9 @@ import Redo from "../actions/file/history/Redo";
 import LoadContents from "../actions/file/history/LoadContents";
 import SelectArea from "../actions/file/selection/SelectArea";
 import SelectAreaSolidify from "../actions/file/selection/SelectAreaSolidify";
+import SaveHistory from "../actions/file/history/SaveHistory";
+import ResetLayers from "../actions/file/layers/ResetLayers";
+import SortLayers from "../actions/file/layers/SortLayers";
 
 const DEBUG = false;
 
@@ -31,6 +34,7 @@ export default class File {
         this.height = height;
         this.editorMode = editorMode;
         this.contents = contents;
+
         this.historyIndex = 0;
         this.layers = [];
         this.zoom = 1;
@@ -44,28 +48,28 @@ export default class File {
         this.activeLayer = -1;
         this.selectedTool = null;
         this.color = null;
-        this.persistenceTimeout = null;
 
         this.init();
     }
 
     init() {
         this.bindListeners();
-        this.resetLayers();
+        this.doAction(ResetLayers);
 
         if (this.contents) {
-            this.loadContents(this.contents);
+            this.doAction(LoadContents, this.contents);
         }
         else {
             const layer = this.doAction(AddLayer,'Layer 1');
             EventBus.$emit('select-layer', layer);
-            this.saveHistory();
+            this.doAction(SaveHistory);
         }
     }
 
     bindListeners() {
         EventBus.$on('input-key-combination', this.onKeyCombination.bind(this));
-        EventBus.$on('save-history', this.onSaveHistoryRequest.bind(this));
+        EventBus.$on('sort-layers', (...a) => this.doAction(SortLayers, ...a));
+        EventBus.$on('save-history', (...a) => this.doAction(SaveHistory, ...a));
         EventBus.$on('try-toggling-layer-visibility', (...a) => this.doAction(ToggleLayerVisibility, ...a));
         EventBus.$on('try-toggling-layer-lock', (...a) => this.doAction(ToggleLayerLock, ...a));
 
@@ -103,18 +107,6 @@ export default class File {
         this.isActiveFile = false;
     }
 
-    saveHistory() {
-        this.historyIndex = this.history.saveState(this.layers, this.activeLayer, this.historyIndex, this.toolSelectionCanvas);
-    }
-
-    resetLayers() {
-        this.layers = [];
-    }
-
-    loadContents(contents) {
-        this.doAction(LoadContents, contents);
-    }
-
     onKeyCombination(combo) {
         if (!this.isActiveFile) return false;
 
@@ -122,8 +114,4 @@ export default class File {
         else if (comboIs(combo, 'ctrl','shift', 'z') || comboIs(combo, 'ctrl','y')) { this.doAction(Redo); }
     }
 
-    onSaveHistoryRequest() {
-        if (!this.isActiveFile) return false;
-        this.saveHistory();
-    }
 }

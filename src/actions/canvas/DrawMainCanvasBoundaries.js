@@ -2,8 +2,7 @@ import {CanvasAction} from "../../classes/abstracts/Actions";
 import {getCenterRect} from "../../utils/CanvasUtils";
 import DrawRect from "./DrawRect";
 
-export default class
-    extends CanvasAction {
+export default class DrawMainCanvasBoundaries extends CanvasAction {
     do(target, width, height, zoom = 1, offset) {
 
         const rect = getCenterRect(target.el, width, height, zoom, offset);

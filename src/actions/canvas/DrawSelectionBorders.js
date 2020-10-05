@@ -6,8 +6,6 @@ import CachedData from "./CachedData";
 const borderColors = ['#ff0000','#00ff00','#0000ff','#ff00ff'];
 
 export default class DrawSelectionBorders extends CanvasAction {
-
-
     do(target, source) {
         const w = target.el.width, h = target.el.height;
         const l = (i) => i-4,

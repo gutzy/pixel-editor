@@ -1,5 +1,4 @@
 import {CanvasAction} from "../../classes/abstracts/Actions";
-import {getCenterRect} from "../../utils/CanvasUtils";
 
 export default class ClearCanvas extends CanvasAction {
 

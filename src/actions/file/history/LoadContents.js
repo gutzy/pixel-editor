@@ -29,8 +29,10 @@ export default class LoadContents extends FileAction {
 				console.log("Restored selection canvas")
 			}
 			else {
-				file.toolSelectionCanvas = null;
+				if (file.toolSelectionCanvas) {
+					file.toolSelectionCanvas = null;
 				console.log("Killed selection canvas")
+				}
 			}
 		}
 	}

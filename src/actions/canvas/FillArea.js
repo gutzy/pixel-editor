@@ -19,7 +19,6 @@ function fill(el, ctx, startX, startY, fillColor) {
     let attempt = 0;
     let tempImage = ctx.getImageData(0, 0, el.width, el.height);
     let topmostPixelsArray = [[Math.floor(startX), Math.floor(startY)]];
-    let r = startY * (el.width*4) + startX * 4;
     let clusterColor = coordColor(tempImage, startX, startY, el.width);
 
     if (matchColor(clusterColor,[fillColor.r,fillColor.g,fillColor.b,fillColor.a])) {
