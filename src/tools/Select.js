@@ -4,13 +4,12 @@ import EventBus from "../utils/EventBus";
 import {getRect} from "../utils/CanvasUtils";
 import ToolInfo from "../actions/tool/ToolInfo";
 import WatchKey from "../actions/tool/WatchKey";
-import ImgDataToCanvas from "../actions/canvas/ImgDataToCanvas";
-import DrawImage from "../actions/canvas/DrawImage";
 import CutImage from "../actions/canvas/CutImage";
-import GetMaskImage from "../actions/canvas/GetMaskImage";
 import IsOpaque from "../actions/canvas/IsOpaque";
 import OffsetImage from "../actions/canvas/OffsetImage";
 import AxisLocking from "../actions/tool/AxisLocking";
+import InitCutImage from "../actions/file/selection/InitCutImage";
+import DrawToolCanvasOnLayer from "../actions/file/selection/DrawToolCanvasOnLayer";
 
 export default class Select extends Tool {
 
@@ -25,15 +24,13 @@ export default class Select extends Tool {
 
         this.mode = 'cut';
 
-        this.doAction(AxisLocking);
+        this.doAction(AxisLocking, 'Shift', () => this.context === 'object');
 
         this.doAction(WatchKey, 'Alt', isAltDown => {
             if (!this.moving) this.mode = isAltDown ? 'copy':'cut';
             this._resetInfo();
         });
-        this.doAction(WatchKey, 'Shift', () => {
-            this._resetInfo();
-        });
+        this.doAction(WatchKey, 'Shift', () => { this._resetInfo(); });
     }
 
     select() {
@@ -41,6 +38,7 @@ export default class Select extends Tool {
     }
 
     hover(file,canvas,x,y,toolCanvas) {
+        if (this.moving) return false;
         if (file.selectionCanvas && file.selectionCanvas.doAction(IsOpaque, x, y)) { // inside current selection
             this.context = 'object';
         } else {
@@ -57,11 +55,13 @@ export default class Select extends Tool {
             file.lastSelectionOffset = null;
             if (file.selectionCanvas && file.selectionCanvas.doAction(IsOpaque, x, y)) { // inside current selection
                 this.dragging = {x, y};
+                this.context = 'object';
                 if (this.mode === "copy") { this._doCopy(canvas, file); }
-                else if (!this.cut) { this._doCut(canvas, file) }
+                else if (!file.toolSelectionCanvas) { this._doCut(canvas, file) }
             }
             else { // outside selection
                 this.dragging = false;
+                this.context = 'selection';
                 if (this.lockAxis) { // shift pressed: expanding selection
                     this.rectMode = 'expand';
                 } else if (this.mode === 'copy') { // alt pressed: shrinking selection
@@ -107,9 +107,7 @@ export default class Select extends Tool {
 
     use(file, canvas, x, y, toolCanvas) {
         if (this.dragging) {
-            const offset = {x: x-this.dragging.x, y: y-this.dragging.y};
-
-            file.selectionOffset = offset;
+            file.selectionOffset = {x: x - this.dragging.x, y: y - this.dragging.y};
             file.lastSelectionOffset = null;
         }
         else {
@@ -134,38 +132,22 @@ export default class Select extends Tool {
         this._clearCut(file);
         EventBus.$emit('select-area', 'selectionCanvas', [0,0,0,0]);
         if (file.toolSelectionCanvas) {
-            this._drawToolCanvasOnLayer(file);
-            file.toolSelectionCanvas = this.cut = null;
+            file.doAction(DrawToolCanvasOnLayer);
+            file.toolSelectionCanvas = null;
         }
     }
 
     _doCopy(canvas, file) {
-        if (!this.cut) this._initCutImage(canvas, file);
-        this._drawToolCanvasOnLayer(file);
+        if (!file.toolSelectionCanvas) file.doAction(InitCutImage, canvas);
+        file.doAction(DrawToolCanvasOnLayer);
     }
 
     _doCut(canvas, file) {
-       this._initCutImage(canvas, file);
+        file.doAction(InitCutImage, canvas);
         canvas.doAction(CutImage, file.selectionCanvas.el); // remove the image from the layer
     }
 
     _clearCut(file) {}
-
-    _initCutImage(canvas, file) {
-        let extra = false;
-        if (file.toolSelectionCanvas) {
-            extra = canvas.doAction(ImgDataToCanvas, file.toolSelectionCanvas.doAction(GetMaskImage, file.selectionCanvas.el));
-        }
-
-        this.cut = canvas.doAction(ImgDataToCanvas, canvas.doAction(GetMaskImage, file.selectionCanvas.el));
-        if (extra) {
-            EventBus.$emit('save-history');
-            this.cut.doAction(DrawImage, extra.el);
-        }
-
-        file.toolSelectionCanvas = this.cut;
-        EventBus.$emit('save-history');
-    }
 
     _resetInfo() {
         if (this.context === "selection") {
@@ -179,12 +161,5 @@ export default class Select extends Tool {
                 this.doAction(ToolInfo,{"Mode" : this.mode, "Axis": this.lockAxis?"Locked":"Both"});
             }
         }
-    }
-
-    _drawToolCanvasOnLayer(file) {
-        let tx = 0, ty = 0;
-        if (file.selectionOffset) { tx = file.selectionOffset.x; ty = file.selectionOffset.y; }
-        else if (file.lastSelectionOffset) { tx = file.lastSelectionOffset.x; ty = file.lastSelectionOffset.y; }
-        file.layers[file.activeLayer].canvas.doAction(DrawImage, file.toolSelectionCanvas.el,tx,ty);
     }
 }

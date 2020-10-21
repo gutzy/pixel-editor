@@ -6,6 +6,9 @@ import DrawImage from "../canvas/DrawImage";
 import PixelGrid from "../canvas/PixelGrid";
 import Canvas from "../../classes/Canvas";
 import DrawSelectionMarchingAnts from "../canvas/DrawSelectionMarchingAnts";
+import DrawSelectionBorders from "../canvas/DrawSelectionBorders";
+import GetRectImage from "../canvas/GetRectImage";
+import GetImage from "../canvas/GetImage";
 
 export default class Redraw extends FileAction {
 
@@ -37,7 +40,10 @@ export default class Redraw extends FileAction {
 		///////////////////////////////////////////////////////////////////////
 		// Selection related stuff
 		if (file.selectionCanvas) {
-			const d = new Canvas(null, file.width, file.height);
+			const d = new Canvas(null, file.width*file.zoom, file.height*file.zoom);
+			file.coloredSelectionOverlay = new Canvas(null, file.width*file.zoom, file.height*file.zoom);
+			file.coloredSelectionOverlay.doAction(DrawSelectionBorders, file.selectionOverlay, file.zoom);
+			file.coloredSelectionData = file.coloredSelectionOverlay.doAction(GetImage);
 			d.doAction(DrawSelectionMarchingAnts, file.coloredSelectionData, offset, 8);
 
 			let x = r[0], y = r[1];
@@ -50,7 +56,7 @@ export default class Redraw extends FileAction {
 				x += file.lastSelectionOffset.x*file.zoom; y+= file.lastSelectionOffset.y*file.zoom;
 			}
 
-			canvas.doAction(DrawImage, d.el, x, y, file.zoom);
+			canvas.doAction(DrawImage, d.el, x, y);
 
 		}
 		else { file.selectionOverlay = null; }

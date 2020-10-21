@@ -3,13 +3,16 @@ import ToolInfo from "./ToolInfo";
 import WatchKey from "./WatchKey";
 
 export default class AxisLocking extends ToolAction {
-	do(tool, keyToTrigger = 'Shift') {
+	do(tool, keyToTrigger = 'Shift', condition = null) {
 
 		const start = tool.start, use = tool.use;
 
+		if (condition) tool.axisCondition = condition;
+		else tool.axisCondition = null;
+
 		tool.axisLocking = tool.axis = tool.axisOffset = 0;
 		tool.lockAxis = false;
-		tool.lastAxisPos = {x:0, y:0}
+		tool.lastAxisPos = {x:0, y:0};
 
 		tool.doAction(WatchKey, keyToTrigger, isShiftDown => {
 			tool.lockAxis = isShiftDown;
@@ -33,6 +36,8 @@ export default class AxisLocking extends ToolAction {
 
 	_detectAxis(x, y, tool, offset) {
 		if (tool.lockAxis) {
+			if (tool.axisCondition && typeof tool.axisCondition === 'function' && !tool.axisCondition()) return false;
+
 			if (tool.axisLocking >= 5) { // try 5 iterations of generating offset before committing to an axis lock
 				if (!tool.axis) { tool.axis = (Math.abs(offset.x) > Math.abs(offset.y)) ? 1:-1; }
 			}
