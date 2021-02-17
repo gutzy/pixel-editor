@@ -1,42 +1,37 @@
 import {CanvasAction} from "../../classes/abstracts/Actions";
-import DrawRect from "./DrawRect";
+import Canvas from "../../classes/Canvas";
+import DrawImage from "./DrawImage";
+let w, h, xMask, yMask;
 
 export default class DrawSelectionMarchingAnts extends CanvasAction {
-    do(target, imgData, offset, size = 8) {
+    do(target, borders, offset, size = 8, zoom = 1) {
 
-        let done = {};
+        if (target.el.width !== w || target.el.height !== h) {
+            w = target.el.width; h = target.el.height;
+            xMask = new Canvas(null, w, h);
+            yMask = new Canvas(null, w, h);
 
-        function type(i) { // border types: 1 = left, 2 = top, 3 = right, 4 = bottom
-            if (data[i] === 255 && data[i+2]===255) return 4;
-            else if (data[i]===255) return 1;
-            else if (data[i+1]===255) return 2;
-            else if (data[i+2]===255) return 3;
+            for (let x = 0; x <= w; x += size) xMask.ctx.fillRect(x, 0, size/2, h)
+            for (let y = 0; y <= h; y += size) yMask.ctx.fillRect(0, y, w, size/2)
+
         }
-        const did = [0,0,0,0,0];
 
-        const w = imgData.width, h = imgData.height;
-        const data = imgData.data;
-        offset = offset % size;
-        did[1] += offset; did[2] -= offset;
-        did[3] -= offset; did[4] += offset;
-        let red;
+        let tgt = new Canvas(null, w, h);
+        tgt.ctx.imageSmoothingEnabled = false;
+        target.ctx.imageSmoothingEnabled = false;
 
-        for (let x = 0; x < w; x++) {
-            for (let y = 0; y < h; y++) {
-                red = Math.floor(y) * (w * 4) + Math.floor(x) * 4;
-                if (type(red) > 0) {
-                    if (did[type(red)] < size && !done[red]) {
-                        if (did[type(red)] < size/2) target.doAction(DrawRect,x,y,1,1,'#aaaaaa');
-                        did[type(red)]++;
-                        done[red] = true;
-                    }
-                    else if (!done[red]) {
-                        did[type(red)] = 0;
-                        target.doAction(DrawRect,x,y,1,1,'#aaaaaa');
-                        done[red] = true;
-                    }
-                }
+        for (let i = 0; i < borders.length; i++) {
+            tgt.doAction(DrawImage, borders[i].el, 0, 0)
+            tgt.ctx.globalCompositeOperation = 'destination-out';
+            switch (i) {
+                case 0: tgt.doAction(DrawImage, yMask.el, 0, size-offset%size); break; // left
+                case 1: tgt.doAction(DrawImage, xMask.el, offset%size, 0); break; // up
+                case 2: tgt.doAction(DrawImage, yMask.el, 0, offset%size); break; // right
+                case 3: tgt.doAction(DrawImage, xMask.el, size-offset%size, 0); break; // down
             }
+            target.doAction(DrawImage,tgt.el, 0,0);
+            tgt.ctx.globalCompositeOperation = 'source-over';
         }
+        // target.doAction(DrawImage,tgt.el, 0,0);
     }
 }

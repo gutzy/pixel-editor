@@ -10,6 +10,7 @@ import OffsetImage from "../actions/canvas/OffsetImage";
 import AxisLocking from "../actions/tool/AxisLocking";
 import InitCutImage from "../actions/file/selection/InitCutImage";
 import DrawToolCanvasOnLayer from "../actions/file/selection/DrawToolCanvasOnLayer";
+import DrawSelectionBorders from "../actions/canvas/DrawSelectionBorders";
 
 export default class Select extends Tool {
 
@@ -85,6 +86,7 @@ export default class Select extends Tool {
 
         EventBus.$emit('select-area-solidify');
         if (this.rectMode !== 'reset') {
+            console.log("yyy")
             this.rectMode = 'reset';
             return;
         }
@@ -121,6 +123,8 @@ export default class Select extends Tool {
         }
         else if (this.rectMode === 'expand') file.expandArea = this.tempRect;
         else if (this.rectMode === 'shrink') file.shrinkArea = this.tempRect;
+
+        if (file.selectionOverlay) file.selectionBorders = file.selectionOverlay.doAction(DrawSelectionBorders, file.selectionOverlay, file.zoom, file, true);
     }
 
     _onFinished() {
@@ -140,6 +144,7 @@ export default class Select extends Tool {
     _doCopy(canvas, file) {
         if (!file.toolSelectionCanvas) file.doAction(InitCutImage, canvas);
         file.doAction(DrawToolCanvasOnLayer);
+        console.log("cop")
     }
 
     _doCut(canvas, file) {

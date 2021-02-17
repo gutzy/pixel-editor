@@ -1,5 +1,6 @@
 import {FileAction} from "../../../classes/abstracts/Actions";
 import EventBus from "../../../utils/EventBus";
+import CreateSelectionOverlay from "../selection/CreateSelectionOverlay";
 
 export default class ZoomOut extends FileAction {
 	do(file, zoomLevels) {
@@ -10,6 +11,9 @@ export default class ZoomOut extends FileAction {
 		}
 		file.zoom = zoom;
 		EventBus.$emit('zoom', file.zoom);
+
+		if (file.selectionCanvas) file.doAction(CreateSelectionOverlay)
+
 		EventBus.$emit('redraw-canvas');
 	}
 }

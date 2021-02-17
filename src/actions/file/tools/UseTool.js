@@ -16,7 +16,7 @@ export default class UseTool extends FileAction {
                 }
                 editCanvas = file.toolSelectionCanvas;
             } else if (file.selectionCanvas) {
-                file.doAction(CreateSelectionOverlay);
+                // file.doAction(CreateSelectionOverlay);
             }
 
             await file.selectedTool.use(file, editCanvas, x / file.zoom, y / file.zoom, file.toolCanvas);
