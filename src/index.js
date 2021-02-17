@@ -18,11 +18,6 @@ import MenuBar from "./components/MenuBar";
 
 const vm = new Vue({
 
-		data : function() {
-			return {
-			}
-		},
-
 		async mounted() {
 			AppManager.init(this.$refs.canvas);
 		},

@@ -11,7 +11,7 @@ export default class History {
 
     /**
      * constructor
-     * @param data - optional, array of existing snapshots
+     * @param {[]} data - optional, array of existing snapshots
      */
     constructor(data = []) {
         this.snapshots = data;
@@ -70,8 +70,8 @@ export default class History {
 
     /**
      * Get a history snapshot by index
-     * @param index
-     * @return object
+     * @param {number} index
+     * @return {object}
      */
     getState(index) {
         return this.snapshots[index];
@@ -79,7 +79,7 @@ export default class History {
 
     /**
      * Return the size of the history array
-     * @return number
+     * @return {number}
      */
     size() { return this.snapshots.length }
 

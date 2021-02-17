@@ -23,6 +23,7 @@ export function getEventXY(e, el) {
 }
 
 /**
+ * Check if a combination is valid
  *
  * @param {[]} combo
  * @param {string} meta1
