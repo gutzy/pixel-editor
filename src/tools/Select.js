@@ -52,13 +52,14 @@ export default class Select extends Tool {
         this.moving = true;
         this.rectMode = 'reset';
 
-        if (this.rect) { // a selection is defined
+        if (file.selectionCanvas) { // a selection is defined
+            console.log("Cut?")
             file.lastSelectionOffset = null;
             if (file.selectionCanvas && file.selectionCanvas.doAction(IsOpaque, x, y)) { // inside current selection
                 this.dragging = {x, y};
                 this.context = 'object';
                 if (this.mode === "copy") { this._doCopy(canvas, file); }
-                else if (!file.toolSelectionCanvas) { this._doCut(canvas, file) }
+                else if (!file.toolSelectionCanvas || file.forceCut) { this._doCut(canvas, file) }
             }
             else { // outside selection
                 this.dragging = false;
@@ -86,7 +87,6 @@ export default class Select extends Tool {
 
         EventBus.$emit('select-area-solidify');
         if (this.rectMode !== 'reset') {
-            console.log("yyy")
             this.rectMode = 'reset';
             return;
         }
@@ -148,6 +148,7 @@ export default class Select extends Tool {
     }
 
     _doCut(canvas, file) {
+        delete file.forceCut;
         file.doAction(InitCutImage, canvas);
         canvas.doAction(CutImage, file.selectionCanvas.el); // remove the image from the layer
     }

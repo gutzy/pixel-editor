@@ -1,27 +1,29 @@
 import {CanvasAction} from "../../classes/abstracts/Actions";
 import {hexToRgba} from "../../utils/ColorUtils";
 import {colorPixel, coordColor, matchColor, matchPixelColor} from "../../utils/CanvasUtils";
+import Canvas from "../../classes/Canvas";
 
 const MAX_ATTEMPTS = 9999;
 
 export default class FillArea extends CanvasAction {
-    async do(target, x, y, color) {
+    async do(target, x, y, color, source = null) {
         color = hexToRgba(color);
-        await fill(target.el, target.ctx, x, y, color);
+        await fill(target.el, target.ctx, x, y, color, source);
     }
 }
 
-function fill(el, ctx, startX, startY, fillColor) {
+function fill(el, ctx, startX, startY, fillColor, source = null) {
 
     startX = Math.floor(startX);
     startY = Math.floor(startY);
 
-    let attempt = 0;
-    let tempImage = ctx.getImageData(0, 0, el.width, el.height);
-    let topmostPixelsArray = [[Math.floor(startX), Math.floor(startY)]];
+    let attempt = 0, t = source || ctx;
+    let tempImage = t.getImageData(0, 0, el.width, el.height);
+    let destImg = (source ? new ImageData(el.width, el.height) : tempImage);
+    let topmostPixelsArray = [[startX, startY]];
     let clusterColor = coordColor(tempImage, startX, startY, el.width);
 
-    if (matchColor(clusterColor,[fillColor.r,fillColor.g,fillColor.b,fillColor.a])) {
+    if (!source && matchColor(clusterColor,[fillColor.r,fillColor.g,fillColor.b,fillColor.a])) {
         return; // same color already
     }
 
@@ -44,6 +46,7 @@ function fill(el, ctx, startX, startY, fillColor) {
         attempt++;
         while (y++ < el.height - 1 && matchPixelColor(tempImage, pixelPos, clusterColor)) {
             colorPixel(tempImage, pixelPos, fillColor);
+            colorPixel(destImg, pixelPos, fillColor);
             if (x > 0) {
                 if (matchPixelColor(tempImage, pixelPos - 4, clusterColor)) {
                     if (!reachLeft) {
@@ -67,5 +70,5 @@ function fill(el, ctx, startX, startY, fillColor) {
             pixelPos += el.width * 4;
         }
     }
-    ctx.putImageData(tempImage, 0, 0);
+    ctx.putImageData(destImg, 0, 0);
 }

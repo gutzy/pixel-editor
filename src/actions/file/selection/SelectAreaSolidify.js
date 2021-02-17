@@ -13,7 +13,6 @@ export default class SelectAreaSolidify extends FileAction {
 		file.selectionCanvas.doAction(ClearCanvas);
 		file.selectionCanvas.doAction(DrawImage, file.selectionOverlay.el, offset.x, offset.y);
 
-
 		file.lastSelectionOffset = file.selectionOffset ? {...file.selectionOffset} : {x:0, y: 0};
 		file.expandArea = file.shrinkArea = file.selectionOffset = null;
 		EventBus.$emit('redraw-canvas');

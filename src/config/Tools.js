@@ -6,6 +6,7 @@ import EyeDropper from "../tools/Eyedropper";
 import Pan from "../tools/Pan";
 import Zoom from "../tools/Zoom";
 import Select from "../tools/Select";
+import MagicWand from "../tools/MagicWand";
 
 export default [
     Pencil,
@@ -15,7 +16,8 @@ export default [
     EyeDropper,
     Pan,
     Zoom,
-    Select
+    Select,
+    MagicWand,
 ];
 
 export const ZoomConfig = {
