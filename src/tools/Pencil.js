@@ -1,8 +1,14 @@
+/**
+ * @Tool Pencil
+ * @author guszi
+ *
+ * Lets you draw stuff
+ */
+
 import Tool from "../classes/abstracts/Tool";
 import PencilIcon from "../assets/svg/pencil.svg";
 import DrawRect from "../actions/canvas/DrawRect";
 import { pixelsBetween } from "../utils/CanvasUtils";
-import EventBus from "../utils/EventBus";
 import ToolInfo from "../actions/tool/ToolInfo";
 import AxisLocking from "../actions/tool/AxisLocking";
 

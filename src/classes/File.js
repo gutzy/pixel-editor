@@ -1,3 +1,10 @@
+/**
+ * File wrapper.
+ * A file = data for an edited pixel drawing.
+ * This class holds a single file, including its name, history, layers, palette and any other serializable setting.
+ * Similar to a canvas wrapper, it allows running FileActions on a file.
+ *
+ */
 import {FileAction} from "./abstracts/Actions";
 import EventBus from "../utils/EventBus";
 import History from "./History";
@@ -25,6 +32,13 @@ const DEBUG = false;
 
 export default class File {
 
+    /**
+     * constructor
+     * @param {number} width - px width of current drawing
+     * @param {number} height - px height of current drawing
+     * @param {string} editorMode - editor mode, basic/advanced
+     * @param {Object} contents - optional - the contents of the file. An object with all the info related to the drawing.
+     */
     constructor(width, height, editorMode, contents = null) {
 
         this.isActiveFile = true;
@@ -52,20 +66,31 @@ export default class File {
         this.init();
     }
 
+    /**
+     * Initialize the file
+     */
     init() {
         this.bindListeners();
+
+        // reset all file layers
         this.doAction(ResetLayers);
 
+        // if file has contents, now is the time to load them
         if (this.contents) {
             this.doAction(LoadContents, this.contents);
         }
+
+        // Otherwise, create a first empty layer, and save the empty, one-layer file to history as the base state
         else {
             const layer = this.doAction(AddLayer,'Layer 1');
-            EventBus.$emit('select-layer', layer);
+            EventBus.$emit('ui-select-layer', layer);
             this.doAction(SaveHistory);
         }
     }
 
+    /**
+     * Bind all events to their designated file actions
+     */
     bindListeners() {
         EventBus.$on('input-key-combination', this.onKeyCombination.bind(this));
         EventBus.$on('sort-layers', (...a) => this.doAction(SortLayers, ...a));
@@ -87,6 +112,9 @@ export default class File {
         EventBus.$on('select-area-solidify', (...a) => this.doAction(SelectAreaSolidify, ...a));
     }
 
+    /**
+     * Run a file action on a file
+     */
     doAction(action, ...params) {
         if (!this.isActiveFile) return false;
 
@@ -97,16 +125,28 @@ export default class File {
         return a.do(this, ...params);
     }
 
+    /**
+     * Focus - set this file as the active file.
+     * This doesn't do a lot until we have tabbed files etc
+     */
     focus() {
         this.isActiveFile = true;
-        EventBus.$emit("zoom", this.zoom);
+        EventBus.$emit("ui-zoom", this.zoom);
         EventBus.$emit("reset-canvas", this.width, this.height);
     }
 
+    /**
+     * Blur - unset this file as the active file.
+     * This doesn't do a lot until we have tabbed files etc
+     */
     blur() {
         this.isActiveFile = false;
     }
 
+    /**
+     * OnKeyCombination
+     * Initializes ctrl-z for Undo and ctrl-y/ctrl-shift-z for Redo
+     */
     onKeyCombination(combo) {
         if (!this.isActiveFile) return false;
 

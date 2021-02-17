@@ -1,8 +1,8 @@
 /**
  * Main Canvas wrapper.
- * It does what a canvas does..... and more!
+ * It extends canvas, however it wraps the main <canvas> tag that contains the entire app.
+ *
  */
-import {CanvasAction} from "./abstracts/Actions";
 import ClearCanvas from "../actions/canvas/ClearCanvas";
 import Canvas from "./Canvas";
 import DrawMainCanvasBoundaries from "../actions/canvas/DrawMainCanvasBoundaries";
@@ -13,15 +13,11 @@ export default class MainCanvas extends Canvas {
         super(canvasElement);
     }
 
-    doAction(action, ...params) {
-        const a = new action();
-        if (!(a instanceof CanvasAction)) {
-            throw new Error("Not a canvas action!");
-        }
-
-        return a.do(this, ...params);
-    }
-
+    /**
+     * Allows resetting the main canvas. Redraws the boundaries.
+     * @param {number} width
+     * @param {number} height
+     */
     reset(width, height) {
         this.doAction(ClearCanvas);
         this.doAction(DrawMainCanvasBoundaries, width, height);

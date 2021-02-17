@@ -1,3 +1,22 @@
+/**
+ * @Config Menu Configuration.
+ * Defines the structure on the Pixel editor's menu.
+ *
+ * Structure definition:
+ * {
+ *     "Top Level Menu" : [
+ * 		{
+ *     		name: "Action name",
+ *     		scope: "app/file/layer", // defines on which scope (app/current file/current layer) the action should run
+ *     		scopeParam: "additionalParameter", // defines an extra-refinement of the target designation, like a scope's prop
+ *     		action: actionFunction, // the action to run
+ *		     activeAction: actionValidatorFunction, // a validator function, if it return false the action is disabled
+ *     		emit: "event-to-emit", // instead of running an action, just emit the designated event
+ * 		}
+ *    ]
+ * }
+ *
+ */
 import Undo from "../actions/file/history/Undo";
 import Redo from "../actions/file/history/Redo";
 import CanUndo from "../actions/file/history/CanUndo";
@@ -55,7 +74,7 @@ export default {
 		{
 			name: "Rename",
 			scope: "layer",
-			emit: "start-renaming-layer"
+			emit: "ui-start-renaming-layer"
 		},
 		{
 			name: "Delete",

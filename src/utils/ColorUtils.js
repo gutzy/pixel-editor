@@ -1,3 +1,9 @@
+/**
+ * Convert hex color to RGB
+ * @param {string} hex
+ * @param {number} divisor - divide the value by the given number
+ * @return {{r: number, b: number, g: number}|null}
+ */
 export function hexToRgba(hex, divisor) {
     //if divisor isn't set, set it to one (so it has no effect)
     divisor = divisor || 1;
@@ -13,6 +19,13 @@ export function hexToRgba(hex, divisor) {
     } : null;
 }
 
+/**
+ * Convert HSL values to RGB
+ * @param {number} h
+ * @param {number} s
+ * @param {number} l
+ * @return {{r: number, b: number, g: number}}
+ */
 export function hslToRgb(h, s, l){
     h /= 255;
     s /= 255;
@@ -46,6 +59,13 @@ export function hslToRgb(h, s, l){
     };
 }
 
+/**
+ * Convert RGB to HEX
+ * @param {number} r
+ * @param {number} g
+ * @param {number} b
+ * @return {string}
+ */
 export function rgbToHex (r,g,b) {
     function componentToHex (c) {
         let hex = c.toString(16);
@@ -55,8 +75,13 @@ export function rgbToHex (r,g,b) {
     return componentToHex(r) + componentToHex(g) + componentToHex(b);
 }
 
-//put in red green blue values and get out hue saturation luminosity values
-
+/**
+ * Convert RGB to HSL
+ * @param {number} r
+ * @param {number} g
+ * @param {number} b
+ * @return {{s: number, h: number, l: number}}
+ */
 export function rgbToHsl(r, g, b){
     r /= 255;
     g /= 255;

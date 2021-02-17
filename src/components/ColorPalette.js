@@ -1,7 +1,17 @@
+/**
+ * @VueComponent: Color Palette
+ * @Description The color palette, displays the colors in the active File
+ *
+ */
 import EventBus from "../utils/EventBus";
 
 export default {
 
+	/**
+	 * Component State
+	 * @var colors - array of colors in the palette
+	 * @var selectedColor - index of the currently selected color
+	 */
 	data : function() {
 		return {
 			colors : null,
@@ -10,26 +20,41 @@ export default {
 	},
 
 	methods : {
+		/**
+		 * select color - emits an 'try-selecting-color' event to the editor
+		 *
+		 * @param {string} color
+		 */
 		selectColor(color) {
 			EventBus.$emit("try-selecting-color", color);
 		}
 	},
 
+	/**
+	 * Mounted component hook
+	 */
 	mounted() {
-		EventBus.$on('set-palette', colors => {
+		// bind 'ui-set-palette' editor event to set the colors in the palette (when loading a file or palette etc.)
+		EventBus.$on('ui-set-palette', colors => {
 			this.colors = colors;
 		});
-		EventBus.$on('select-color', selectedColor => {
+
+		// bind 'ui-select-color' to set the selected color in the UI (when using an eyedropper tool etc.)
+		EventBus.$on('ui-select-color', selectedColor => {
 			this.selectedColor = selectedColor;
 		});
 
+		// stop propagation of mousedown events beyond the component
 		this.$refs.panel.addEventListener('mousedown', e => e.stopPropagation());
 	},
 
+	/**
+	 * Rendered template
+	 */
 	template : `
     <div class="color-palette-panel" ref="panel">
         <div v-if="colors" class="colors">
-            <div :class="'color' + (color == selectedColor?' selected':'')" v-for="color of colors" :style="{'background-color': color}" @click="selectColor(color)">
+            <div :class="'color' + (color === selectedColor?' selected':'')" v-for="color of colors" :style="{'background-color': color}" @click="selectColor(color)">
                
             </div>
         </div>

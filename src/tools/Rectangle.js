@@ -1,3 +1,10 @@
+/**
+ * @Tool Pencil
+ * @author guszi
+ *
+ * Draws a rectangle
+ */
+
 import Tool from "../classes/abstracts/Tool";
 import RectangleIcon from "../assets/svg/rectangle.svg";
 import DrawRect from "../actions/canvas/DrawRect";

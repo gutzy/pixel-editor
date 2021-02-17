@@ -1,3 +1,7 @@
+/**
+ * Layer wrapper class.
+ * Contains the layer name and contents, and when inflated also the layer's canvas.
+ */
 import Canvas from "./Canvas";
 import GetImage from "../actions/canvas/GetImage";
 import {LayerAction} from "./abstracts/Actions";
@@ -29,7 +33,10 @@ export default class Layer {
     }
 
     /**
-     * becomes a big boy, gets its own blit canvas and can play with the main canvas
+     * becomes a big boy, gets its own blit canvas and can play with the main canvas.
+     * This creates the array canvas and puts any loaded content into it
+     *
+     * @param data - optional ImageData to draw on array. Usually the packed contents of a saved file.
      */
     inflate(data) {
 
@@ -47,21 +54,25 @@ export default class Layer {
     }
 
     /**
-     * shrinks into just a serialization and stands in the corner with the other boys
+     *  get image - return the layer's canvas element
+     * @return HTMLCanvasElement
      */
-    deflate() {
-        this.data = this.canvas.doAction(GetImage);
-        delete this.canvas;
-    }
-
     getImage() {
         return this.canvas.el;
     }
 
+    /**
+     * getImageData - return the layer's ImageData object
+     * @return ImageData
+     */
     getImageData() {
         return this.canvas.doAction(GetImage);
     }
 
+    /**
+     * Runs a canvas action on the layer's canvas.
+     * Useful when interacting with different layers.
+     */
     canvasAction(action, ...params) {
         return this.canvas.doAction(action, ...params);
     }

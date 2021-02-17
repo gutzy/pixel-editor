@@ -1,3 +1,9 @@
+/**
+ * Select area solidify
+ * @ActionType: File / Selection
+ * @Description draw changes made by select tool dragging into the selection canvas
+ *
+ */
 import {FileAction} from "../../../classes/abstracts/Actions";
 import EventBus from "../../../utils/EventBus";
 import ClearCanvas from "../../canvas/ClearCanvas";

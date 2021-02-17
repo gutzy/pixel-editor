@@ -1,3 +1,9 @@
+/**
+ * Get normalized x/y coordinates for a mouse event
+ * @param {MouseEvent} e
+ * @param {HTMLCanvasElement} el
+ * @return {number[]}
+ */
 export function getEventXY(e, el) {
     let x, y;
 
@@ -16,6 +22,15 @@ export function getEventXY(e, el) {
     return [x,y];
 }
 
+/**
+ *
+ * @param {[]} combo
+ * @param {string} meta1
+ * @param {string} meta2
+ * @param {string|null} meta3
+ * @param {string|null} key
+ * @return {boolean}
+ */
 export function comboIs(combo, meta1, meta2, meta3 = null, key = null) {
     let metas = 3;
     if (key === null) {
@@ -28,12 +43,12 @@ export function comboIs(combo, meta1, meta2, meta3 = null, key = null) {
     }
 
     if (metas === 3) {
-        return combo[0].toLowerCase() === key && combo.indexOf(meta1) > -1 && combo.indexOf(meta2) > -1 && combo.indexOf(meta3) > -1
+        return (combo[0].toLowerCase() === key && combo.indexOf(meta1) > -1 && combo.indexOf(meta2) > -1 && combo.indexOf(meta3) > -1)
     }
     else if (metas === 2) {
-        return combo[0].toLowerCase() === key && combo.indexOf(meta1) > -1 && combo.indexOf(meta2)
+        return (combo[0].toLowerCase() === key && combo.indexOf(meta1) > -1 && combo.indexOf(meta2))
     }
     else {
-        return combo[0] === key && combo.indexOf(meta1) > -1
+        return (combo[0] === key && combo.indexOf(meta1) > -1)
     }
 }

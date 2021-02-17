@@ -1,8 +1,13 @@
-import FillArea from "../actions/canvas/FillArea";
+/**
+ * @Tool Eyedropper
+ * @author guszi
+ *
+ * Choose the active color by clicking on the drawing
+ */
+
 import Tool from "../classes/abstracts/Tool";
 import EyedropperIcon from "../assets/svg/eyedropper.svg";
 import EyedropperCursor from "../assets/png/eyedropper.png"
-import DrawRect from "../actions/canvas/DrawRect";
 import GetColor from "../actions/canvas/GetColor";
 import SelectColor from "../actions/file/selection/SelectColor";
 

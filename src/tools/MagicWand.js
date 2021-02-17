@@ -1,16 +1,21 @@
+/**
+ * @Tool Magic Wand
+ * @author guszi
+ *
+ * Add all nearby pixels to selection
+ */
+
 import Tool from "../classes/abstracts/Tool";
 import ToolInfo from "../actions/tool/ToolInfo";
 import WatchKey from "../actions/tool/WatchKey";
-import IsOpaque from "../actions/canvas/IsOpaque";
 import MagicWandIcon from "../assets/svg/magic-wand.svg";
 import MagicWandCursor from "../assets/png/magic-wand.png"
 import FillArea from "../actions/canvas/FillArea";
 import Canvas from "../classes/Canvas";
 import CreateSelectionOverlay from "../actions/file/selection/CreateSelectionOverlay";
-import InitCutImage from "../actions/file/selection/InitCutImage";
-import CutImage from "../actions/canvas/CutImage";
 import DrawImage from "../actions/canvas/DrawImage";
 import DrawSelectionBorders from "../actions/canvas/DrawSelectionBorders";
+import EventBus from "../utils/EventBus";
 
 
 export default class Select extends Tool {
@@ -37,13 +42,19 @@ export default class Select extends Tool {
 
 
     start(file, canvas, x, y, toolCanvas) {
+        // Switch modes
         switch (this.mode) {
+
+            // New selection
             case 'select':
+                EventBus.$emit('select-area-solidify');
                 file.selectionCanvas = new Canvas(null, canvas.width, canvas.height);
                 file.selectionCanvas.doAction(FillArea, x, y, '#000000', file.layers[file.activeLayer].canvas.ctx);
                 file.toolSelectionCanvas = new Canvas(null, canvas.width, canvas.height);
                 file.doAction(CreateSelectionOverlay)
                 break
+
+            // Add to selection
             case 'add':
                 const addCanvas = new Canvas(null, canvas.width, canvas.height);
                 addCanvas.doAction(FillArea, x, y, '#000000', file.layers[file.activeLayer].canvas.ctx);
@@ -52,6 +63,8 @@ export default class Select extends Tool {
 
                 file.selectionBorders = file.selectionOverlay.doAction(DrawSelectionBorders, file.selectionOverlay, file.zoom, file);
                 break
+
+            // Remove from selection
             case 'remove':
                 const removeCanvas = new Canvas(null, canvas.width, canvas.height);
                 removeCanvas.doAction(FillArea, x, y, '#000000', file.layers[file.activeLayer].canvas.ctx);
@@ -65,6 +78,7 @@ export default class Select extends Tool {
                 break
         }
 
+        // force the select to cut the element when an attempt to drag is made
         file.forceCut = true;
 
     }

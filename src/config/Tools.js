@@ -1,3 +1,8 @@
+/**
+ * @Config Tools configuration.
+ * This allows adding and removing tools from the editor, as well as setting some stuff that tools use as configuration,
+ * for example the zoom levels.
+ */
 import Pencil from "../tools/Pencil";
 import PaintBucket from "../tools/PaintBucket";
 import Rectangle from "../tools/Rectangle";

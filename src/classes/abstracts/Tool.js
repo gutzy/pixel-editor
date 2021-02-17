@@ -1,3 +1,8 @@
+/**
+ * Tool abstract class
+ * An abstract from which any new tool needs to inherit.
+ * It enforces implementation of the basic start/stop/use actions, and exposes select and hover as well.
+ */
 import {ToolAction} from "./Actions";
 
 //class for tools
@@ -7,6 +12,7 @@ export default class Tool {
         this.params = [];
         this.name = "Untitled Tool";
         this.selected = false;
+        this.cursorOffset = [0,0]
     }
 
     start(file, canvas, x, y, toolCanvas) { throw new Error("Tool start action not implemented") }
@@ -15,8 +21,8 @@ export default class Tool {
     select(file, canvas, x, y, toolCanvas) { }
     hover(file, canvas, x, y, toolCanvas) { }
 
+    // Run a tool action on a tool.
     doAction(action, ...params) {
-
         const a = new action();
         if (!(a instanceof ToolAction)) {
             throw new Error("Not a tool action!");

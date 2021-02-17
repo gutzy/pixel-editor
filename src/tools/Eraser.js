@@ -1,3 +1,10 @@
+/**
+ * @Tool Eraser
+ * @author guszi
+ *
+ * Eraser tool, like a pencil but erases stuff
+ */
+
 import Tool from "../classes/abstracts/Tool";
 import EraserIcon from "../assets/svg/eraser.svg";
 import ClearRect from "../actions/canvas/ClearRect";

@@ -6,6 +6,9 @@ export default class Dialog {
         this.dialog = null;
     }
 
+    /**
+     * Run a dialog action on a dialog
+     */
     doAction(action, ...params) {
         if (!(action instanceof DialogAction)) {
             throw new Error("Not a dialog action!");

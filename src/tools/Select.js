@@ -1,3 +1,9 @@
+/**
+ * @Tool Select
+ * @author guszi
+ *
+ * Rectangular Selection tool.
+ */
 import Tool from "../classes/abstracts/Tool";
 import SelectIcon from "../assets/svg/rectselect.svg";
 import EventBus from "../utils/EventBus";
@@ -53,7 +59,6 @@ export default class Select extends Tool {
         this.rectMode = 'reset';
 
         if (file.selectionCanvas) { // a selection is defined
-            console.log("Cut?")
             file.lastSelectionOffset = null;
             if (file.selectionCanvas && file.selectionCanvas.doAction(IsOpaque, x, y)) { // inside current selection
                 this.dragging = {x, y};
@@ -144,7 +149,6 @@ export default class Select extends Tool {
     _doCopy(canvas, file) {
         if (!file.toolSelectionCanvas) file.doAction(InitCutImage, canvas);
         file.doAction(DrawToolCanvasOnLayer);
-        console.log("cop")
     }
 
     _doCut(canvas, file) {

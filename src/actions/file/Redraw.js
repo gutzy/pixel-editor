@@ -1,3 +1,9 @@
+/**
+ * Redraw
+ * @ActionType: File / General
+ * @Description Redraw the main canvas file
+ *
+ */
 import {FileAction} from "../../classes/abstracts/Actions";
 import {getCenterRect} from "../../utils/CanvasUtils";
 import ClearCanvas from "../canvas/ClearCanvas";
@@ -9,7 +15,15 @@ import DrawSelectionMarchingAnts from "../canvas/DrawSelectionMarchingAnts";
 
 export default class Redraw extends FileAction {
 
+	/**
+	 *
+	 * @param file
+	 * @param {Canvas} canvas - target canvas (should be main canvas)
+	 * @param {number} offset - an incremental index of the main loop
+	 */
 	do(file, canvas, offset = 0) {
+		///////////////////////////////////////////////////////////////////////
+		// Get the center rectangle, we're going to use it as a base for the drawing
 		const r = getCenterRect(canvas.el, file.width, file.height, file.zoom, file.dragOffset);
 		let img;
 
@@ -23,11 +37,14 @@ export default class Redraw extends FileAction {
 		// Draw each layer
 		let tx = 0, ty = 0;
 		for (let i = 0; i < file.layers.length; i++) {
+			// if layer is visible, draw its image
 			if (file.layers[i].visible) {
 				img = file.layers[i].getImage();
 				canvas.doAction(DrawImage, img, r[0],r[1], file.zoom);
 			}
-			if (i === file.activeLayer && file.toolSelectionCanvas) { // draw selection layer on top of active layer
+
+			// if there's an active selection, draw the selection layer's content on top of the active layer
+			if (i === file.activeLayer && file.toolSelectionCanvas) {
 				let dx = 0, dy = 0;
 				if (file.selectionOffset) { dx = file.selectionOffset.x*file.zoom; dy = file.selectionOffset.y*file.zoom }
 				canvas.doAction(DrawImage, file.toolSelectionCanvas.el, r[0]+dx,r[1]+dy, file.zoom);
@@ -37,10 +54,13 @@ export default class Redraw extends FileAction {
 		///////////////////////////////////////////////////////////////////////
 		// Selection related overlays
 		if (file.selectionCanvas) {
+			// Create an overlay for selections
 			const d = new Canvas(null, file.width*file.zoom, file.height*file.zoom);
-			// d.doAction(DrawImage, file.selectionCanvas.el, 0,0, file.zoom);
+
+			// Apply marching ants on selection overlay
 			d.doAction(DrawSelectionMarchingAnts, file.selectionBorders, offset, 8, file.zoom);
 
+			// calculate selection overlay position
 			let x = r[0], y = r[1];
 			if (file.selectionOffset) {
 				file.lastSelectionOffset = null;
@@ -51,20 +71,21 @@ export default class Redraw extends FileAction {
 				x += file.lastSelectionOffset.x*file.zoom; y+= file.lastSelectionOffset.y*file.zoom;
 			}
 
+			// Draw selection overlay on main canvas
 			canvas.doAction(DrawImage, d.el, x, y);
 
 		}
 		else { file.selectionOverlay = null; }
 
 		///////////////////////////////////////////////////////////////////////
-		// Tool canvas
+		// Tool canvas - used for tool helpers
 
 		if (file.toolCanvas) {
 			canvas.doAction(DrawImage, file.toolCanvas.el, r[0], r[1], file.zoom);
 		}
 
 		///////////////////////////////////////////////////////////////////////
-		// Pixel Grid
+		// draw a Pixel Grid if zoom is high enough so it won't be obstructive
 
 		if (file.zoom >= 8) {
 			canvas.doAction(PixelGrid, file.zoom, r[0]-1, r[1]-1);

@@ -1,7 +1,26 @@
+/**
+ * Draw Rectangle
+ * @ActionType: Canvas
+ * @Description Draws the boundaries of the main canvas in the center of the screen, depending on zoom/pan
+ *
+
+ *
+ */
 import {CanvasAction} from "../../classes/abstracts/Actions";
 
 export default class DrawRect extends CanvasAction {
 
+    /**
+     *
+     * @param target
+     * @param {number} x - rect x
+     * @param {number} y - rect y
+     * @param {number} w - rect width
+     * @param {number} h - rect height
+     * @param {string|null} fill - fill color
+     * @param {string|null} stroke - stroke color
+     * @param {number|null} strokeWidth - stroke width
+     */
     do(target, x, y, w, h, fill = null, stroke = null, strokeWidth = 1) {
         x = Math.floor(x);
         y = Math.floor(y);

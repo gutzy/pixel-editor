@@ -1,3 +1,10 @@
+/**
+ * @Tool Zoom
+ * @author guszi
+ *
+ * allows zooming in/out of stuff
+ */
+
 import Tool from "../classes/abstracts/Tool";
 import ZoomIcon from "../assets/svg/zoom.svg";
 import ZoomInCursor from "../assets/png/zoom-in.png"
@@ -26,7 +33,6 @@ export default class Zoom extends Tool {
 		this.doAction(WatchKey, ['Alt', 'Shift'], (altIsDown) => {
 			this.direction = altIsDown ? -1 : 1;
 			this.doAction(TrySettingCursor, this.direction > 0 ? ZoomInCursor : ZoomOutCursor);
-
 			this.doAction(ToolInfo,{"Mode" : (this.direction>0)?"Zoom in":"Zoom out"});
 		});
 	}
@@ -38,9 +44,7 @@ export default class Zoom extends Tool {
 	start(file, canvas, x, y) {	}
 	stop(file, canvas, x, y) {
 		file.doAction(this.direction > 0 ? ZoomIn : ZoomOut, ZoomConfig.ZoomLevels);
-
 		file.dragOffset = { x : (-file.width/2+x)*file.zoom, y: (-file.height/2+y)*file.zoom };
-
 	}
 
 	use(file, canvas, x, y, toolCanvas) {
