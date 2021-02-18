@@ -17,7 +17,8 @@ be done under the new `src/` folder.
 
 All the HTML templates are now rendered in Vue instead of Handlebars. The main app is in
 `index.js` and it also launches the pixel editor, while the sub-components are under
-`src/components`.
+`src/components/`. The components communicate with the pixel editor using `EventBus`, a tiny
+events library used across the app to make sure Vue can be easily replaced later.
 
 ---
 
