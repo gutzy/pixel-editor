@@ -56,7 +56,8 @@ class SquareStampTool extends Tool {
 
 The `canvas` and `file` arguments, provided by AppManager, refer to the active file and
 its active layer's canvas, or if there's an active selection, the file's selection canvas. 
-The wiring between events, files and tools is in `src/classes/AppManager.js`.
+The wiring between events, files and tools is in `src/classes/AppManager.js`, while some
+tools-related actions used there can be located in `src/actions/file/tools/`
 
 
 **Most relevant folders**
