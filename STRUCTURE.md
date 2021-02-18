@@ -27,11 +27,13 @@ events library used in many places across the app, so Vue can also be easily rep
 The pixel editor relies heavily on action composition, because this is an effective way
 to heavily recycle code and reduce complex tool clutter, so every action done in the editor
 is under `src/actions`, while other parts define tools that use these actions and 
-things these actions are used on. 
+things these actions are used on. Actions can in turn call other actions in their context,
+rather than just applying raw code - allowing re-use of ever more complex actions as the 
+editor evolves. 
 
 **Most relevant folders**
 
-You will likely only need to work on `src/actions` and `src/tools` to extend the
+You will likely only need to work on `src/actions/`, `src/tools/` and `src/config/` to extend the
 editor functionality, and perhaps `src/components` if you want to change base HTML templates.
 
 **Folder Structure**
