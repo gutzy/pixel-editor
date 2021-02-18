@@ -4,7 +4,7 @@ different development stuff. Besides switching to ES6 includes via webpack, all 
 codebase is under the `src/` folder, and is compiled to the `dist/` folder.
 
 A lot of old legacy code remains for reverse-engineering purposes under the `js/` 
-and `ext/` folders. However this code is unused, and any changes should be done under the
+and `_ext/` folders. However this code is unused, and any changes should be done under the
 new `src/` folder, where all the new code can be found.
 
 ---
