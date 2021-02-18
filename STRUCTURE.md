@@ -39,7 +39,7 @@ editor functionality, and perhaps `src/components` if you want to change base HT
 `(root)`
 * `index.js` main application file. Vue app/Pixel Editor canvas initialization.
 
-`src/actions` - action defitions
+`src/actions/` - action defitions
 * `src/actions/app/` global actions performed on the entire app
 * `src/actions/canvas/` actions performed on a `Canvas` instance
 * `src/actions/file/` actions performed on a `File` instance
@@ -47,7 +47,7 @@ editor functionality, and perhaps `src/components` if you want to change base HT
 
 `src/assets/` Static assets. Currently used for image files
 
-`src/classes` - class definitions
+`src/classes/` - class definitions
 * `src/classes/abstracts/Actions.js` Abstract defintions for all actions
 * `src/classes/abstracts/Tool.js` Abstract tool class - all tools inherit from it
 * `src/classes/AppManager.js` **App Manager** - handles wiring between main canvas, input
@@ -61,14 +61,14 @@ and active editor.
 * `src/classes/MainCanvas.js` extends Canvas. Contains some specialized main canvas actions.
 * `src/classes/Palette.js` Palette class. Defines a palette (still unused)
 
-`src/components` - Vue components
+`src/components/` - Vue components
 * `src/components/ColorPalette.js` Color Palette component
 * `src/components/Dialog.js` Dialog component (still unused)
 * `src/components/LayersPanel.js` Sortable layers list component
 * `src/components/MenuBar.js` top application menu component
 * `src/components/Toolbox.js` panel containing all the editor tools
 
-`src/config` - Editor configuration
+`src/config/` - Editor configuration
 * `src/config/Core.js` basic app configuration (still unused)
 * `src/config/Menu.js` Menu items configuration - items shown in the app menu.
 * `src/config/Tools.js` Tools configuration - tools shown in the app toolbox.
