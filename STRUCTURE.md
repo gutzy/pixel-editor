@@ -95,9 +95,11 @@ and active editor.
 and optionally a custom cursor, to be placed under `src/assets/png/`.
 2. Create a new tool class file under `src/tools/`, for example `CoolTool.js`. 
 Use the Paint Bucket tool as a reference to how a complete Tool constructor looks like. 
-Create its required start/use/stop methods.
+Create empty start/use/stop methods, as they are required to exist in every tool.
 3. Add the newly created tool to the Tools config file, under `src/config/Tools.js`. Now you
 should be able to see it in the Toolbox.
-4. In the start/use/stop methods, use different Canvas Actions to perform your desired
+4. Implement the Tool's start/use/stop methods. These methods run in the currently active tool
+whenever the mouse is pressed (start), moved while pressed (use) or released (stop), and they
+are provided x/y coordinates. use different Canvas Actions to perform your desired
 actions on the current layer/selection canvas. If you can't find a Canvas Action that
 does what you want, you might need to create one under `/src/actions/canvas/`.
