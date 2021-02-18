@@ -1,11 +1,17 @@
 ## New Pixel Editor app structure
 This is a basic guide of how to get around the new app structure and how to go about doing 
-different development stuff. Besides switching to ES6 includes via webpack, all of the new
-codebase is under the `src/` folder, and is compiled to the `dist/` folder.
+different development stuff. 
 
-A lot of old legacy code remains for reverse-engineering purposes under the `js/` 
-and `_ext/` folders. However this code is unused, and any changes should be done under the
-new `src/` folder, where all the new code can be found.
+**New Code**
+
+Besides switching to ES6 includes via webpack, all of the new codebase is under the `src/`
+folder, and is compiled to the `dist/` folder with Webpack.
+
+**Legacy Code**
+
+A lot of old legacy code remains for reverse-engineering purposes under the `_ext/`, `js/`,
+`css/`, `images/` and `views/` folders. However this code is unused, and any changes should 
+be done under the new `src/` folder.
 
 ---
 
