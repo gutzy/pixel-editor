@@ -102,8 +102,7 @@ should be able to see it in the Toolbox.
 whenever the mouse is pressed (start), moved while pressed (use) or released (stop), and they
 are provided the current File, current Canvas, and the mouse event's x/y coordinates. Use 
 different Canvas Actions on the current Canvas to perform your desired actions on the currently
-active layer/selection canvas.
-You can stack several actions, use them with your own conditional logic etc. 
+active layer/selection canvas. You can stack several actions, use them with conditional logic etc. 
 5. If you can't find a Canvas Action that does what you want, you may need to create a new one 
 under `/src/actions/canvas/`. Use the DrawRect Canvas Action as a reference to how a simple 
 Canvas Action looks like.
