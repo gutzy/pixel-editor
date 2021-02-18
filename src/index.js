@@ -5,6 +5,12 @@
  * 1. Defines the Vue application wrapper.
  * 2. Once the application is mounted, initializes the pixel editor on the main canvas.
  *
+ * The pixel editor works inside the main canvas element, completely independently of Vue.
+ * The parts Vue.js is in charge of are the menus, panels, toolbox - stuff that aren't drawn inside the canvas.
+ *
+ * The Editor and Vue components communicate with each other using our own simple EventBus system, so Vue can be easily
+ * detached and replaced with another framework if the need arises.
+ *
  * Have fun!
  *
  */
