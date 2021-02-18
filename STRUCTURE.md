@@ -94,9 +94,10 @@ and active editor.
 1. create a new tool icon svg, place it under `/src/assets/svg/` 
 and optionally a custom cursor, to be placed under `src/assets/png/`.
 2. Create a new tool class file under `src/tools/`, for example `CoolTool.js`. 
-Use the Pencil tool in `Pencil.js` as a reference to how a Tool constructor looks like. 
+Use the Paint Bucket tool as a reference to how a complete Tool constructor looks like. 
 Create its required start/use/stop methods.
-3. Add the newly created tool to the Tools config file, under `src/config/Tools.js`.
+3. Add the newly created tool to the Tools config file, under `src/config/Tools.js`. Now you
+should be able to see it in the Toolbox.
 4. In the start/use/stop methods, use different Canvas Actions to perform your desired
 actions on the current layer/selection canvas. If you can't find a Canvas Action that
 does what you want, you might need to create one under `/src/actions/canvas/`.
