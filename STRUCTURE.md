@@ -45,8 +45,8 @@ Deals with performing actions on Canvases, all the drawing and rendering. These
 will likely grow in number as we add more tools.
 
 So for example, if you are authoring a tool, and you want to run an action on the canvas,
-you can draw a black 10x10 pixels square around where you click like this, implementing a
-very basic square stamp tool:
+you can draw a black 10x10 pixels square around where you click by using a DrawRect Canvas 
+Action, implementing a very basic square stamp tool:
 ```ecmascript 6
 import DrawRect from '../actions/canvas/DrawRect';
 
