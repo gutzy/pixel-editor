@@ -13,6 +13,12 @@ A lot of old legacy code remains for reverse-engineering purposes under the `_ex
 `css/`, `images/` and `views/` folders. However this code is unused, and any changes should 
 be done under the new `src/` folder.
 
+**Vue replacing handlebars**
+
+All the HTML templates are now rendered in Vue instead of Handlebars. The main app is in
+`index.js` and it also launches the pixel editor, while the sub-components are under
+`src/components`.
+
 ---
 
 ### Structure overview
