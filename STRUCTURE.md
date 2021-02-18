@@ -34,9 +34,15 @@ editor evolves.
 **Action Types**
 
 There are several action types used by the editor, but the most important ones are:
-* App Action: runs in global app context, receives `AppManager` as the first argument
-* File Action: runs on a File class instance, receives `file` as the first argument
-* Canvas Action: runs on a Canvas class instance, receives `canvas` as the first argument
+* App Action: runs in global app context, receives `AppManager` as the first argument. 
+Deals with system-wide events, so there are very few of them, and they will probably
+not change much.
+* File Action: runs on a File class instance, receives `file` as the first argument.
+Deals with events inside files, e.g. sorting layers, setting history, panning/zooming -
+these are fundamental stuff so they won't change much either.
+* Canvas Action: runs on a Canvas class instance, receives `canvas` as the first argument.
+Deals with performing actions on Canvases, all the drawing and rendering. These
+will likely grow in number as we add more tool.
 
 So for example, if you are authoring a tool, and you want to run an action on the canvas,
 you can draw a black 10x10 pixels square around where you click like this, implementing a
