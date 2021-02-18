@@ -42,7 +42,7 @@ Deals with events inside files, e.g. sorting layers, setting history, panning/zo
 these are fundamental stuff so they won't change much either.
 * Canvas Action: runs on a Canvas class instance, receives `canvas` as the first argument.
 Deals with performing actions on Canvases, all the drawing and rendering. These
-will likely grow in number as we add more tool.
+will likely grow in number as we add more tools.
 
 So for example, if you are authoring a tool, and you want to run an action on the canvas,
 you can draw a black 10x10 pixels square around where you click like this, implementing a
