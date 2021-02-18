@@ -26,7 +26,7 @@ events library used in many places across the app, so Vue can also be easily rep
 
 The pixel editor relies heavily on action composition, because this is an effective way
 to heavily recycle code and reduce complex tool clutter, so every action done in the editor
-is under `src/actions`, while other parts define tools that use these actions and 
+is under `src/actions/`, while other parts define tools that use these actions and 
 things these actions are used on. Actions can in turn call other actions in their context,
 rather than just applying raw code - allowing re-use of ever more complex actions as the 
 editor evolves. 
@@ -91,9 +91,9 @@ and active editor.
 ### Common Tasks
 
 **Adding a new Tool**
-1. create a new tool icon svg, place it under `/src/assets/svg` 
-and optionally a custom cursor, to be placed under `src/assets/png`.
-2. Create a new tool class file under `src/tools`, for example `CoolTool.js`. 
+1. create a new tool icon svg, place it under `/src/assets/svg/` 
+and optionally a custom cursor, to be placed under `src/assets/png/`.
+2. Create a new tool class file under `src/tools/`, for example `CoolTool.js`. 
 Use the Pencil tool in `Pencil.js` as a reference to how a Tool constructor looks like. 
 Create its required start/use/stop methods.
 3. Add the newly created tool to the Tools config file, under `src/config/Tools.js`.
