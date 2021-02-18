@@ -100,6 +100,9 @@ Create empty start/use/stop methods, as they are required to exist in every tool
 should be able to see it in the Toolbox.
 4. Implement the Tool's start/use/stop methods. These methods run in the currently active tool
 whenever the mouse is pressed (start), moved while pressed (use) or released (stop), and they
-are provided x/y coordinates. use different Canvas Actions to perform your desired
-actions on the current layer/selection canvas. If you can't find a Canvas Action that
-does what you want, you might need to create one under `/src/actions/canvas/`.
+are provided x/y coordinates. Use different Canvas Actions to perform your desired
+actions on the current layer/selection canvas. You can stack several actions, use them with
+your own conditional logic etc. 
+5. If you can't find a Canvas Action that does what you want, you may need to create a new one 
+under `/src/actions/canvas/`. Use the DrawRect Canvas Action as a reference to how a simple 
+Canvas Action looks like.
