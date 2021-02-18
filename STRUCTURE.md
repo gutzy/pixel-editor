@@ -39,8 +39,8 @@ There are several action types used by the editor, but the most important ones a
 * Canvas Action: runs on a Canvas class instance, receives `canvas` as the first argument
 
 So for example, if you are authoring a tool, and you want to run an action on the canvas,
-you can draw a 10x10 pixels square around where you click like this, implementing a basic 
-square stamp tool:
+you can draw a black 10x10 pixels square around where you click like this, implementing a
+very basic square stamp tool:
 ```ecmascript 6
 import DrawRect from '../actions/canvas/DrawRect';
 
