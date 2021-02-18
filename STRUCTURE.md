@@ -45,6 +45,7 @@ editor functionality, and perhaps `src/components` if you want to change base HT
 * `src/actions/app/` global actions performed on the entire app
 * `src/actions/canvas/` actions performed on a `Canvas` instance
 * `src/actions/file/` actions performed on a `File` instance
+* `src/actions/file/Redraw.js` **Redraw action**. Renders the current file to the main canvas.
 * `src/actions/tool/` actions performed on a `Tool` instance
 
 `src/assets/` Static assets. Currently used for image files
