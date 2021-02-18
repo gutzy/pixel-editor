@@ -133,7 +133,7 @@ class _AppManager {
     }
 
     /**
-     * proxy a mousedown event from the app to the active file
+     * proxy a mousedown event from the app to the active file - run active tool START method.
      * @param x - cursor x position
      * @param y - cursor y position
      */
@@ -143,7 +143,7 @@ class _AppManager {
         let pos = screenToRectXY(r, x, y);
         // Check that the click was within bounds, unless the tool can be used outside the bounds.
         if (this.file && this.file.selectedTool && (isXYinRect(r,x,y) || (this.file.selectedTool && this.file.selectedTool.useOutside))) {
-            // Run Start Tool action
+            // Run Start Tool method
         	if (this.file.selectedTool.useOutside) await this.file.doAction(StartTool, x, y);
             else await this.file.doAction(StartTool, pos.x, pos.y);
 		}
@@ -151,7 +151,7 @@ class _AppManager {
         EventBus.$emit('redraw-canvas');
     }
     /**
-     * proxy a mouseup event from the app to the active file
+     * proxy a mouseup event from the app to the active file - run active tool STOP method
      * @param x - cursor x position
      * @param y - cursor y position
      */
@@ -161,7 +161,7 @@ class _AppManager {
         let pos = screenToRectXY(r, x, y);
         if (this.file) {
             if (this.file.selectedTool && this.file.selectedTool.useOutside) await this.file.doAction(StopTool, x, y);
-            // Run Stop Tool action
+            // Run Stop Tool method
             else await this.file.doAction(StopTool, pos.x, pos.y);
         }
 
@@ -169,7 +169,7 @@ class _AppManager {
     }
 
     /**
-     * proxy a mousemove event from the app to the active file
+     * proxy a mousemove event from the app to the active file - run active tool USE method
      * @param x - cursor x position
      * @param y - cursor y position
      */
@@ -178,12 +178,12 @@ class _AppManager {
         const r = getCenterRect(this.canvas.el, this.file.width,this.file.height, this.file.zoom, this.file.dragOffset);
         let pos = screenToRectXY(r, x, y);
 
-        // run tool hover action
+        // run tool hover method
         this.file.doAction(HoverTool,pos.x, pos.y);
         // check if mouse is still clicked and cursor is within the drawing bounds, unless the tool can be used outside the bounds.
         if (this.input.isMouseDown() && this.file && (isXYinRect(r,x,y) || (this.file.selectedTool && this.file.selectedTool.useOutside))) {
 
-            // Run Use Tool action
+            // Run Use Tool method
             if (this.file.selectedTool && this.file.selectedTool.useOutside) await this.file.doAction(UseTool, x, y);
             else await this.file.doAction(UseTool,pos.x, pos.y);
             EventBus.$emit('redraw-canvas');
