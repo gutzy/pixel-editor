@@ -30,7 +30,7 @@ editor functionality, and perhaps `src/components` if you want to change base HT
 **Folder Structure**
 
 `(root)`
-* `index.js` main application file. Vue wrapper/Pixel Editor canvas initialization.
+* `index.js` main application file. Vue app/Pixel Editor canvas initialization.
 
 `src/actions` - action defitions
 * `src/actions/app/` global actions performed on the entire app
