@@ -54,8 +54,8 @@ class SquareStampTool extends Tool {
 }
 ```
 
-The `canvas` argument provided to the tool will refer to the currently active layer's canvas,
-or if there's a selection, the current selection canvas. 
+The `canvas` and `file` arguments, provided by AppManager, refer to the active file and
+its active layer's canvas, or if there's an active selection, the file's selection canvas. 
 The wiring between events, files and tools is in `src/classes/AppManager.js`.
 
 
