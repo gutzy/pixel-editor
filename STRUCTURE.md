@@ -29,7 +29,27 @@ to heavily recycle code and reduce complex tool clutter, so every action done in
 is under `src/actions/`, while other parts define tools that use these actions and 
 things these actions are used on. Actions can in turn call other actions in their context,
 rather than just applying raw code - allowing re-use of ever more complex actions as the 
-editor evolves. 
+editor evolves.
+
+**Action Types**
+
+There are several action types used by the editor, but the most important ones are:
+* App Action: runs in global app context, receives `AppManager` as the first argument
+* File Action: runs on a File class instance, receives `file` as the first argument
+* Canvas Action: runs on a Canvas class instance, receives `canvas` as the first argument
+
+So for example, if you are authoring a tool, and you want to run an action on the canvas,
+you can draw a 10x10 pixels square around where you clicked like this:
+```ecmascript 6
+import DrawRect from '../actions/canvas/DrawRect';
+
+class CoolTool extends Tool {
+    start(file, canvas, x, y) {
+        canvas.doAction(DrawRect, x - 5, y - 5, 10, 10, '#000000');
+    }
+    // use, stop...
+}
+```
 
 **Most relevant folders**
 
