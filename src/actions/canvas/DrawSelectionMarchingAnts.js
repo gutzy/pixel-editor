@@ -7,21 +7,35 @@
  * having to re-calculate the border shape.
  *
  */
-import {CanvasAction} from "../../classes/abstracts/Actions";
+
 import Canvas from "../../classes/Canvas";
 import DrawImage from "./DrawImage";
+import {FileAction} from "../../classes/abstracts/Actions";
 let w, h, xMask, yMask;
 
-export default class DrawSelectionMarchingAnts extends CanvasAction {
+export default class DrawSelectionMarchingAnts extends FileAction {
     /**
      *
-     * @param target
+     * @param file
+     * @param {Canvas} canvas - target canvas to draw borders on
      * @param {Canvas[]} borders - array of 4 border canvases, each representing left,up,right,down. Created by DrawSelectionBorders.
      * @param {number} offset - an incrementing integer designating the current frame of the animation
      * @param {number} size - px width of the marching ants. lines will take up 1/2 of this size, with a gap in the remaining half.
      * @param {number} zoom - designates the viewport zoom. The selection image is scaled accordingly, as it is drawn independently.
+     * @param {{x,y}} dragOffset - offset from the viewport center
+
      */
-    do(target, borders, offset, size = 8, zoom = 1) {
+    do(file, canvas, borders, offset, size, zoom, dragOffset) {
+
+        const target = new Canvas(null, Math.min(screen.width, canvas.el.width*zoom), Math.min(screen.height, canvas.el.height*zoom));
+        const frame = offset%size;
+        let w=0, h=0;
+
+        if (!borders) return;
+
+        if (!file.marchingAnts) file.marchingAnts = [];
+
+        if (file.marchingAnts[frame]) return file.marchingAnts[frame]
 
         // Draw the marching ants masking elements, if they don't exist or the canvas was resized
         // These are two images, with an interchanging stripe pattern, that are later cut from the borders
@@ -33,7 +47,6 @@ export default class DrawSelectionMarchingAnts extends CanvasAction {
             // Draw the striped masks
             for (let x = 0; x <= w; x += size) xMask.ctx.fillRect(x, 0, size/2, h)
             for (let y = 0; y <= h; y += size) yMask.ctx.fillRect(0, y, w, size/2)
-
         }
 
         // Create a fresh target canvas for the drawn borders
@@ -49,17 +62,18 @@ export default class DrawSelectionMarchingAnts extends CanvasAction {
             // Depending on the border, apply the mask on target canvas w/ a different offset, to create the animation
             tgt.ctx.globalCompositeOperation = 'destination-out';
             switch (i) {
-                case 0: tgt.doAction(DrawImage, yMask.el, 0, size-offset%size); break; // left
-                case 1: tgt.doAction(DrawImage, xMask.el, offset%size, 0); break; // up
-                case 2: tgt.doAction(DrawImage, yMask.el, 0, offset%size); break; // right
-                case 3: tgt.doAction(DrawImage, xMask.el, size-offset%size, 0); break; // down
+                case 0: tgt.doAction(DrawImage, yMask.el, 0, size-frame); break; // left
+                case 1: tgt.doAction(DrawImage, xMask.el, frame, 0); break; // up
+                case 2: tgt.doAction(DrawImage, yMask.el, 0, frame); break; // right
+                case 3: tgt.doAction(DrawImage, xMask.el, size-frame, 0); break; // down
             }
 
-            // Apply this borders to the target canvas
-            target.doAction(DrawImage,tgt.el, 0,0);
+            target.doAction(DrawImage, tgt.el, 0, 0);
 
             // reset the target canvas drawing mode
             tgt.ctx.globalCompositeOperation = 'source-over';
         }
+        file.marchingAnts[frame] = target.el;
+        return tgt.el;
     }
 }

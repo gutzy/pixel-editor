@@ -16,6 +16,7 @@ import CreateSelectionOverlay from "../actions/file/selection/CreateSelectionOve
 import DrawImage from "../actions/canvas/DrawImage";
 import DrawSelectionBorders from "../actions/canvas/DrawSelectionBorders";
 import EventBus from "../utils/EventBus";
+import DrawToolCanvasOnLayer from "../actions/file/selection/DrawToolCanvasOnLayer";
 
 
 export default class Select extends Tool {
@@ -47,7 +48,12 @@ export default class Select extends Tool {
 
             // New selection
             case 'select':
-                EventBus.$emit('select-area-solidify');
+                if (file.toolSelectionCanvas) {
+                    console.log("chou?")
+
+                    file.doAction(DrawToolCanvasOnLayer);
+                    file.toolSelectionCanvas = null;
+                }
                 file.selectionCanvas = new Canvas(null, canvas.width, canvas.height);
                 file.selectionCanvas.doAction(FillArea, x, y, '#000000', file.layers[file.activeLayer].canvas.ctx);
                 file.toolSelectionCanvas = new Canvas(null, canvas.width, canvas.height);

@@ -44,6 +44,7 @@ export default class LoadContents extends FileAction {
 			// Restore selection
 			if (selection) {
 				file.toolSelectionCanvas = new Canvas(null, file.width, file.height, selection.data);
+				file.selectionCanvas =  new Canvas(null, file.width, file.height, selection.data);
 				console.log("Restored selection canvas")
 			}
 			else {

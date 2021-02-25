@@ -29,7 +29,7 @@ export default class DrawSelectionBorders extends CanvasAction {
     do(target, source, zoom = 1, file, skipData = false) {
 
         // Initialize helper functions
-        const w = target.el.width*zoom, h = target.el.height*zoom;
+        const w = Math.min(screen.width, target.el.width*zoom), h = Math.min(screen.height, target.el.height*zoom);
         const l = (i) => i-4,
             u = (i) => i-w*4,
             r = (i) => i+4,

@@ -52,13 +52,24 @@ export default class Redraw extends FileAction {
 		}
 
 		///////////////////////////////////////////////////////////////////////
+		// Tool canvas - used for tool helpers
+
+		if (file.toolCanvas) {
+			canvas.doAction(DrawImage, file.toolCanvas.el, r[0], r[1], file.zoom);
+		}
+
+		///////////////////////////////////////////////////////////////////////
+		// draw a Pixel Grid if zoom is high enough so it won't be obstructive
+
+		if (file.zoom >= 8) {
+			canvas.doAction(PixelGrid, file.zoom, r[0]-1, r[1]-1);
+		}
+
+		///////////////////////////////////////////////////////////////////////
 		// Selection related overlays
 		if (file.selectionCanvas) {
 			// Create an overlay for selections
-			const d = new Canvas(null, file.width*file.zoom, file.height*file.zoom);
-
-			// Apply marching ants on selection overlay
-			d.doAction(DrawSelectionMarchingAnts, file.selectionBorders, offset, 8, file.zoom);
+			const ants = file.doAction(DrawSelectionMarchingAnts, canvas, file.selectionBorders, offset, 8, file.zoom, file.dragOffset);
 
 			// calculate selection overlay position
 			let x = r[0], y = r[1];
@@ -72,23 +83,11 @@ export default class Redraw extends FileAction {
 			}
 
 			// Draw selection overlay on main canvas
-			canvas.doAction(DrawImage, d.el, x, y);
+			if (ants) canvas.doAction(DrawImage, ants, x, y);
 
 		}
 		else { file.selectionOverlay = null; }
 
-		///////////////////////////////////////////////////////////////////////
-		// Tool canvas - used for tool helpers
 
-		if (file.toolCanvas) {
-			canvas.doAction(DrawImage, file.toolCanvas.el, r[0], r[1], file.zoom);
-		}
-
-		///////////////////////////////////////////////////////////////////////
-		// draw a Pixel Grid if zoom is high enough so it won't be obstructive
-
-		if (file.zoom >= 8) {
-			canvas.doAction(PixelGrid, file.zoom, r[0]-1, r[1]-1);
-		}
 	}
 }
