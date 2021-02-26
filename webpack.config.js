@@ -10,6 +10,13 @@ module.exports = (env, argv) => {
             publicPath: '/',
             filename: 'bundle.js'
         },
+
+        devServer: {
+            contentBase: path.join(__dirname, 'dist'),
+            compress: true,
+            port: 3000,
+        },
+
         module: {
             rules: [
                 {
