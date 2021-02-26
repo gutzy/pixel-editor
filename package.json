@@ -5,7 +5,6 @@
   "main": "build.js",
   "scripts": {
     "build": "webpack --mode=production -o dist",
-    "watch": "webpack -w",
     "serve": "webpack serve",
     "test": "npm run build && npm run serve"
   },
