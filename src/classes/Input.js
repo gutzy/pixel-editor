@@ -27,6 +27,7 @@ export default class Input {
     bindInputs() {
         window.addEventListener('mouseup', this.onMouseUp.bind(this));
         window.addEventListener('mousedown', this.onMouseDown.bind(this));
+        window.addEventListener('wheel', this.onMouseWheel.bind(this));
         window.addEventListener('mousemove', this.onMouseMove.bind(this));
         window.addEventListener('keyup', this.onKeyUp.bind(this));
         window.addEventListener('keydown', this.onKeyDown.bind(this));
@@ -34,6 +35,15 @@ export default class Input {
         window.addEventListener('focus', this.onFocus.bind(this));
     }
 
+    /**
+     * Mousewheel EventBus proxy
+     */
+    onMouseWheel(e) {
+        const delta = e.deltaY;
+        const xy = getEventXY(e, this._canvas.el);
+        EventBus.$emit('input-mouse-wheel', delta, xy);
+    }
+     
     /**
      * Mouseup EventBus proxy
      */

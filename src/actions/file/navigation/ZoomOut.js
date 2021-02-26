@@ -14,7 +14,7 @@ export default class ZoomOut extends FileAction {
 	 * @param file
 	 * @param {number[]} zoomLevels an array designating the different available zoom levels
 	 */
-	do(file, zoomLevels) {
+	do(file, zoomLevels, zoomX, zoomY) {
 		let zoom = file.zoom;
 		// iterate zoom levels to see where we currently are
 		for (let l = 0; l < zoomLevels.length; l++) {
@@ -22,6 +22,13 @@ export default class ZoomOut extends FileAction {
 			if (file.zoom > zoomLevels[l]) zoom = zoomLevels[l];
 			else break;
 		}
+
+		/*
+		file.dragOffset = { 
+            x : (-file.width/2+zoomX)*file.zoom, 
+            y: (-file.height/2+zoomY)*file.zoom
+        };
+		*/
 		file.zoom = zoom;
 
 		// update UI

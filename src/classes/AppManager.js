@@ -8,7 +8,7 @@ import EventBus from "../utils/EventBus";
 import Input from "./Input";
 import MainCanvas from "./MainCanvas";
 import {getCenterRect, isXYinRect, screenToRectXY} from "../utils/CanvasUtils";
-import Tools from "../config/Tools";
+import Tools, { ZoomConfig } from "../config/Tools";
 import Menu from "../config/Menu";
 import {AppAction} from "./abstracts/Actions";
 import NewFile from "../actions/app/NewFile";
@@ -19,6 +19,8 @@ import UseTool from "../actions/file/tools/UseTool";
 import SetTool from "../actions/file/tools/SetTool";
 import Redraw from "../actions/file/Redraw";
 import HoverTool from "../actions/file/tools/HoverTool";
+import ZoomIn from "../actions/file/navigation/ZoomIn";
+import ZoomOut from "../actions/file/navigation/ZoomOut";
 
 class _AppManager {
 
@@ -101,12 +103,12 @@ class _AppManager {
      * Bind all input methods from input class to the designated AppManager methods
      */
     bindListeners() {
-
         this.input = new Input(this.canvas);
         this.input.bindInputs();
 
         EventBus.$on("input-mouse-down", this.onMouseDown.bind(this));
         EventBus.$on("input-mouse-up", this.onMouseUp.bind(this));
+        EventBus.$on("input-mouse-wheel", this.onMouseWheel.bind(this));
         EventBus.$on("input-key-down", this.onKeyDown.bind(this));
         EventBus.$on("input-key-up", this.onKeyUp.bind(this));
         EventBus.$on("input-mouse-move", this.onMouseMove.bind(this));
@@ -130,6 +132,15 @@ class _AppManager {
             throw new Error("Not an app action!");
         }
         return a.do(this, ...params);
+    }
+
+    async onMouseWheel(delta, position) {
+        if (delta < 0) {
+            await this.file.doAction(ZoomIn, ZoomConfig.ZoomLevels, ...position);
+        }
+        else if (delta > 0) {
+            await this.file.doAction(ZoomOut, ZoomConfig.ZoomLevels, ...position);
+        }
     }
 
     /**
