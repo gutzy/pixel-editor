@@ -135,6 +135,13 @@ class _AppManager {
     }
 
     async onMouseWheel(delta, position) {
+        /*
+        this.file.dragOffset = {
+            x: layer.canvas.offsetLeft + (oldWidth - newWidth) * cursorLocation[0]/oldWidth, 
+            y: layer.canvas.offsetTop + (oldHeight - newHeight) *cursorLocation[1]/oldHeight)
+        }
+        */
+
         if (delta < 0) {
             await this.file.doAction(ZoomIn, ZoomConfig.ZoomLevels, ...position);
         }

@@ -7,6 +7,7 @@
 import {FileAction} from "../../../classes/abstracts/Actions";
 import EventBus from "../../../utils/EventBus";
 import CreateSelectionOverlay from "../selection/CreateSelectionOverlay";
+import {clamp} from "../../../utils/MathUtils";
 
 export default class ZoomOut extends FileAction {
 	/**
@@ -16,6 +17,9 @@ export default class ZoomOut extends FileAction {
 	 */
 	do(file, zoomLevels, zoomX, zoomY) {
 		let zoom = file.zoom;
+		zoomX = clamp(zoomX, 0, file.width);
+		zoomY = clamp(zoomY, 0, file.height);
+
 		// iterate zoom levels to see where we currently are
 		for (let l = 0; l < zoomLevels.length; l++) {
 			// set file zoom to the level immediately below
@@ -23,12 +27,14 @@ export default class ZoomOut extends FileAction {
 			else break;
 		}
 
-		/*
-		file.dragOffset = { 
-            x : (-file.width/2+zoomX)*file.zoom, 
-            y: (-file.height/2+zoomY)*file.zoom
-        };
-		*/
+		file.dragOffset =  {
+			x : file.dragOffset.x + (file.width - file.width * zoom) * (zoomX) / file.width,
+			y : file.dragOffset.y + (file.height - file.height * zoom) * (zoomY ) / file.height 
+		}
+
+		console.log("offset: ");
+		console.log(file.dragOffset);
+
 		file.zoom = zoom;
 
 		// update UI

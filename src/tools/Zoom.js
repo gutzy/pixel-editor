@@ -44,12 +44,11 @@ export default class Zoom extends Tool {
 	start(file, canvas, x, y) {	}
 	stop(file, canvas, x, y) {
 		file.doAction(this.direction > 0 ? ZoomIn : ZoomOut, ZoomConfig.ZoomLevels);
-		file.dragOffset = { x : (-file.width/2+x)*file.zoom, y: (-file.height/2+y)*file.zoom };
 	}
 
 	use(file, canvas, x, y, toolCanvas) {
 		// the following code will help debugging the cursor position:
-		// toolCanvas.doAction(DrawRect, x, y, 1, 1, null, '#008833')
+		toolCanvas.doAction(DrawRect, x, y, 1, 1, null, '#008833')
 	}
 
 }

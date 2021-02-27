@@ -7,6 +7,7 @@
 import {FileAction} from "../../../classes/abstracts/Actions";
 import EventBus from "../../../utils/EventBus";
 import CreateSelectionOverlay from "../selection/CreateSelectionOverlay";
+import {clamp} from "../../../utils/MathUtils";
 
 export default class ZoomIn extends FileAction {
 
@@ -18,18 +19,31 @@ export default class ZoomIn extends FileAction {
 
 	do(file, zoomLevels, zoomX, zoomY) {
 		let zoom = file.zoom;
+		zoomX = clamp(zoomX, 0, file.width);
+		zoomY = clamp(zoomY, 0, file.height);
 		// iterate zoom levels to see where we currently are
 		for (let l = 0; l < zoomLevels.length; l++) {
 			// set file zoom to the next available level
 			if (file.zoom < zoomLevels[l]) { zoom = zoomLevels[l]; break; }
 		}
 
+		console.log("File size: " + file.width + "," + file.height);
+
 		/*
-		file.dragOffset = { 
-            x : (-file.width/2+zoomX)*file.zoom, 
-            y: (-file.height/2+zoomY)*file.zoom
-        };
-		*/
+        this.file.dragOffset = {
+            x: layer.canvas.offsetLeft + (oldWidth - newWidth) * cursorLocation[0]/oldWidth, 
+            y: layer.canvas.offsetTop + (oldHeight - newHeight) *cursorLocation[1]/oldHeight)
+        }
+        */
+	   
+	   	file.dragOffset =  {
+			x : file.dragOffset.x + (file.width * zoom - file.width) * (zoomX - file.width / 2) / file.width,
+			y : file.dragOffset.y + (file.height * zoom - file.height) * (zoomY - file.height / 2) / file.height
+		}
+
+		console.log("offset: ");
+		console.log(file.dragOffset);
+
 		file.zoom = zoom;
 
 		// update UI
