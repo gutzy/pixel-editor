@@ -140,12 +140,17 @@ class _AppManager {
     async onMouseDown(x,y) {
         // get position
         const r = getCenterRect(this.canvas.el, this.file.width,this.file.height, this.file.zoom, this.file.dragOffset);
-        let pos = screenToRectXY(r, x, y);
+        const r2 = this.canvas.el.getBoundingClientRect();
+        
+        const isXYinCanvas = isXYinRect(r,x,y);
+        const isXYinContainer = isXYinRect([0, 0, r2.width, r2.height],x,y);
+        const isXYValid = ((isXYinCanvas || (this.file.selectedTool && this.file.selectedTool.useOutside)) && isXYinContainer) 
+
         // Check that the click was within bounds, unless the tool can be used outside the bounds.
-        if (this.file && this.file.selectedTool && (isXYinRect(r,x,y) || (this.file.selectedTool && this.file.selectedTool.useOutside))) {
+        if (this.file && this.file.selectedTool && isXYValid) {
+            let pos = this.file.selectedTool.screenSpace? {x,y} :  screenToRectXY(r, x, y);
             // Run Start Tool method
-        	if (this.file.selectedTool.useOutside) await this.file.doAction(StartTool, x, y);
-            else await this.file.doAction(StartTool, pos.x, pos.y);
+            await this.file.doAction(StartTool, pos.x, pos.y);
 		}
 
         EventBus.$emit('redraw-canvas');
@@ -158,11 +163,10 @@ class _AppManager {
     async onMouseUp(x,y) {
         // get position
         const r = getCenterRect(this.canvas.el, this.file.width,this.file.height, this.file.zoom, this.file.dragOffset);
-        let pos = screenToRectXY(r, x, y);
         if (this.file) {
-            if (this.file.selectedTool && this.file.selectedTool.useOutside) await this.file.doAction(StopTool, x, y);
+            let pos = this.file.selectedTool && this.file.selectedTool.screenSpace ? {x,y} : screenToRectXY(r, x, y);
             // Run Stop Tool method
-            else await this.file.doAction(StopTool, pos.x, pos.y);
+            await this.file.doAction(StopTool, pos.x, pos.y);
         }
 
         EventBus.$emit('redraw-canvas');
@@ -176,16 +180,21 @@ class _AppManager {
     async onMouseMove(x,y) {
         // get position
         const r = getCenterRect(this.canvas.el, this.file.width,this.file.height, this.file.zoom, this.file.dragOffset);
-        let pos = screenToRectXY(r, x, y);
+        const r2 = this.canvas.el.getBoundingClientRect();
+        
+        const isXYinCanvas = isXYinRect(r,x,y);
+        const isXYValid = isXYinCanvas || (this.file.selectedTool && this.file.selectedTool.useOutside)
+
+        let pos = this.file && (this.file.selectedTool && this.file.selectedTool.screenSpace) ? {x,y} : screenToRectXY(r, x, y);
 
         // run tool hover method
         this.file.doAction(HoverTool,pos.x, pos.y);
+
         // check if mouse is still clicked and cursor is within the drawing bounds, unless the tool can be used outside the bounds.
-        if (this.input.isMouseDown() && this.file && (isXYinRect(r,x,y) || (this.file.selectedTool && this.file.selectedTool.useOutside))) {
+        if (this.input.isMouseDown() && this.file && isXYValid) {
 
             // Run Use Tool method
-            if (this.file.selectedTool && this.file.selectedTool.useOutside) await this.file.doAction(UseTool, x, y);
-            else await this.file.doAction(UseTool,pos.x, pos.y);
+            await this.file.doAction(UseTool,pos.x, pos.y);
             EventBus.$emit('redraw-canvas');
         }
     }
