@@ -17,7 +17,7 @@ export default class UseTool extends FileAction {
      */
     async do(file, x, y) {
         // check if there's a tool, active layer and that the layer isn't locked
-        if (file.selectedTool && file.activeLayer > -1 && !file.layers[file.activeLayer].locked) {
+        if (file.toolStarted && file.selectedTool && file.activeLayer > -1 && !file.layers[file.activeLayer].locked) {
 
             // default canvas to edit
             let canvas = file.layers[file.activeLayer].canvas;

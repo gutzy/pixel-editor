@@ -24,6 +24,7 @@ export default class Pencil extends Tool {
         this.cursorOffset = [0, 0];
         this.hotkey = 'b';
         this.save = true;
+        this.useOutside = true;
 
         this.size = 1;
 

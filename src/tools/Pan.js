@@ -25,6 +25,7 @@ export default class Pan extends Tool {
 		this.hotkey = 'p';
 		this.spicykey = ' '; // spicy key = hotkey to switch to tool temporarily, only while this key is held
 		this.useOutside = true;
+		this.screenSpace = true;
 	}
 
 	start(file, canvas, x, y) {

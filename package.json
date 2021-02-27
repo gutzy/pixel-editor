@@ -4,8 +4,7 @@
   "description": "Online pixel art creation tool",
   "main": "build.js",
   "scripts": {
-    "build": "webpack -p --output-filename production-bundle.js",
-    "watch": "webpack -w",
+    "build": "webpack --mode=production -o dist",
     "serve": "webpack serve",
     "test": "npm run build && npm run serve"
   },
