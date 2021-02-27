@@ -15,14 +15,14 @@ export default class RunToolPersistence extends FileAction {
         const tool = file.selectedTool;
         // if selected tool is configured as persistent, subscribe it to the main persistence loop
         if (tool.persistent) {
-            this.subscribeToLoop(tool)
+            this.subscribeToLoop(tool, file)
         }
     }
 
-    subscribeToLoop(tool) {
+    subscribeToLoop(tool, file) {
         // on every iteration of the loop, run the tool's persistence method
         EventBus.$on('loop', () => {
-            if (file.toolCanvas) tool.persist(file.toolCanvas);
+            if (file.toolCanvas) tool.persist(file.toolCanvas, file);
         });
     }
 }

@@ -21,20 +21,24 @@ export default class LineTool extends Tool {
         this.cursor = 'crosshair';
         this.hotkey = 'l';
         this.save = true;
-        this.persistent = true;
     }
 
+    // Saving the start position of the line
     start(file, canvas, x, y) {
         this.startPos = {x,y};
     }
+
+    // Saving the end position of the line and drawing it into the right canvas
     stop(file, canvas, x, y) {
         this.endPos = {x,y};
-        canvas.doAction(Line, canvas, this.startPos, this.endPos, file.color);
+        canvas.doAction(Line, this.startPos, this.endPos, file.color);
     }
 
+    // Updating the line preview in the toolCanvas
     use(file, canvas, x, y, toolCanvas) {
         this.endPos = {x,y};
+
         toolCanvas.doAction(ClearCanvas);
-        toolCanvas.doAction(Line, toolCanvas, this.startPos, this.endPos, file.color)
+        toolCanvas.doAction(Line, this.startPos, this.endPos, file.color);
     }
 }

@@ -44,7 +44,7 @@ export default class StopTool extends FileAction {
             await file.selectedTool.stop(file, editCanvas, x / file.zoom, y / file.zoom, file.toolCanvas);
 
             // run last persistence if needed
-            if (file.selectedTool.persistent) { file.selectedTool.persist(file.toolCanvas, true); }
+            if (file.selectedTool.persistent) { file.selectedTool.persist(file.toolCanvas, file, true); }
             else { file.toolCanvas = null; }
 
             // Apply selection masking if needed

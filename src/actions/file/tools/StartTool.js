@@ -48,7 +48,7 @@ export default class StartTool extends FileAction {
             await file.selectedTool.start(file, editCanvas, x / file.zoom, y / file.zoom, file.toolCanvas);
 
             // run first persistence if needed
-            if (file.selectedTool.persistent) file.selectedTool.persist(file.toolCanvas, true);
+            if (file.selectedTool.persistent) file.selectedTool.persist(file.toolCanvas, file, true);
 
             // Apply selection masking if needed
             file.doAction(SelectionMasking, editCanvas);

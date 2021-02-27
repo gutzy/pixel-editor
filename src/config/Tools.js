@@ -11,12 +11,14 @@ import EyeDropper from "../tools/Eyedropper";
 import Pan from "../tools/Pan";
 import Select from "../tools/Select";
 import MagicWand from "../tools/MagicWand";
+import LineTool from "../tools/LineTool";
 
 export default [
     Pencil,
     Eraser,
     Rectangle,
     PaintBucket,
+    LineTool,
     EyeDropper,
     Pan,
     Select,

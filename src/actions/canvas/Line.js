@@ -15,14 +15,20 @@ export default class Line extends CanvasAction {
      * @param {number} strokeWidth - line width in px
      */
     do(target, startPos, endPos, color = null, strokeWidth = 1) {
-        startPos[0] = Math.round(startPos[0]); startPos[1] = Math.round(startPos[1]);
-        endPos[0] = Math.round(endPos[0]); endPos[1] = Math.round(endPos[1]);
+        startPos.x = Math.round(startPos.x); startPos.y = Math.round(startPos.y);
+        endPos.x = Math.round(endPos.x); endPos.y = Math.round(endPos.y);
 
         if (color !== null) {
-            target.ctx.moveTo(startPos[0], startPos[1]);
+            // Stroke settings
             target.ctx.strokeStyle = (color ? color : 'transparent');
             target.ctx.strokeWidth = strokeWidth;
-            target.ctx.lineTo(endPos[0], endPos[1]);
+            
+            // Creating the path
+            target.ctx.beginPath();
+            target.ctx.moveTo(startPos.x, startPos.y);
+            target.ctx.lineTo(endPos.x, endPos.y);
+
+            // Drawing the line
             target.ctx.stroke();
         }
     }

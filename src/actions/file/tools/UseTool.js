@@ -36,7 +36,7 @@ export default class UseTool extends FileAction {
             await file.selectedTool.use(file, editCanvas, x / file.zoom, y / file.zoom, file.toolCanvas);
 
             // run persistence if needed
-            if (file.selectedTool.persist) file.selectedTool.persist(file.toolCanvas, true);
+            if (file.selectedTool.persist) file.selectedTool.persist(file.toolCanvas, file, true);
 
             // Apply selection masking if needed
             file.doAction(SelectionMasking, editCanvas);
