@@ -4,6 +4,8 @@
  * @Description Draws a simple line
  */
 import {CanvasAction} from "../../classes/abstracts/Actions";
+import DrawRect from "../canvas/DrawRect";
+import {pixelsBetween} from "../../utils/CanvasUtils";
 
 export default class Line extends CanvasAction {
     /**
@@ -18,19 +20,10 @@ export default class Line extends CanvasAction {
         startPos.x = Math.round(startPos.x); startPos.y = Math.round(startPos.y);
         endPos.x = Math.round(endPos.x); endPos.y = Math.round(endPos.y);
 
-        if (color !== null) {
-            // Stroke settings
-            target.ctx.strokeStyle = (color ? color : 'transparent');
-            target.ctx.strokeWidth = strokeWidth;
-            
-            // Creating the path
-            target.ctx.beginPath();
-            target.ctx.moveTo(startPos.x, startPos.y);
-            target.ctx.lineTo(endPos.x, endPos.y);
-
-            // Drawing the line
-            target.ctx.stroke();
+        const pixelsToPaint = pixelsBetween(startPos.x, startPos.y, endPos.x, endPos.y);
+        
+        for (let p of pixelsToPaint) { // draw pixels between this and the previous mouse movement
+            target.doAction(DrawRect, p.x, p.y, strokeWidth, strokeWidth, color);
         }
     }
-
 }
