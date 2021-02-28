@@ -26,23 +26,11 @@ export default class ZoomIn extends FileAction {
 			// set file zoom to the next available level
 			if (file.zoom < zoomLevels[l]) { zoom = zoomLevels[l]; break; }
 		}
-
-		console.log("File size: " + file.width + "," + file.height);
-
-		/*
-        this.file.dragOffset = {
-            x: layer.canvas.offsetLeft + (oldWidth - newWidth) * cursorLocation[0]/oldWidth, 
-            y: layer.canvas.offsetTop + (oldHeight - newHeight) *cursorLocation[1]/oldHeight)
-        }
-        */
 	   
-	   	file.dragOffset =  {
+	   	/*file.dragOffset =  {
 			x : file.dragOffset.x + (file.width * zoom - file.width) * (zoomX - file.width / 2) / file.width,
 			y : file.dragOffset.y + (file.height * zoom - file.height) * (zoomY - file.height / 2) / file.height
-		}
-
-		console.log("offset: ");
-		console.log(file.dragOffset);
+		}*/
 
 		file.zoom = zoom;
 

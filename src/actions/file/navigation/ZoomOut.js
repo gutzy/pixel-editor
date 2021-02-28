@@ -27,13 +27,10 @@ export default class ZoomOut extends FileAction {
 			else break;
 		}
 
-		file.dragOffset =  {
+		/*file.dragOffset =  {
 			x : file.dragOffset.x + (file.width - file.width * zoom) * (zoomX) / file.width,
 			y : file.dragOffset.y + (file.height - file.height * zoom) * (zoomY ) / file.height 
-		}
-
-		console.log("offset: ");
-		console.log(file.dragOffset);
+		}*/
 
 		file.zoom = zoom;
 
