@@ -148,28 +148,22 @@ export function distance(x1, y1, x2, y2) {
  */
 export function pixelsBetween(x1, y1, x2, y2) {
     let res = {};
-    x1 = Math.floor(x1); y1 = Math.floor(y1); x2 = Math.floor(x2); y2 = Math.floor(y2);
+    [x1, y1, x2, y2] = [x1, y1, x2, y2].map(val=>Math.round(val))
+
     let dx = Math.abs(x1 - x2);
     let dy = Math.abs(y1 - y2);
-    let sx = (x1 < x2 ? 1 : -1);
-    let sy = (y1 < y2 ? 1 : -1);
+    let sx = (x1 < x2) ? 1 : -1;
+    let sy = (y1 < y2) ? 1 : -1;
     let err = dx - dy;
 
-    while ((x1 != x2 || y1 != y2)) {
-        res[x1 + ',' + y1] = true;
-
-        let e2 = err;
-
-		if (e2 >-dy) {
-			err -=dy; 
-			x1 += sx;
-		}
-
-		if (e2 < dx) {
-			err +=dx; 
-			y1 += sy;
-		}
-    }
+    while(true) {
+        res[x1+","+y1] = true
+  
+        if ((x1 === x2) && (y1 === y2)) break;
+        var e2 = 2*err;
+        if (e2 > -dy) { err -= dy; x1  += sx; }
+        if (e2 < dx) { err += dx; y1  += sy; }
+     }
 
     return Object.keys(res).map(e => ({x : e.split(",")[0], y: e.split(",")[1] }));
 }
