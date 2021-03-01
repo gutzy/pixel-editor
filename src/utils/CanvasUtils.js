@@ -148,7 +148,7 @@ export function distance(x1, y1, x2, y2) {
  */
 export function pixelsBetween(x1, y1, x2, y2) {
     let res = {};
-    [x1, y1, x2, y2] = [x1, y1, x2, y2].map(val=>Math.round(val))
+    [x1, y1, x2, y2] = [x1, y1, x2, y2].map(val=>Math.floor(val))
 
     let dx = Math.abs(x1 - x2);
     let dy = Math.abs(y1 - y2);
