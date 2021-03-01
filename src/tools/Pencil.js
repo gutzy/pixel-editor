@@ -25,6 +25,7 @@ export default class Pencil extends Tool {
         this.hotkey = 'b';
         this.save = true;
         this.useOutside = true;
+        this.coalesced = true;
 
         this.size = 1;
 

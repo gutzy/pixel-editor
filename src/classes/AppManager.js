@@ -177,7 +177,19 @@ class _AppManager {
      * @param x - cursor x position
      * @param y - cursor y position
      */
-    async onMouseMove(x,y) {
+    async onMouseMove(x,y,coalesced) {
+        if (this.file && this.file.selectedTool && this.file.selectedTool.coalesced) {
+            // use high frequency move events for tools that need it
+            coalesced.forEach(pos=>{
+                this.processMouseMove(...pos)
+            })
+        }
+        else {
+            this.processMouseMove(x,y)
+        }
+    }
+
+    async processMouseMove(x,y) {
         // get position
         const r = getCenterRect(this.canvas.el, this.file.width,this.file.height, this.file.zoom, this.file.dragOffset);
         const r2 = this.canvas.el.getBoundingClientRect();
@@ -186,7 +198,7 @@ class _AppManager {
         const isXYValid = isXYinCanvas || (this.file.selectedTool && this.file.selectedTool.useOutside)
 
         let pos = this.file && (this.file.selectedTool && this.file.selectedTool.screenSpace) ? {x,y} : screenToRectXY(r, x, y);
-
+        
         // run tool hover method
         this.file.doAction(HoverTool,pos.x, pos.y);
 

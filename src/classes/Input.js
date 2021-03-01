@@ -27,7 +27,7 @@ export default class Input {
     bindInputs() {
         window.addEventListener('mouseup', this.onMouseUp.bind(this));
         window.addEventListener('mousedown', this.onMouseDown.bind(this));
-        window.addEventListener('mousemove', this.onMouseMove.bind(this));
+        window.addEventListener('pointermove', this.onMouseMove.bind(this));
         window.addEventListener('keyup', this.onKeyUp.bind(this));
         window.addEventListener('keydown', this.onKeyDown.bind(this));
         window.addEventListener('resize', this.onResize.bind(this));
@@ -56,7 +56,13 @@ export default class Input {
      */
     onMouseMove(e) {
         const xy = getEventXY(e, this._canvas.el);
-        EventBus.$emit('input-mouse-move', ...xy);
+
+        let coalesced;
+        if (e.getCoalescedEvents) {
+            coalesced = e.getCoalescedEvents().map(event => getEventXY(event, this._canvas.el))
+        }
+
+        EventBus.$emit('input-mouse-move', ...xy, coalesced);
     }
     /**
      * OnKeyUp EventBus proxy
@@ -70,7 +76,6 @@ export default class Input {
 
         // keys to prevent normal execution of
         if (["Alt"].indexOf(e.key) > -1) { e.preventDefault() }
-
     }
     /**
      * OnKeyDown EventBus proxy
