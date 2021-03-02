@@ -17,8 +17,8 @@ export default class Line extends CanvasAction {
      * @param {number} strokeWidth - line width in px
      */
     do(target, startPos, endPos, color = null, strokeWidth = 1) {
-        startPos.x = Math.round(startPos.x); startPos.y = Math.round(startPos.y);
-        endPos.x = Math.round(endPos.x); endPos.y = Math.round(endPos.y);
+        startPos.x = Math.floor(startPos.x); startPos.y = Math.floor(startPos.y);
+        endPos.x = Math.floor(endPos.x); endPos.y = Math.floor(endPos.y);
 
         const pixelsToPaint = pixelsBetween(startPos.x, startPos.y, endPos.x, endPos.y);
         
