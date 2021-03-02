@@ -3,14 +3,14 @@
 .tools-panel {
   background-color: $panelBg;
   color: $panelColor;
-  width: 64px;
+  width: 48px;
   height: 100%;
-  display: flex;
   user-select: none;
+  overflow: hidden;
 
   .tool {
-    width: 64px;
-    height: 64px;
+    width: 48px;
+    height: 48px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -31,7 +31,7 @@
 
     img {
       opacity: 0.3;
-      width: 32px;
+      width: 24px;
       filter: brightness(0) invert(1);
       user-select: none;
       pointer-events: none;
