@@ -52,7 +52,7 @@ export default class File {
         this.historyIndex = 0;
         this.layers = [];
         this.zoom = 1;
-        this.dragOffset = [0, 0];
+        this.dragOffset = {x:0, y:0};
 
         this.history = new History();
         this.toolCanvas = null;

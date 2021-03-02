@@ -7,8 +7,8 @@
 
 import Tool from "../classes/abstracts/Tool";
 import ZoomIcon from "../assets/svg/zoom.svg";
-import ZoomInCursor from "../assets/png/zoom-in.png"
-import ZoomOutCursor from "../assets/png/zoom-out.png"
+import ZoomInCursor from "../assets/png/zoom-in.png";
+import ZoomOutCursor from "../assets/png/zoom-out.png";
 import ZoomIn from "../actions/file/navigation/ZoomIn";
 import ZoomOut from "../actions/file/navigation/ZoomOut";
 
@@ -18,38 +18,51 @@ import WatchKey from "../actions/tool/WatchKey";
 import TrySettingCursor from "../actions/tool/TrySettingCursor";
 
 export default class Zoom extends Tool {
+  constructor() {
+    super();
 
-	constructor() {
-		super();
+    this.id = "zoom";
+    this.name = "Zoom";
+    this.icon = ZoomIcon;
+    this.cursor = ZoomInCursor;
+    this.cursorOffset = [8, 6];
+    this.hotkey = "z";
+    this.direction = 1;
+    this.coordSpace = "offset";
 
-		this.id = "zoom";
-		this.name = "Zoom";
-		this.icon = ZoomIcon;
-		this.cursor = ZoomInCursor;
-		this.cursorOffset = [8, 6];
-		this.hotkey = 'z';
-		this.direction = 1;
+    this.doAction(WatchKey, ["Alt", "Shift"], (altIsDown) => {
+      this.direction = altIsDown ? -1 : 1;
+      this.doAction(
+        TrySettingCursor,
+        this.direction > 0 ? ZoomInCursor : ZoomOutCursor
+      );
+      this.doAction(ToolInfo, {
+        Mode: this.direction > 0 ? "Zoom in" : "Zoom out",
+      });
+    });
+  }
 
-		this.doAction(WatchKey, ['Alt', 'Shift'], (altIsDown) => {
-			this.direction = altIsDown ? -1 : 1;
-			this.doAction(TrySettingCursor, this.direction > 0 ? ZoomInCursor : ZoomOutCursor);
-			this.doAction(ToolInfo,{"Mode" : (this.direction>0)?"Zoom in":"Zoom out"});
-		});
-	}
+  select() {
+    this.doAction(ToolInfo, {
+      Mode: this.direction > 0 ? "Zoom in" : "Zoom out",
+    });
+  }
 
-	select() {
-		this.doAction(ToolInfo,{"Mode" : (this.direction>0)?"Zoom in":"Zoom out"});
-	}
+  start(file, canvas, x, y) {}
+  stop(file, canvas, x, y) {
+    file.doAction(
+      this.direction > 0 ? ZoomIn : ZoomOut,
+      ZoomConfig.ZoomLevels,
 
-	start(file, canvas, x, y) {	}
-	stop(file, canvas, x, y) {
-		file.doAction(this.direction > 0 ? ZoomIn : ZoomOut, ZoomConfig.ZoomLevels);
-		file.dragOffset = { x : (-file.width/2+x)*file.zoom, y: (-file.height/2+y)*file.zoom };
-	}
+      // This multiplication is an ugly hack to
+      // undo zoom applied in StopTool.
+      x * file.zoom,
+      y * file.zoom
+    );
+  }
 
-	use(file, canvas, x, y, toolCanvas) {
-		// the following code will help debugging the cursor position:
-		// toolCanvas.doAction(DrawRect, x, y, 1, 1, null, '#008833')
-	}
-
+  use(file, canvas, x, y, toolCanvas) {
+    // the following code will help debugging the cursor position:
+    // toolCanvas.doAction(DrawRect, x, y, 1, 1, null, "#008833");
+  }
 }

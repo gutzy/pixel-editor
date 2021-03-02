@@ -36,6 +36,11 @@ export default class Canvas {
 
         // initialize ctx reference
         this.ctx = this.el.getContext('2d');
+        this.ctx.mozImageSmoothingEnabled    = false;
+        this.ctx.oImageSmoothingEnabled      = false;
+        this.ctx.webkitImageSmoothingEnabled = false;
+        this.ctx.msImageSmoothingEnabled     = false;
+        this.ctx.imageSmoothingEnabled       = false;
 
         // if initial ImageData was provided, draw it on the canvas
         if (data) {

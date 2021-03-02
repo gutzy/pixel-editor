@@ -12,21 +12,21 @@ import Pan from "../tools/Pan";
 import Zoom from "../tools/Zoom";
 import Select from "../tools/Select";
 import MagicWand from "../tools/MagicWand";
+import LineTool from "../tools/LineTool";
 
 export default [
-    Pencil,
-    Eraser,
-    Rectangle,
-    PaintBucket,
-    EyeDropper,
-    Pan,
-    Zoom,
-    Select,
-    MagicWand,
+  Pencil,
+  Eraser,
+  Rectangle,
+  PaintBucket,
+  LineTool,
+  EyeDropper,
+  Pan,
+  Zoom,
+  Select,
+  MagicWand,
 ];
 
 export const ZoomConfig = {
-    ZoomLevels : [
-        1, 2, 4, 8, 16, 32, 64
-    ]
+  ZoomLevels: [1, 2, 3, 4, 6, 8, 16, 32, 64],
 };

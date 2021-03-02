@@ -4,32 +4,51 @@
  * @Description Decreases the viewport zoom level
  *
  */
-import {FileAction} from "../../../classes/abstracts/Actions";
+import { FileAction } from "../../../classes/abstracts/Actions";
 import EventBus from "../../../utils/EventBus";
 import CreateSelectionOverlay from "../selection/CreateSelectionOverlay";
+import { clamp } from "../../../utils/MathUtils";
 
 export default class ZoomOut extends FileAction {
-	/**
-	 *
-	 * @param file
-	 * @param {number[]} zoomLevels an array designating the different available zoom levels
-	 */
-	do(file, zoomLevels) {
-		let zoom = file.zoom;
-		// iterate zoom levels to see where we currently are
-		for (let l = 0; l < zoomLevels.length; l++) {
-			// set file zoom to the level immediately below
-			if (file.zoom > zoomLevels[l]) zoom = zoomLevels[l];
-			else break;
-		}
-		file.zoom = zoom;
+  /**
+   *
+   * @param file
+   * @param {number[]} zoomLevels an array designating the different available zoom levels
+   */
+  do(file, zoomLevels, zoomX, zoomY) {
+    // find the diff between canvas and mouse positions
+    let diff = {
+      x: file.dragOffset.x - zoomX,
+      y: file.dragOffset.y - zoomY,
+    };
+    let lastZoom = file.zoom;
 
-		// update UI
-		EventBus.$emit('ui-zoom', file.zoom);
+    let zoom = file.zoom;
 
-		// if a selection exists, create a new selection overlay
-		if (file.selectionCanvas) file.doAction(CreateSelectionOverlay)
+    // iterate zoom levels to see where we currently are
+    for (let l = 0; l < zoomLevels.length; l++) {
+      // set file zoom to the level immediately below
+      if (file.zoom > zoomLevels[l]) zoom = zoomLevels[l];
+      else break;
+    }
 
-		EventBus.$emit('redraw-canvas');
-	}
+    file.zoom = zoom;
+
+    // update UI
+    EventBus.$emit("ui-zoom", file.zoom);
+
+    // scalar for the new zoom
+    let ratio = file.zoom / lastZoom;
+
+    // apply scalar to diff to get new offset
+    file.dragOffset = {
+      x: zoomX + diff.x * ratio,
+      y: zoomY + diff.y * ratio,
+    };
+
+    // if a selection exists, create a new selection overlay
+    if (file.selectionCanvas) file.doAction(CreateSelectionOverlay);
+
+    EventBus.$emit("redraw-canvas");
+  }
 }
