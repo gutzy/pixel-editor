@@ -24,7 +24,8 @@ export default class Redraw extends FileAction {
 	do(file, canvas, offset = 0) {
 		///////////////////////////////////////////////////////////////////////
 		// Get the center rectangle, we're going to use it as a base for the drawing
-		const r = getCenterRect(canvas.el, file.width, file.height, file.zoom, file.dragOffset);
+		let r = getCenterRect(canvas.el, file.width, file.height, file.zoom, file.dragOffset);
+		r = r.map(val=>Math.floor(val))
 		let img;
 
 		///////////////////////////////////////////////////////////////////////
