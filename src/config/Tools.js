@@ -27,6 +27,6 @@ export default [
 
 export const ZoomConfig = {
     ZoomLevels : [
-        1, 2, 3, 4, 6, 8, 10, 12, 16, 20, 24, 32
+        1, 2, 4, 8, 16, 32, 64
     ]
 };
