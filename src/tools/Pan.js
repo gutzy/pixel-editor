@@ -40,7 +40,7 @@ export default class Pan extends Tool {
 	}
 
 	use(file, canvas, x, y, toolCanvas) {
-		let dragOffset = {x: Math.floor(this.startPos.x - x), y: Math.floor(this.startPos.y - y)};
+		let dragOffset = {x: this.startPos.x - x, y: this.startPos.y - y};
 		dragOffset.x += this.startOffset.x; dragOffset.y += this.startOffset.y;
 		dragOffset.x *= file.zoom; dragOffset.y *= file.zoom;
 
