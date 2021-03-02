@@ -9,6 +9,7 @@ import Tool from "../classes/abstracts/Tool";
 import RectangleIcon from "../assets/svg/rectangle.svg";
 import DrawRect from "../actions/canvas/DrawRect";
 import ClearCanvas from "../actions/canvas/ClearCanvas";
+import Line from "../actions/canvas/Line";
 
 export default class Rectangle extends Tool {
 
@@ -28,11 +29,50 @@ export default class Rectangle extends Tool {
     }
 
     stop(file, canvas, x, y) {
-        if (this.startPos) canvas.doAction(DrawRect, this.startPos.x, this.startPos.y, x-this.startPos.x, y-this.startPos.y, null, file.color);
+        if (this.startPos) {
+            let currentStart = {x: this.startPos.x, y: this.startPos.y};
+            let currentEnd = {x: x, y: this.startPos.y};
+
+            canvas.doAction(Line, currentStart, currentEnd, file.color, 1);
+            
+            currentStart.x = x;
+            currentEnd.y = y;
+
+            canvas.doAction(Line, currentStart, currentEnd, file.color, 1);
+
+            currentStart.y = y;
+            currentEnd.x = this.startPos.x;
+
+            canvas.doAction(Line, currentStart, currentEnd, file.color, 1);
+
+            currentStart.x = this.startPos.x;
+            currentEnd.y = this.startPos.y;
+            
+            canvas.doAction(Line, currentStart, currentEnd, file.color, 1);
+        }
     }
 
     use(file, canvas, x, y, toolCanvas) {
+        let currentStart = {x: this.startPos.x, y: this.startPos.y};
+        let currentEnd = {x: x, y: this.startPos.y};
+
         toolCanvas.doAction(ClearCanvas);
-        toolCanvas.doAction(DrawRect, this.startPos.x, this.startPos.y, x-this.startPos.x, y-this.startPos.y, null, file.color)
+
+        toolCanvas.doAction(Line, currentStart, currentEnd, file.color, 1);
+        
+        currentStart.x = x;
+        currentEnd.y = y;
+
+        toolCanvas.doAction(Line, currentStart, currentEnd, file.color, 1);
+
+        currentStart.y = y;
+        currentEnd.x = this.startPos.x;
+
+        toolCanvas.doAction(Line, currentStart, currentEnd, file.color, 1);
+
+        currentStart.x = this.startPos.x;
+        currentEnd.y = this.startPos.y;
+        
+        toolCanvas.doAction(Line, currentStart, currentEnd, file.color, 1);
     }
 }
