@@ -10,17 +10,22 @@
  * @return {[number, number, number, number]} rectangle coords
  */
 export function getCenterRect(canvas, width, height, scale = 1, offset = null) {
-    const cw = canvas.width, ch = canvas.height;
+  const cw = canvas.width,
+    ch = canvas.height;
 
-    const res = [Math.floor(cw/2-(width*scale)/2), Math.floor(ch/2-(height*scale)/2), Math.floor(width*scale), Math.floor(height*scale)];
+  const res = [
+    Math.floor(cw / 2 - (width * scale) / 2),
+    Math.floor(ch / 2 - (height * scale) / 2),
+    Math.floor(width * scale),
+    Math.floor(height * scale),
+  ];
 
-    if (offset && typeof offset.x !== 'undefined') {
-        res[0] -= offset.x;
-        res[1] -= offset.y;
-    }
-    return res;
+  if (offset && typeof offset.x !== "undefined") {
+    res[0] -= offset.x;
+    res[1] -= offset.y;
+  }
+  return res;
 }
-
 
 /**
  * Returns a rectangle between two sets of {x, y} coordinates
@@ -31,14 +36,19 @@ export function getCenterRect(canvas, width, height, scale = 1, offset = null) {
  * @return {null|[number, number, number, number]} - rectangle
  */
 export function getRect(xy1, xy2, absolute = false) {
-    if (!xy1 || !xy2) return null;
-    const res = [  Math.min(xy1.x, xy2.x), Math.min(xy1.y, xy2.y),
-        Math.max(xy1.x, xy2.x), Math.max(xy1.y, xy2.y)];
-    if (!absolute) {
-        res[2] -= res[0]; res[3] -= res[1];
-    }
+  if (!xy1 || !xy2) return null;
+  const res = [
+    Math.min(xy1.x, xy2.x),
+    Math.min(xy1.y, xy2.y),
+    Math.max(xy1.x, xy2.x),
+    Math.max(xy1.y, xy2.y),
+  ];
+  if (!absolute) {
+    res[2] -= res[0];
+    res[3] -= res[1];
+  }
 
-    return res;
+  return res;
 }
 
 /**
@@ -50,7 +60,7 @@ export function getRect(xy1, xy2, absolute = false) {
  * @return {boolean}
  */
 export function isXYinRect(r, x, y) {
-    return !(x < r[0] || y < r[1] || x > r[0]+r[2] || y > r[1]+r[3]) ;
+  return !(x < r[0] || y < r[1] || x > r[0] + r[2] || y > r[1] + r[3]);
 }
 
 /**
@@ -62,11 +72,17 @@ export function isXYinRect(r, x, y) {
  * @return {{x: number, y: number}} - normalized position
  */
 export function screenToRectXY(r, x, y) {
+  x = x - r[0];
+  y = y - r[1];
 
-    x = x-r[0];
-    y = y-r[1];
+  return { x, y };
+}
 
-    return {x,y}
+export function screenToOffsetXY(el, x, y) {
+  return {
+    x: -(x - el.width / 2),
+    y: -(y - el.height / 2),
+  };
 }
 
 /**
@@ -77,10 +93,10 @@ export function screenToRectXY(r, x, y) {
  * @param {{r,g,b}} fillColor - color to set the pixel to
  */
 export function colorPixel(img, pixelPos, fillColor) {
-    img.data[pixelPos] = fillColor.r;
-    img.data[pixelPos + 1] = fillColor.g;
-    img.data[pixelPos + 2] = fillColor.b;
-    img.data[pixelPos + 3] = 255;
+  img.data[pixelPos] = fillColor.r;
+  img.data[pixelPos + 1] = fillColor.g;
+  img.data[pixelPos + 2] = fillColor.b;
+  img.data[pixelPos + 3] = 255;
 }
 
 /**
@@ -92,11 +108,11 @@ export function colorPixel(img, pixelPos, fillColor) {
  * @return {boolean}
  */
 export function matchPixelColor(tempImage, pixelPos, color) {
-    let r = tempImage.data[pixelPos];
-    let g = tempImage.data[pixelPos + 1];
-    let b = tempImage.data[pixelPos + 2];
-    let a = tempImage.data[pixelPos + 3];
-    return matchColor(color, [r,g,b,a]);
+  let r = tempImage.data[pixelPos];
+  let g = tempImage.data[pixelPos + 1];
+  let b = tempImage.data[pixelPos + 2];
+  let a = tempImage.data[pixelPos + 3];
+  return matchColor(color, [r, g, b, a]);
 }
 
 /**
@@ -107,7 +123,12 @@ export function matchPixelColor(tempImage, pixelPos, color) {
  * @return {boolean}
  */
 export function matchColor(color1, color2) {
-    return (color1[0] === color2[0] && color1[1] === color2[1] && color1[2] === color2[2] && color1[3] === color2[3]);
+  return (
+    color1[0] === color2[0] &&
+    color1[1] === color2[1] &&
+    color1[2] === color2[2] &&
+    color1[3] === color2[3]
+  );
 }
 
 /**
@@ -119,9 +140,14 @@ export function matchColor(color1, color2) {
  * @param {number} width - canvas width
  * @return {*[]}
  */
-export function coordColor(img, x,y,width) {
-    const red = y * (width * 4) + x * 4;
-    return [img.data[red], img.data[red + 1], img.data[red + 2], img.data[red + 3]];
+export function coordColor(img, x, y, width) {
+  const red = y * (width * 4) + x * 4;
+  return [
+    img.data[red],
+    img.data[red + 1],
+    img.data[red + 2],
+    img.data[red + 3],
+  ];
 }
 
 /**
@@ -134,7 +160,7 @@ export function coordColor(img, x,y,width) {
  * @return {number}
  */
 export function distance(x1, y1, x2, y2) {
-    return Math.sqrt(Math.pow(x1-x2,2)+Math.pow(y1-y2, 2));
+  return Math.sqrt(Math.pow(x1 - x2, 2) + Math.pow(y1 - y2, 2));
 }
 
 /**
@@ -147,23 +173,32 @@ export function distance(x1, y1, x2, y2) {
  * @return {{x: *, y: *}[]}
  */
 export function pixelsBetween(x1, y1, x2, y2) {
-    let res = {};
-    [x1, y1, x2, y2] = [x1, y1, x2, y2].map(val=>Math.floor(val))
+  let res = {};
+  [x1, y1, x2, y2] = [x1, y1, x2, y2].map((val) => Math.floor(val));
 
-    let dx = Math.abs(x1 - x2);
-    let dy = Math.abs(y1 - y2);
-    let sx = (x1 < x2) ? 1 : -1;
-    let sy = (y1 < y2) ? 1 : -1;
-    let err = dx - dy;
+  let dx = Math.abs(x1 - x2);
+  let dy = Math.abs(y1 - y2);
+  let sx = x1 < x2 ? 1 : -1;
+  let sy = y1 < y2 ? 1 : -1;
+  let err = dx - dy;
 
-    while(true) {
-        res[x1+","+y1] = true
-  
-        if ((x1 === x2) && (y1 === y2)) break;
-        var e2 = 2*err;
-        if (e2 > -dy) { err -= dy; x1  += sx; }
-        if (e2 < dx) { err += dx; y1  += sy; }
-     }
+  while (true) {
+    res[x1 + "," + y1] = true;
 
-    return Object.keys(res).map(e => ({x : e.split(",")[0], y: e.split(",")[1] }));
+    if (x1 === x2 && y1 === y2) break;
+    var e2 = 2 * err;
+    if (e2 > -dy) {
+      err -= dy;
+      x1 += sx;
+    }
+    if (e2 < dx) {
+      err += dx;
+      y1 += sy;
+    }
+  }
+
+  return Object.keys(res).map((e) => ({
+    x: e.split(",")[0],
+    y: e.split(",")[1],
+  }));
 }

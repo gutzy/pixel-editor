@@ -9,6 +9,7 @@ import Rectangle from "../tools/Rectangle";
 import Eraser from "../tools/Eraser";
 import EyeDropper from "../tools/Eyedropper";
 import Pan from "../tools/Pan";
+import Zoom from "../tools/Zoom";
 import Select from "../tools/Select";
 import MagicWand from "../tools/MagicWand";
 import LineTool from "../tools/LineTool";
@@ -21,10 +22,11 @@ export default [
   LineTool,
   EyeDropper,
   Pan,
+  Zoom,
   Select,
   MagicWand,
 ];
 
 export const ZoomConfig = {
-  ZoomLevels: [1, 2, 4, 8, 16, 32, 64],
+  ZoomLevels: [1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5, 5.5, 6, 6.5, 7],
 };
