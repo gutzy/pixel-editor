@@ -25,31 +25,11 @@ export default class Rectangle extends Tool {
     }
 
     start(file, canvas, x, y) {
-        this.startPos = {x, y}
+        this.startPos = {x:Math.floor(x), y:Math.floor(y)}
     }
 
     stop(file, canvas, x, y) {
-        if (this.startPos) {
-            let currentStart = {x: this.startPos.x, y: this.startPos.y};
-            let currentEnd = {x: x, y: this.startPos.y};
-
-            canvas.doAction(Line, currentStart, currentEnd, file.color, 1);
-            
-            currentStart.x = x;
-            currentEnd.y = y;
-
-            canvas.doAction(Line, currentStart, currentEnd, file.color, 1);
-
-            currentStart.y = y;
-            currentEnd.x = this.startPos.x;
-
-            canvas.doAction(Line, currentStart, currentEnd, file.color, 1);
-
-            currentStart.x = this.startPos.x;
-            currentEnd.y = this.startPos.y;
-            
-            canvas.doAction(Line, currentStart, currentEnd, file.color, 1);
-        }
+        if (this.startPos) canvas.doAction(DrawRect, this.startPos.x, this.startPos.y, x-this.startPos.x+1, y-this.startPos.y+1, null, file.color);
     }
 
     use(file, canvas, x, y, toolCanvas) {
@@ -57,22 +37,6 @@ export default class Rectangle extends Tool {
         let currentEnd = {x: x, y: this.startPos.y};
 
         toolCanvas.doAction(ClearCanvas);
-
-        toolCanvas.doAction(Line, currentStart, currentEnd, file.color, 1);
-        
-        currentStart.x = x;
-        currentEnd.y = y;
-
-        toolCanvas.doAction(Line, currentStart, currentEnd, file.color, 1);
-
-        currentStart.y = y;
-        currentEnd.x = this.startPos.x;
-
-        toolCanvas.doAction(Line, currentStart, currentEnd, file.color, 1);
-
-        currentStart.x = this.startPos.x;
-        currentEnd.y = this.startPos.y;
-        
-        toolCanvas.doAction(Line, currentStart, currentEnd, file.color, 1);
+        toolCanvas.doAction(DrawRect, this.startPos.x, this.startPos.y, x-this.startPos.x+1, y-this.startPos.y+1, null, file.color);
     }
 }
