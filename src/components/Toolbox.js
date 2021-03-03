@@ -32,8 +32,14 @@ export default {
             EventBus.$emit("try-selecting-tool", tool.name);
         },
 
+        /**
+         * Select Tool - Emits 'try-changing-tool-size' event to the editor
+         *
+         * @param tool - Vue tool object
+         * @param delta - Delta > 0 ? Increasing brush size : Decreasing brush size
+         */
         changeToolSize(tool, delta) {
-            EventBus.$emit("try-changing-tool-size", tool, delta);
+            EventBus.$emit('try-changing-tool-size', tool.name, delta);
         }
     },
 
@@ -60,8 +66,8 @@ export default {
                 <img :src="tool.icon" :title="tool.name" />
                 <div v-if="tool.size" class="toolSize">
                     <ul>
-                        <li @mouseDown="changeToolSize(tool, 1)"> <img :src="IncreaseIcon"/></li>
-                        <li @mouseDown="changeToolSize(tool, -1)"><img :src="DecreaseIcon"/></li>
+                        <li @mousedown="changeToolSize(tool, 1)"> <img :src="IncreaseIcon"/></li>
+                        <li @mousedown="changeToolSize(tool, -1)"><img :src="DecreaseIcon"/></li>
                     </ul>
                 </div>
             </div>

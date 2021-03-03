@@ -30,3 +30,5 @@ export default [
 export const ZoomConfig = {
   ZoomLevels: [1, 2, 3, 4, 6, 8, 16, 32, 64],
 };
+
+export const MaxToolSize = 64;

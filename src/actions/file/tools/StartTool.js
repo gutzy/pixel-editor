@@ -45,7 +45,7 @@ export default class StartTool extends FileAction {
             if (!file.selectedTool.persistent || !file.toolCanvas) file.toolCanvas = new Canvas(null, file.width, file.height);
 
             // run selected tool start hook
-            await file.selectedTool.start(file, editCanvas, x / file.zoom, y / file.zoom, file.toolCanvas);
+            await file.selectedTool.start(file, editCanvas, x / file.zoom, y / file.zoom, file.toolCanvas, file.selectedTool.size);
 
             // run first persistence if needed
             if (file.selectedTool.persistent) file.selectedTool.persist(file.toolCanvas, file, true);

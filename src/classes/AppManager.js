@@ -18,6 +18,7 @@ import Menu from "../config/Menu";
 import { AppAction } from "./abstracts/Actions";
 import NewFile from "../actions/app/NewFile";
 import SetToolCursor from "../actions/app/SetToolCursor";
+import ChangeSize from "../actions/tool/ChangeSize";
 import StartTool from "../actions/file/tools/StartTool";
 import StopTool from "../actions/file/tools/StopTool";
 import UseTool from "../actions/file/tools/UseTool";
@@ -125,6 +126,7 @@ class _AppManager {
     EventBus.$on("reset-canvas", this.onResetCanvas.bind(this));
     EventBus.$on("redraw-canvas", this.onRedrawCanvas.bind(this));
     EventBus.$on("try-selecting-tool", this.onSelectTool.bind(this));
+    EventBus.$on("try-changing-tool-size", this.onChangeToolSize.bind(this));
     EventBus.$on("set-tool-cursor", this.onSetToolCursor.bind(this));
     EventBus.$on("run-menu-item", this.onRunMenuItem.bind(this));
   }
@@ -389,6 +391,14 @@ class _AppManager {
       if (tool.cursor) {
         this.doAction(SetToolCursor, tool);
       }
+    }
+  }
+
+  onChangeToolSize(toolName, delta) {
+    if (!this.file) return false;
+
+    if (this.file.selectedTool.name === toolName) {
+      this.file.selectedTool.doAction(ChangeSize, delta);
     }
   }
 

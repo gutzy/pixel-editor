@@ -50,6 +50,8 @@
         margin:0 0 0 0;
         padding: 0 0 0 0;
         text-align:center;
+        height:48px;
+        overflow:hidden;
 
         li:hover {
           background-color: #706775;
@@ -57,7 +59,7 @@
 
         img {
           width:12px;
-          height:24px;
+          height:22px;
         }
       }
     }

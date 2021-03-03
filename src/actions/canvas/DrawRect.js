@@ -45,8 +45,8 @@ export default class DrawRect extends CanvasAction {
             target.ctx.fillStyle = (stroke ? stroke : 'transparent');
             target.ctx.fillRect(Math.floor(x),Math.floor(y), w, strokeWidth); // Top
             target.ctx.fillRect(Math.floor(x),Math.floor(y), strokeWidth, h); // Left
-            target.ctx.fillRect(Math.floor(x),Math.floor(y+h)-1, w, strokeWidth); // Bottom
-            target.ctx.fillRect(Math.floor(w+x)-1,Math.floor(y), strokeWidth, h); // Right
+            target.ctx.fillRect(Math.floor(x),Math.floor(y+h)-1*strokeWidth, w, strokeWidth); // Bottom
+            target.ctx.fillRect(Math.floor(w+x)-1*strokeWidth,Math.floor(y), strokeWidth, h); // Right
         }
     }
 

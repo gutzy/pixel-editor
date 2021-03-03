@@ -6,6 +6,7 @@
  */
 
 import Tool from "../classes/abstracts/Tool";
+import ToolInfo from "../actions/tool/ToolInfo";
 import EraserIcon from "../assets/svg/eraser.svg";
 import ClearRect from "../actions/canvas/ClearRect";
 import {pixelsBetween} from "../utils/CanvasUtils";
@@ -26,21 +27,24 @@ export default class Eraser extends Tool {
         console.log("Eraser size: " + this.size);
     }
 
-    start(file, canvas, x, y) {
-        canvas.doAction(ClearRect, x, y, 1, 1);
+    select() {
+        this.doAction(ToolInfo,{"Size" : this.size});
+    }
+    
+    start(file, canvas, x, y, toolCanvas, size) {
+        canvas.doAction(ClearRect, x, y, size, size);
         this.pos = {x, y}
     }
-    stop(file, canvas, x, y) {
-        canvas.doAction(ClearRect, x, y, 1, 1);
+    stop(file, canvas, x, y, toolCanvas,size) {
+        canvas.doAction(ClearRect, x, y, size, size);
     }
 
-    use(file, canvas, x, y) {
+    use(file, canvas, x, y, toolCanvas, size) {
         const px = pixelsBetween(x, y, this.pos.x, this.pos.y);
         for (let p of px) {
-            canvas.doAction(ClearRect, p.x, p.y,1,1, file.color);
+            canvas.doAction(ClearRect, p.x, p.y,size,size, file.color);
         }
-        canvas.doAction(ClearRect, x, y, 1, 1);
+        canvas.doAction(ClearRect, x, y, size, size);
         this.pos = {x, y};
     }
-
 }
