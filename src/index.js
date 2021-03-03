@@ -28,6 +28,8 @@ import LitToolbox from "./lit-components/Toolbox";
 import LitColorPalette from "./lit-components/ColorPalette";
 import LitLayersPanel from "./lit-components/LayersPanel";
 
+import EventBus from "./utils/EventBus";
+
 class App extends Component {
   constructor() {
     super();
@@ -37,6 +39,11 @@ class App extends Component {
     console.log("App mounted!");
     let canvasElement = document.getElementById("main-canvas");
     AppManager.init(canvasElement);
+
+    // temporarily mounting view version of layers
+    const vm = new Vue(LayersPanel).$mount("#vue-layers-mount");
+    console.log(AppManager.file.layers);
+    EventBus.$emit("ui-update-layers", AppManager.file.layers);
   }
 
   render() {
@@ -48,11 +55,9 @@ class App extends Component {
         <div class="header">${LitMenuBar({ menu: AppManager.menu })}</div>
         <div class="main-content">
           ${LitToolbox()}
-
           <div style="position:relative; flex: 1">${LitColorPalette()}</div>
-          ${LitLayersPanel()}
-          <!-- <color-palette /> -->
-          <!-- <layers-panel /> -->
+          <!-- ${LitLayersPanel()} -->
+          <div id="vue-layers-mount"></div>
         </div>
       </div>
     `;
