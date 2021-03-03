@@ -41,7 +41,7 @@ export default class StopTool extends FileAction {
             }
 
             // run selected tool stop hook
-            await file.selectedTool.stop(file, editCanvas, x / file.zoom, y / file.zoom, file.toolCanvas);
+            await file.selectedTool.stop(file, editCanvas, x / file.zoom, y / file.zoom, file.toolCanvas, file.selectedTool.size);
 
             // run last persistence if needed
             if (file.selectedTool.persistent) { file.selectedTool.persist(file.toolCanvas, file, true); }

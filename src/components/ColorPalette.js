@@ -4,6 +4,7 @@
  *
  */
 import EventBus from "../utils/EventBus";
+import Draggable from "vuedraggable";
 
 export default {
 
@@ -48,15 +49,30 @@ export default {
 		this.$refs.panel.addEventListener('mousedown', e => e.stopPropagation());
 	},
 
+	components : { Draggable },
+
+    computed: {
+        dragOptions() {
+            return {
+                animation: 200,
+                group: "description",
+                disabled: false,
+                ghostClass: "ghost"
+            };
+        }
+    },
+
 	/**
 	 * Rendered template
 	 */
 	template : `
     <div class="color-palette-panel" ref="panel">
         <div v-if="colors" class="colors">
-            <div :class="'color' + (color === selectedColor?' selected':'')" v-for="color of colors" :style="{'background-color': color}" @click="selectColor(color)">
-               
-            </div>
+			<draggable class="draggable-colors" v-model="colors" group="paletteColors" draggable=".color" v-bind="dragOptions">
+				<div :class="'color' + (color === selectedColor?' selected':'')" v-for="color of colors" :style="{'background-color': color}" @click="selectColor(color)">
+				
+				</div>
+			</draggable>
         </div>
     </div>
     `

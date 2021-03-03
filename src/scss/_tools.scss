@@ -3,19 +3,20 @@
 .tools-panel {
   background-color: $panelBg;
   color: $panelColor;
-  width: 48px;
+  width: $iconSize;
   height: 100%;
   user-select: none;
-  overflow: hidden;
-  display: flex;
+  overflow-x: visible;
 
   .tool {
-    width: 48px;
-    height: 48px;
+    height: $iconSize;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
+    width: $iconSize;
+    width: 48px;
+    position: relative;
 
     &:hover {
       background-color: $panelHoverBg;
@@ -24,8 +25,54 @@
     &.selected {
       background-color: $panelSelectedBg;
 
+      .toolSize {
+        pointer-events: all;
+      }
+
+      .toolSize ul {
+        background-color: $panelSelectedBg;
+        left: 0px;
+      }
+
       img {
         opacity: 0.55;
+      }
+    }
+
+    .toolSize {
+      // visibility: hidden;
+      height: $iconSize;
+      position: absolute;
+      top: 0px;
+      right: -24px;
+      width: 24px;
+      justify-content: center;
+      overflow: hidden;
+      pointer-events: none;
+
+      ul {
+        list-style: none;
+        margin: 0 0 0 0;
+        padding: 0 0 0 0;
+        text-align: center;
+        height: 48px;
+        overflow: hidden;
+        position: relative;
+        left: -24px;
+        background-color: $panelBg;
+        border-radius: 0 4px 4px 0;
+        transition: left 0.1s;
+
+        li:hover {
+          background-color: #706775;
+        }
+
+        img {
+          width: 12px;
+          height: 24px;
+          display: block;
+          margin: 0 auto;
+        }
       }
     }
 

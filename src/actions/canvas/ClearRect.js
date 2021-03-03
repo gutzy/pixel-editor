@@ -17,10 +17,12 @@ export default class ClearRect extends CanvasAction {
      * @param {number} h - rect height
      */
     do(target, x, y, w, h) {
-        x = Math.floor(x);
-        y = Math.floor(y);
         w = Math.floor(w);
         h = Math.floor(h);
+        
+        x = Math.floor(x - w/2);
+        y = Math.floor(y - h/2);
+        
 
         target.ctx.clearRect(x,y,w,h);
     }

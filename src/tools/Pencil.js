@@ -28,7 +28,6 @@ export default class Pencil extends Tool {
         this.coalesced = true;
 
         this.size = 1;
-
         this.doAction(AxisLocking);
     }
 

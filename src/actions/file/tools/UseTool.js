@@ -33,7 +33,7 @@ export default class UseTool extends FileAction {
             }
 
             // run selected tool use hook
-            await file.selectedTool.use(file, editCanvas, x / file.zoom, y / file.zoom, file.toolCanvas);
+            await file.selectedTool.use(file, editCanvas, x / file.zoom, y / file.zoom, file.toolCanvas, file.selectedTool.size);
 
             // run persistence if needed
             if (file.selectedTool.persist) file.selectedTool.persist(file.toolCanvas, file, true);
