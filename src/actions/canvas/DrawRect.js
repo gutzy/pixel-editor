@@ -33,11 +33,20 @@ export default class DrawRect extends CanvasAction {
             target.ctx.fillRect(x,y,w,h);
         }
         if (stroke !== null) {
+            // rects draw weird when width and hight are negative,
+            // so I'm reconfiguring the values to draw in a positive direction.
+            if (w<=0 && h<=0) {
+                w = -w + 2;
+                h = -h + 2;
+                x = x - w + 1;
+                y = y - h + 1;
+            }
+
             target.ctx.fillStyle = (stroke ? stroke : 'transparent');
-            target.ctx.fillRect(Math.floor(x),Math.floor(y), w, strokeWidth);
-            target.ctx.fillRect(Math.floor(x),Math.floor(y), strokeWidth, h);
-            target.ctx.fillRect(Math.floor(x),Math.floor(y+h)-1, w+strokeWidth, strokeWidth);
-            target.ctx.fillRect(w+Math.floor(x),Math.floor(y), strokeWidth, h);
+            target.ctx.fillRect(Math.floor(x),Math.floor(y), w, strokeWidth); // Top
+            target.ctx.fillRect(Math.floor(x),Math.floor(y), strokeWidth, h); // Left
+            target.ctx.fillRect(Math.floor(x),Math.floor(y+h)-1, w, strokeWidth); // Bottom
+            target.ctx.fillRect(Math.floor(w+x)-1,Math.floor(y), strokeWidth, h); // Right
         }
     }
 
