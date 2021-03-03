@@ -22,6 +22,7 @@ export default class Rectangle extends Tool {
         this.cursor = "crosshair";
         this.hotkey = 'r';
         this.save = true;
+        this.size = 1;
     }
 
     start(file, canvas, x, y) {

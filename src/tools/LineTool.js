@@ -21,6 +21,7 @@ export default class LineTool extends Tool {
         this.cursor = 'crosshair';
         this.hotkey = 'l';
         this.save = true;
+        this.size = 1;
     }
 
     // Saving the start position of the line

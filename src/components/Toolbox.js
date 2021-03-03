@@ -40,7 +40,7 @@ export default {
     mounted() {
         // bind 'ui-set-tools' editor event to set the tools in the tool box
         EventBus.$on('ui-set-tools', tools => {
-            tools = tools.map(tool => { return {name: tool.name, icon: tool.icon }});
+            tools = tools.map(tool => { return {name: tool.name, icon: tool.icon, size: tool.size }});
             this.tools = tools;
         });
 
@@ -58,7 +58,7 @@ export default {
         <div v-if="tools" class="tools">
             <div :class="'tool'+(selectedTool===tool.name?' selected':'')" v-for="tool of tools" @mousedown="selectTool(tool)">
                 <img :src="tool.icon" :title="tool.name" />
-                <div v-if="tool.size !== undefined" class="toolSize">
+                <div v-if="tool.size" class="toolSize">
                     <ul>
                         <li @mouseDown="changeToolSize(tool, 1)"> <img :src="IncreaseIcon"/></li>
                         <li @mouseDown="changeToolSize(tool, -1)"><img :src="DecreaseIcon"/></li>
