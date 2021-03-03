@@ -29,6 +29,10 @@
     &.selected {
       background-color: $panelSelectedBg;
 
+      .toolSize {
+        pointer-events: all;
+      }
+
       .toolSize ul {
         background-color: $panelSelectedBg;
         // left: 0px;
@@ -49,6 +53,7 @@
       width: 24px;
       justify-content: center;
       overflow: hidden;
+      pointer-events: none;
 
       ul {
         list-style: none;
