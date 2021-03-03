@@ -20,10 +20,6 @@
 
     &:hover {
       background-color: $panelHoverBg;
-
-      &.selected .toolSize ul {
-        left: 0px;
-      }
     }
 
     &.selected {
@@ -35,8 +31,7 @@
 
       .toolSize ul {
         background-color: $panelSelectedBg;
-        // left: 0px;
-        // margin-left: 66px;
+        left: 0px;
       }
 
       img {
