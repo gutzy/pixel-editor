@@ -2,14 +2,15 @@
   background-color: $panelSelectedBg;
   color: $panelColor;
   width: 48px;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
 
   .colors {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
+    height:100%;
+
+    .draggable-colors {
+      display:flex;
+      flex-direction: column;
+      height:100%;
+    }
   }
 
   .color {
