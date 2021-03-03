@@ -1,7 +1,6 @@
 @import "vars";
 
 .menubar {
-
   background-color: $panelBg;
   height: 48px;
   display: flex;
@@ -22,9 +21,10 @@
     display: flex;
     align-items: center;
     color: $panelColor;
-    cursor: default;
+    cursor: pointer;
     position: relative;
 
+    &.selected,
     &:hover {
       background-color: $panelHoverBg;
     }
@@ -55,7 +55,7 @@
       white-space: nowrap;
       font-size: 14px;
 
-      &:hover{
+      &:hover {
         background-color: $panelSelectedBg;
       }
     }
@@ -82,7 +82,6 @@
       &:nth-child(odd) {
         background-color: $panelBg;
       }
-
     }
   }
 }

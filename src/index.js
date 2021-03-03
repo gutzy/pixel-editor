@@ -14,7 +14,7 @@
  * Have fun!
  *
  */
-import Vue from 'vue/dist/vue';
+import Vue from "vue/dist/vue";
 import "./style.scss";
 import AppManager from "./classes/AppManager";
 import LayersPanel from "./components/LayersPanel";
@@ -22,27 +22,69 @@ import Toolbox from "./components/Toolbox";
 import ColorPalette from "./components/ColorPalette";
 import MenuBar from "./components/MenuBar";
 
-const vm = new Vue({
+import { Component, litable, html, render } from "../litable";
+import LitMenuBar from "./lit-components/MenuBar";
+import LitToolbox from "./lit-components/Toolbox";
+import LitColorPalette from "./lit-components/ColorPalette";
+import LitLayersPanel from "./lit-components/LayersPanel";
 
-		async mounted() {
-			AppManager.init(this.$refs.canvas);
-		},
+class App extends Component {
+  constructor() {
+    super();
+  }
 
-		components : { LayersPanel, Toolbox, ColorPalette, MenuBar },
+  componentDidMount() {
+    console.log("App mounted!");
+    let canvasElement = document.getElementById("main-canvas");
+    AppManager.init(canvasElement);
+  }
 
-		template : `
-            <div class="app">
-            	<div class="header">
-            		<menu-bar />
-				</div>
-				<div class="main-content">
-					<toolbox />
-	            	<div class="canvas-wrapper">
-    	        		<canvas id="main-canvas" ref="canvas"></canvas>
-					</div>
-					<color-palette />
-            		<layers-panel />
-				</div>
-		    </div>`
-	},
-).$mount('#app');
+  render() {
+    return html`
+      <div class="canvas-wrapper">
+        <canvas id="main-canvas" ref="canvas"></canvas>
+      </div>
+      <div class="app">
+        <div class="header">${LitMenuBar({ menu: AppManager.menu })}</div>
+        <div class="main-content">
+          ${LitToolbox()}
+
+          <div style="position:relative; flex: 1">${LitColorPalette()}</div>
+          ${LitLayersPanel()}
+          <!-- <color-palette /> -->
+          <!-- <layers-panel /> -->
+        </div>
+      </div>
+    `;
+  }
+}
+
+const litableApp = litable(App);
+
+render(litableApp(), document.getElementById("app"));
+
+// const vm = new Vue({
+
+// 		async mounted() {
+// 			AppManager.init(this.$refs.canvas);
+// 		},
+
+// 		components : { LayersPanel, Toolbox, ColorPalette, MenuBar },
+
+// 		template : `
+//             <div class="app">
+//             	<div class="header">
+//             		<menu-bar />
+// 				</div>
+// 				<div class="main-content">
+// 					<toolbox />
+// 	            	<div class="canvas-wrapper">
+//     	        		<canvas id="main-canvas" ref="canvas"></canvas>
+// 					</div>
+// 					<color-palette />
+//             		<layers-panel />
+// 				</div>
+// 		    </div>
+// 				`
+// 	},
+// ).$mount('#app');

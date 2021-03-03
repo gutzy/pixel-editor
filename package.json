@@ -13,6 +13,7 @@
   "dependencies": {
     "fs-extra": "^7.0.1",
     "handlebars-helper-svg": "git+https://bitbucket.org/skeddles/npm-handlebars-helper-svg-lospec-open-source.git",
+    "lit-html": "^1.3.0",
     "open": "^6.0.0",
     "sass": "^1.17.3",
     "vue": "^2.6.12",
