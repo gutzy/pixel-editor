@@ -97,11 +97,13 @@ export default class Input {
     if (e.key === this._lastKeyDown) return;
     this._keyDown[e.key] = true;
 
-    // try to resolve combination, in case someone is holding a special combo
-    let combo = this.onKeyCombination(e);
-
-    // if there is no combo, emit the regular key down event
-    if (!combo) EventBus.$emit("input-key-down", e.key, this);
+    let keys = Object.keys(this._keyDown);
+    if (keys.length > 1) {
+      EventBus.$emit("input-key-combination", keys, this);
+    }
+    else {
+      EventBus.$emit("input-key-down", e.key, this);
+    }
 
     this._lastKeyDown = e.key;
 

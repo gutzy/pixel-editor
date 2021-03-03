@@ -27,8 +27,10 @@ export default class Zoom extends Tool {
     this.cursor = ZoomInCursor;
     this.cursorOffset = [8, 6];
     this.hotkey = "z";
+    this.spicykey = [" ", "Alt"]
     this.direction = 1;
     this.coordSpace = "offset";
+    this.useOutside = true;
 
     this.doAction(WatchKey, ["Alt", "Shift"], (altIsDown) => {
       this.direction = altIsDown ? -1 : 1;

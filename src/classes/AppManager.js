@@ -119,6 +119,7 @@ class _AppManager {
     EventBus.$on("input-mouse-down", this.onMouseDown.bind(this));
     EventBus.$on("input-mouse-up", this.onMouseUp.bind(this));
     EventBus.$on("input-mouse-wheel", this.onMouseWheel.bind(this));
+    EventBus.$on("input-key-combination", this.onKeyDownCombo.bind(this));
     EventBus.$on("input-key-down", this.onKeyDown.bind(this));
     EventBus.$on("input-key-up", this.onKeyUp.bind(this));
     EventBus.$on("input-mouse-move", this.onMouseMove.bind(this));
@@ -327,13 +328,40 @@ class _AppManager {
         EventBus.$emit("try-selecting-tool", tool.name);
         return true;
       }
-
+      
       // if spicykey belongs to tool, switch to the tool until key is released
       if (tool.spicykey === key) {
-        this.file.spicy = this.file.selectedTool;
+        this.file.spicy = this.file.spicy || this.file.selectedTool;
         this.file.doAction(SetTool, tool);
         EventBus.$emit("try-selecting-tool", tool.name);
         return true;
+      }
+    }
+  }
+
+  onKeyDownCombo(keys, input) {
+    
+    // iterate tools
+    for (let tool of this.tools) {
+      // if spicykey belongs to tool, switch to the tool until key is released
+      if (tool.spicykey) {
+        let spicyKeys = typeof tool.spicykey === "string" ? [tool.spicykey] : tool.spicykey;
+
+        let ok = true;
+        if (spicyKeys.length !== keys.length) ok = false;
+        else {
+          spicyKeys.forEach(spicykey => {
+            if (!keys.find(key=>key===spicykey)) ok = false;
+          })
+        }
+        console.log(keys, spicyKeys, ok, tool.name)
+
+        if (ok) {
+          this.file.spicy = this.file.spicy || this.file.selectedTool;
+          this.file.doAction(SetTool, tool);
+          EventBus.$emit("try-selecting-tool", tool.name);
+          return true;
+        }
       }
     }
   }
@@ -343,18 +371,37 @@ class _AppManager {
    * @param key - designated key
    */
   onKeyUp(key) {
+    if (!this.file.spicy) return;
+
     for (let tool of this.tools) {
       // Look for a released active spicy tool
-      if (tool.spicykey === key && this.file.spicy) {
-        // restore old tool
-        this.file.doAction(SetTool, this.file.spicy);
+      if (tool.spicykey) {
 
-        // run selection event for UI etc.
-        EventBus.$emit("try-selecting-tool", this.file.spicy.name);
-
-        // reset spicy key
-        this.file.spicy = null;
+        if (typeof tool.spicykey === "string") {
+          if (tool.spicykey === key) {
+            restore(this.file);
+            break;
+          }
+        }
+        else {
+          if (tool.spicykey.find(spicykey=>spicykey===key)) {
+            restore(this.file);
+            break;
+          }
+        }
+        
       }
+    }
+
+    function restore(file) {
+      // restore old tool
+      file.doAction(SetTool, file.spicy);
+
+      // run selection event for UI etc.
+      EventBus.$emit("try-selecting-tool", file.spicy.name);
+
+      // reset spicy key
+      file.spicy = null;
     }
   }
 
