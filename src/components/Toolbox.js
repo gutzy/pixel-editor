@@ -4,6 +4,8 @@
  *
  */
 import EventBus from "../utils/EventBus";
+import IncreaseIcon from "../assets/svg/plus.svg";
+import DecreaseIcon from "../assets/svg/minus.svg";
 
 export default {
 
@@ -14,6 +16,7 @@ export default {
      */
     data : function() {
         return {
+            IncreaseIcon, DecreaseIcon,
             tools : null,
             selectedTool: null,
         }
@@ -27,6 +30,10 @@ export default {
          */
         selectTool(tool) {
             EventBus.$emit("try-selecting-tool", tool.name);
+        },
+
+        changeToolSize(tool, delta) {
+            EventBus.$emit("try-changing-tool-size", tool, delta);
         }
     },
 
@@ -51,9 +58,14 @@ export default {
         <div v-if="tools" class="tools">
             <div :class="'tool'+(selectedTool===tool.name?' selected':'')" v-for="tool of tools" @mousedown="selectTool(tool)">
                 <img :src="tool.icon" :title="tool.name" />
+                <div v-if="tool.size !== undefined" class="toolSize">
+                    <ul>
+                        <li @mouseDown="changeToolSize(tool, 1)"> <img :src="IncreaseIcon"/></li>
+                        <li @mouseDown="changeToolSize(tool, -1)"><img :src="DecreaseIcon"/></li>
+                    </ul>
+                </div>
             </div>
         </div>
     </div>
     `
-
 }

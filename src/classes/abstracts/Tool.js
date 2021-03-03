@@ -12,7 +12,8 @@ export default class Tool {
         this.params = [];
         this.name = "Untitled Tool";
         this.selected = false;
-        this.cursorOffset = [0,0]
+        this.cursorOffset = [0,0];
+        this.size = undefined;
     }
 
     start(file, canvas, x, y, toolCanvas) { throw new Error("Tool start action not implemented") }
@@ -29,5 +30,4 @@ export default class Tool {
         }
         return a.do(this, ...params);
     }
-
 }

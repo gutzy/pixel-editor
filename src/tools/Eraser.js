@@ -21,6 +21,9 @@ export default class Eraser extends Tool {
         this.cursor = 'crosshair';
         this.hotkey = 'e';
         this.save = true;
+        this.size = 1;
+
+        console.log("Eraser size: " + this.size);
     }
 
     start(file, canvas, x, y) {
