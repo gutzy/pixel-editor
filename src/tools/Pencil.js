@@ -8,6 +8,7 @@
 import Tool from "../classes/abstracts/Tool";
 import PencilIcon from "../assets/svg/pencil.svg";
 import DrawRect from "../actions/canvas/DrawRect";
+import ClearCanvas from "../actions/canvas/ClearCanvas";
 import { pixelsBetween, distance } from "../utils/CanvasUtils";
 import ToolInfo from "../actions/tool/ToolInfo";
 import AxisLocking from "../actions/tool/AxisLocking";
@@ -67,5 +68,12 @@ export default class Pencil extends Tool {
       canvas.doAction(DrawRect, rect.x, rect.y, rect.w, rect.h, file.color);
       this.pos = { x, y };
     }
+  }
+
+  hover(file, canvas, x, y, toolCanvas) {
+    console.log(!!toolCanvas, typeof toolCanvas.doAction);
+    toolCanvas.doAction(ClearCanvas);
+    let rect = this.getCenteredRect(x, y, this.size);
+    toolCanvas.doAction(DrawRect, rect.x, rect.y, rect.w, rect.h, file.color);
   }
 }

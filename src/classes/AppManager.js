@@ -297,8 +297,8 @@ class _AppManager {
     if (this.input.isMouseDown() && this.file && isXYValid) {
       // Run Use Tool method
       await this.file.doAction(UseTool, pos.x, pos.y);
-      EventBus.$emit("redraw-canvas");
     }
+    EventBus.$emit("redraw-canvas");
   }
 
   /**
