@@ -38,7 +38,11 @@ class Toolbox extends Component {
         <div
           class=${"tool" +
           (this.state.selectedTool === tool.name ? " selected" : "")}
-          @mousedown=${() => this.selectTool(tool)}
+          @mousedown=${(e) => {
+            this.selectTool(tool);
+            e.stopPropagation();
+            e.preventDefault();
+          }}
         >
           <img src=${tool.icon} title=${tool.name} />
         </div>

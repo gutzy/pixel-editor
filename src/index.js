@@ -45,14 +45,14 @@ class App extends Component {
 
   render() {
     return html`
-      <div class="canvas-wrapper">
-        <canvas id="main-canvas" ref="canvas"></canvas>
-      </div>
       <div class="app">
         <div class="header">${LitMenuBar({ menu: AppManager.menu })}</div>
         <div class="main-content">
           ${LitToolbox()}
-          <div style="position:relative; flex: 1">${LitColorPalette()}</div>
+          <div class="canvas-wrapper">
+            <canvas id="main-canvas" ref="canvas"></canvas>
+          </div>
+          ${LitColorPalette()}
           <!-- ${LitLayersPanel()} -->
           <div id="vue-layers-mount"></div>
         </div>

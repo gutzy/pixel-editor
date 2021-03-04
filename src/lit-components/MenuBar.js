@@ -14,12 +14,12 @@ class MenuBar extends Component {
     });
 
     // blur click behavior - avoid weirdness, stop propagation that will close the menu otherwise
-    document
-      .getElementById("menubar-panel")
-      .addEventListener("mousedown", (e) => e.stopPropagation());
-    document
-      .getElementById("menubar-panel")
-      .addEventListener("click", (e) => e.stopPropagation());
+    // document
+    //   .getElementById("menubar-panel")
+    //   .addEventListener("mousedown", (e) => e.stopPropagation());
+    // document
+    //   .getElementById("menubar-panel")
+    //   .addEventListener("click", (e) => e.stopPropagation());
 
     // status updates
     EventBus.$on("ui-zoom", (zoom) => this.setState({ zoom }));
@@ -43,9 +43,16 @@ class MenuBar extends Component {
     }
   }
 
+  stopPropagation(e) {}
+
   render() {
     return html`
-      <div class="menubar" id="menubar-panel">
+      <div
+        class="menubar"
+        id="menubar-panel"
+        @mousedown=${(e) => e.stopPropagation()}
+        @click=${(e) => e.stopPropagation()}
+      >
         <img src=${Logo} style="padding:8px" />
         <!-- <h1>Lospec Pixel Editor</h1> -->
         <div class="menubar-content">
