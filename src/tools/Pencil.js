@@ -50,6 +50,7 @@ export default class Pencil extends Tool {
   }
 
   stop(file, canvas, x, y) {
+    let rect = this.getCenteredRect(x, y, this.size);
     canvas.doAction(DrawRect, rect.x, rect.y, rect.w, rect.h, file.color);
   }
 
