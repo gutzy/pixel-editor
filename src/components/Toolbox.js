@@ -7,6 +7,10 @@ import EventBus from "../utils/EventBus";
 import IncreaseIcon from "../assets/svg/plus.svg";
 import DecreaseIcon from "../assets/svg/minus.svg";
 
+// Allow html strings to be formatted with lit-html plugins
+// this does absolutely nothing to the code
+import html from "../utils/html";
+
 export default {
   /**
    * Component State
@@ -62,19 +66,27 @@ export default {
   /**
    * Rendered template
    */
-  template: `
+  template: html`
     <div class="tools-panel">
-        <div v-if="tools" class="tools">
-            <div :class="'tool'+(selectedTool===tool.name?' selected':'')" v-for="tool of tools" @mousedown="selectTool(tool)">
-                <img :src="tool.icon" :title="tool.name" />
-                <div v-if="tool.size" class="toolSize">
-                    <ul>
-                        <li @mousedown="changeToolSize(tool, 1, $event)"> <img :src="IncreaseIcon"/></li>
-                        <li @mousedown="changeToolSize(tool, -1, $event)"><img :src="DecreaseIcon"/></li>
-                    </ul>
-                </div>
-            </div>
+      <div v-if="tools" class="tools">
+        <div
+          :class="'tool'+(selectedTool===tool.name?' selected':'')"
+          v-for="tool of tools"
+          @mousedown="selectTool(tool)"
+        >
+          <img :src="tool.icon" :title="tool.name" />
+          <div v-if="tool.size" class="toolSize">
+            <ul>
+              <li @mousedown="changeToolSize(tool, 1, $event)">
+                <img :src="IncreaseIcon" />
+              </li>
+              <li @mousedown="changeToolSize(tool, -1, $event)">
+                <img :src="DecreaseIcon" />
+              </li>
+            </ul>
+          </div>
         </div>
+      </div>
     </div>
-    `,
+  `,
 };
