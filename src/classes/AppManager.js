@@ -226,6 +226,7 @@ class _AppManager {
       await this.file.doAction(StopTool, pos.x, pos.y);
     }
 
+    // BUG: causes error when clicking on layers context menu option
     EventBus.$emit("redraw-canvas");
   }
 

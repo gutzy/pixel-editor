@@ -150,6 +150,10 @@ export default {
       EventBus.$emit("try-adding-layer", "Layer 1");
     },
 
+    duplicateLayer(layer) {
+      EventBus.$emit("try-duplicating-layer", layer.name);
+    },
+
     /**
      * on Right Click - Sets the menu to display for the designated layer.
      *
@@ -172,6 +176,7 @@ export default {
         locked: l.locked,
         thumb: l.getImage().toDataURL("image/png"),
       }));
+      
       this.$set(this, "layers", layers.reverse());
     });
 
@@ -229,6 +234,7 @@ export default {
             >
               <div v-if="showMenu === layer.name" class="layer-menu">
                 <button @mousedown="deleteLayer(layer)">Delete</button>
+                <button @mousedown="duplicateLayer(layer)">Duplicate</button>
                 <button @mousedown="setLayerRename(layer)">Rename</button>
                 <button
                   v-if="index < layers.length-1"
