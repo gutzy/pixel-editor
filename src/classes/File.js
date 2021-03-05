@@ -13,6 +13,7 @@ import SelectColor from "../actions/file/selection/SelectColor";
 import SelectLayer from "../actions/file/layers/SelectLayer";
 import AddLayer from "../actions/file/layers/AddLayer";
 import DeleteLayer from "../actions/file/layers/DeleteLayer";
+import DuplicateLayer from "../actions/file/layers/DuplicateLayer";
 import RenameLayer from "../actions/file/layers/RenameLayer";
 import MergeLayerBelow from "../actions/file/layers/MergeLayerBelow";
 import FlattenVisibleLayers from "../actions/file/layers/FlattenVisibleLayers";
@@ -101,6 +102,7 @@ export default class File {
         EventBus.$on('try-selecting-color', (...a) => this.doAction(SelectColor, ...a));
         EventBus.$on('try-selecting-layer', (...a) => this.doAction(SelectLayer, ...a));
         EventBus.$on('try-adding-layer', (...a) => this.doAction(AddLayer, ...a));
+        EventBus.$on('try-duplicating-layer', (...a) => this.doAction(DuplicateLayer, ...a));
         EventBus.$on('try-deleting-layer', (...a) => this.doAction(DeleteLayer, ...a));
         EventBus.$on('try-renaming-layer', (...a) => this.doAction(RenameLayer, ...a));
         EventBus.$on('try-merging-layer-below', (...a) => this.doAction(MergeLayerBelow, ...a));
