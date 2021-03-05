@@ -12,6 +12,7 @@ import DrawImage from "../canvas/DrawImage";
 import PixelGrid from "../canvas/PixelGrid";
 import Canvas from "../../classes/Canvas";
 import DrawSelectionMarchingAnts from "../canvas/DrawSelectionMarchingAnts";
+import UITool from "./tools/UITool.js";
 
 export default class Redraw extends FileAction {
   /**
@@ -87,6 +88,8 @@ export default class Redraw extends FileAction {
     if (file.zoom >= 8) {
       canvas.doAction(PixelGrid, file.zoom, r[0] - 1, r[1] - 1);
     }
+
+    file.doAction(UITool, canvas, r[0] - 1, r[1] - 1);
 
     ///////////////////////////////////////////////////////////////////////
     // Selection related overlays

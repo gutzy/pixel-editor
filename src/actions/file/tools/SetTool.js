@@ -35,8 +35,11 @@ export default class SetTool extends FileAction {
     // Reset the tool's designated persistence canvas, then run it
     // file.toolCanvas = null;
     // create tool canvas for persistence
-    if (!file.selectedTool.persistent || !file.toolCanvas)
+    if (!file.selectedTool.persistent || !file.toolCanvas) {
       file.toolCanvas = new Canvas(null, file.width, file.height);
+      file.uiCanvas = new Canvas(null, file.width, file.height);
+    }
+
     file.doAction(RunToolPersistence);
   }
 }

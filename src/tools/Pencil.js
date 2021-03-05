@@ -20,7 +20,7 @@ export default class Pencil extends Tool {
     this.id = "pencil";
     this.name = "Pencil Tool";
     this.icon = PencilIcon;
-    this.cursor = "crosshair";
+    this.cursor = "none";
     this.cursorOffset = [0, 0];
     this.hotkey = "b";
     this.save = true;
@@ -70,10 +70,61 @@ export default class Pencil extends Tool {
     }
   }
 
-  hover(file, canvas, x, y, toolCanvas) {
-    console.log(!!toolCanvas, typeof toolCanvas.doAction);
+  hover(file, canvas, x, y, toolCanvas, uiCanvas) {
     toolCanvas.doAction(ClearCanvas);
     let rect = this.getCenteredRect(x, y, this.size);
     toolCanvas.doAction(DrawRect, rect.x, rect.y, rect.w, rect.h, file.color);
+  }
+
+  canvasToScreenSpace(x, y, canvasX, canvasY) {}
+
+  ui(file, uiCanvas, canvasX, canvasY) {
+    // console.log(uiCanvas);
+    let modx = canvasX % file.zoom;
+    let mody = canvasY % file.zoom;
+    let x = Math.floor((this.cursorPos.x - 2 - modx) / file.zoom);
+    let y = Math.floor((this.cursorPos.y - 2 - mody) / file.zoom);
+    // x = x * file.zoom + modx;
+    // y = y * file.zoom + mody;
+
+    x = x - Math.floor(canvasX / file.zoom);
+    y = y - Math.floor(canvasY / file.zoom);
+
+    uiCanvas.ctx.fillText(
+      `(${x}, ${y}) (${modx}, ${mody})`,
+      this.cursorPos.x + 2,
+      this.cursorPos.y - 2
+    );
+
+    // uiCanvas.ctx.scale(file.zoom, file.zoom);
+    // let rect = this.getCenteredRect(
+    //   Math.floor(this.cursorPos.x / file.zoom) * file.zoom,
+    //   Math.floor(this.cursorPos.y / file.zoom) * file.zoom,
+    //   this.size * file.zoom
+    // );
+
+    uiCanvas.doAction(DrawRect, x - 10000, y, 20000, 1, null, "red ");
+    uiCanvas.doAction(DrawRect, x, y - 10000, 1, 20000, null, "red ");
+
+    uiCanvas.doAction(
+      DrawRect,
+      this.cursorPos.x - 10000,
+      this.cursorPos.y,
+      20000,
+      1,
+      null,
+      "black"
+    );
+    uiCanvas.doAction(
+      DrawRect,
+      this.cursorPos.x,
+      this.cursorPos.y - 10000,
+      1,
+      20000,
+      null,
+      "black"
+    );
+
+    // uiCanvas.doAction(DrawRect, rect.x, rect.y, rect.w, rect.h, null, "black");
   }
 }
