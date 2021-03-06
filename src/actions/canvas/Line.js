@@ -23,7 +23,7 @@ export default class Line extends CanvasAction {
         const pixelsToPaint = pixelsBetween(startPos.x, startPos.y, endPos.x, endPos.y);
         
         for (let p of pixelsToPaint) { // draw pixels between this and the previous mouse movement
-            target.doAction(DrawRect, p.x, p.y, strokeWidth, strokeWidth, color);
+            target.doAction(DrawRect, p.x - Math.floor(strokeWidth/2), p.y - Math.floor(strokeWidth/2), strokeWidth, strokeWidth, color);
         }
     }
 }

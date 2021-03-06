@@ -35,15 +35,6 @@ export default class Pencil extends Tool {
     this.doAction(ToolInfo, { Size: this.size });
   }
 
-  getCenteredRect(x, y, size) {
-    return {
-      x: Math.ceil(Math.floor(x) - size / 2),
-      y: Math.ceil(Math.floor(y) - size / 2),
-      w: size,
-      h: size,
-    };
-  }
-
   start(file, canvas, x, y) {
     let rect = this.getCenteredRect(x, y, this.size);
     canvas.doAction(DrawRect, rect.x, rect.y, rect.w, rect.h, file.color);
@@ -75,6 +66,15 @@ export default class Pencil extends Tool {
     toolCanvas.doAction(ClearCanvas);
     let rect = this.getCenteredRect(x, y, this.size);
     toolCanvas.doAction(DrawRect, rect.x, rect.y, rect.w, rect.h, file.color);
+  }
+
+  getCenteredRect(x, y, size) {
+    return {
+      x: Math.ceil(Math.floor(x) - size / 2),
+      y: Math.ceil(Math.floor(y) - size / 2),
+      w: size,
+      h: size,
+    };
   }
 
   canvasToScreenSpace(x, y, canvasX, canvasY) {}

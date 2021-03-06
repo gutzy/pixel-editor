@@ -44,4 +44,50 @@ export default class Rectangle extends Tool {
         toolCanvas.doAction(ClearCanvas);
         toolCanvas.doAction(DrawRect, this.startPos.x, this.startPos.y, x-this.startPos.x+1, y-this.startPos.y+1, null, file.color, size);
     }
+
+    hover(file, canvas, x, y, toolCanvas, uiCanvas) {
+        this.cursorPos = { x, y };
+        toolCanvas.doAction(ClearCanvas);
+        let rect = this.getCenteredRect(x, y, this.size);
+        toolCanvas.doAction(DrawRect, rect.x, rect.y, rect.w, rect.h, file.color);
+      }
+    
+      getCenteredRect(x, y, size) {
+        return {
+          x: Math.ceil(Math.floor(x) - size / 2),
+          y: Math.ceil(Math.floor(y) - size / 2),
+          w: size,
+          h: size,
+        };
+      }
+    
+      canvasToScreenSpace(x, y, canvasX, canvasY) {}
+    
+      ui(file, uiCanvas) {
+        if (this.cursorPos) {
+          let rect = this.getCenteredRect(
+            this.cursorPos.x,
+            this.cursorPos.y,
+            this.size
+          );
+    
+          uiCanvas.ctx.lineWidth = 2 / file.zoom;
+          uiCanvas.ctx.strokeStyle = "white";
+          uiCanvas.ctx.strokeRect(
+            rect.x + 0.5 / file.zoom,
+            rect.y + 0.5 / file.zoom,
+            rect.w,
+            rect.h
+          );
+    
+          uiCanvas.ctx.lineWidth = 1 / file.zoom;
+          uiCanvas.ctx.strokeStyle = "black";
+          uiCanvas.ctx.strokeRect(
+            rect.x + 0.5 / file.zoom,
+            rect.y + 0.5 / file.zoom,
+            rect.w,
+            rect.h
+          );
+        }
+      }
 }
