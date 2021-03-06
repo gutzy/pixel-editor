@@ -86,10 +86,14 @@ export default class Redraw extends FileAction {
     // draw a Pixel Grid if zoom is high enough so it won't be obstructive
 
     if (file.zoom >= 8) {
-      canvas.doAction(PixelGrid, file.zoom, r[0] - 1, r[1] - 1);
+      canvas.doAction(PixelGrid, file.zoom, r[0], r[1]);
     }
 
-    file.doAction(UITool, canvas, r[0] - 1, r[1] - 1);
+    canvas.ctx.save();
+    canvas.ctx.translate(r[0], r[1]);
+    canvas.ctx.scale(file.zoom, file.zoom);
+    file.doAction(UITool, canvas, r[0], r[1]);
+    canvas.ctx.restore();
 
     ///////////////////////////////////////////////////////////////////////
     // Selection related overlays

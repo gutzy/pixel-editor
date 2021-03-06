@@ -5,6 +5,7 @@
  */
 import { ToolAction } from "./Actions";
 import EventBus from "../../utils/EventBus";
+// import { screenToRectXY } from "../utils/CanvasUtils";
 
 //class for tools
 export default class Tool {
@@ -15,11 +16,6 @@ export default class Tool {
     this.cursorOffset = [0, 0];
     this.size = undefined;
     this.cursorPos = null;
-    EventBus.$on("input-mouse-move", this.onMouseMove.bind(this));
-  }
-
-  onMouseMove(x, y) {
-    this.cursorPos = { x, y };
   }
 
   start(file, canvas, x, y, toolCanvas) {
