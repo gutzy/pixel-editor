@@ -12,6 +12,7 @@ import {
   isXYinRect,
   screenToRectXY,
   screenToOffsetXY,
+  pixelsBetween
 } from "../utils/CanvasUtils";
 import Tools, { ZoomConfig } from "../config/Tools";
 import Menu from "../config/Menu";
@@ -120,14 +121,18 @@ class _AppManager {
     EventBus.$on("input-mouse-down", this.onMouseDown.bind(this));
     EventBus.$on("input-mouse-up", this.onMouseUp.bind(this));
     EventBus.$on("input-mouse-wheel", this.onMouseWheel.bind(this));
+    EventBus.$on("input-mouse-move", this.onMouseMove.bind(this));
+
     EventBus.$on("input-key-down", this.onKeyDown.bind(this));
     EventBus.$on("input-key-up", this.onKeyUp.bind(this));
-    EventBus.$on("input-mouse-move", this.onMouseMove.bind(this));
+    
     EventBus.$on("reset-canvas", this.onResetCanvas.bind(this));
     EventBus.$on("redraw-canvas", this.onRedrawCanvas.bind(this));
+
     EventBus.$on("try-selecting-tool", this.onSelectTool.bind(this));
     EventBus.$on("try-changing-tool-size", this.onChangeToolSize.bind(this));
     EventBus.$on("set-tool-cursor", this.onSetToolCursor.bind(this));
+
     EventBus.$on("run-menu-item", this.onRunMenuItem.bind(this));
   }
 
@@ -292,12 +297,19 @@ class _AppManager {
     );
 
     // run tool hover method
-    this.file.doAction(HoverTool, pos.x, pos.y);
+    if (!this.input.isRightMouseDown())
+      this.file.doAction(HoverTool, pos.x, pos.y);
 
     // check if mouse is still clicked and cursor is within the drawing bounds, unless the tool can be used outside the bounds.
     if (this.input.isMouseDown() && this.file && isXYValid) {
       // Run Use Tool method
       await this.file.doAction(UseTool, pos.x, pos.y);
+    }
+    else if (this.input.isRightMouseDown() && this.file.selectedTool.size) {
+      // compute the distance and set the right brush size
+      const distance = Math.floor(this.input.getMousePosDelta().x / 2);
+      // Increase the brush size by that distance
+      this.file.selectedTool.doAction(ChangeSize, distance);
     }
     EventBus.$emit("redraw-canvas");
   }

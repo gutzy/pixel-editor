@@ -17,7 +17,10 @@ export default class Input {
     this._canvas = canvasEl;
     this._keyDown = {};
     this._mouseDown = false;
+    this._rightMouseDown = false;
     this._lastKeyDown = null;
+    this._currMousePos = null;
+    this._lastMousePos = null;
   }
 
   /**
@@ -32,6 +35,7 @@ export default class Input {
     window.addEventListener("keydown", this.onKeyDown.bind(this));
     window.addEventListener("resize", this.onResize.bind(this));
     window.addEventListener("focus", this.onFocus.bind(this));
+    window.addEventListener("oncontextmenu ", this.preventContextMenu.bind(this));
   }
 
   /**
@@ -48,16 +52,30 @@ export default class Input {
    */
   onMouseUp(e) {
     const xy = getEventXY(e, this._canvas.el);
-    this._mouseDown = false;
-    EventBus.$emit("input-mouse-up", ...xy);
+
+    if (e.button === 0) {
+      this._mouseDown = false;
+      EventBus.$emit("input-mouse-up", ...xy);
+    }
+    else if (e.button === 2) {
+      this._rightMouseDown = false;
+      EventBus.$emit("input-rightmouse-up", ...xy);
+    }
   }
   /**
    * Mousedown EventBus proxy
    */
   onMouseDown(e) {
     const xy = getEventXY(e, this._canvas.el);
-    this._mouseDown = true;
-    EventBus.$emit("input-mouse-down", ...xy);
+    if (e.button === 0) {
+      this._mouseDown = true;
+      EventBus.$emit("input-mouse-down", ...xy);
+    }
+    else if (e.button === 2) {
+      this._rightMouseDown = true;
+      this._rightMouseDownPos = {x: xy[0], y: xy[1]};
+      EventBus.$emit("input-rightmouse-down", ...xy);
+    }
   }
 
   /**
@@ -73,6 +91,8 @@ export default class Input {
         .map((event) => getEventXY(event, this._canvas.el));
     }
 
+    this._lastMousePos = this._currMousePos;
+    this._currMousePos = {x: xy[0], y: xy[1]};
     EventBus.$emit("input-mouse-move", ...xy, coalesced);
   }
   /**
@@ -185,5 +205,30 @@ export default class Input {
    */
   isMouseDown() {
     return this._mouseDown;
+  }
+
+  /**
+   * Check if the right mouse button is down
+   * @returns boolean
+   */
+  isRightMouseDown() {
+    return this._rightMouseDown;
+  }
+
+  preventContextMenu(e) {
+    e.preventDefault();
+    return false;
+  }
+
+  /**
+   * Returns the coordinates in which the user started dragging
+   * @returns {x,y} the aforementioned coordinates
+   */
+  getRightMouseDownPos() {
+    return this._rightMouseDownPos;
+  }
+
+  getMousePosDelta() {
+    return {x: this._currMousePos.x - this._lastMousePos.x, y: this._currMousePos.y - this._lastMousePos.y};
   }
 }
