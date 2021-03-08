@@ -1,0 +1,19 @@
+.dialog-overlay {
+  background-color: rgba(35, 32, 36, 0.75);
+  width: 100vw;
+  height: 100vh;
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.dialog-window {
+  background-color: $panelBg;
+  padding: 16px;
+  border-radius: 3px;
+  box-shadow: 0px 0px 10px 0px rgb(0 0 0 / 50%);
+  // pointer-events: none;
+  width: 400px;
+}

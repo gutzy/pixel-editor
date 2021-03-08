@@ -12,7 +12,7 @@ import {
   isXYinRect,
   screenToRectXY,
   screenToOffsetXY,
-  pixelsBetween
+  pixelsBetween,
 } from "../utils/CanvasUtils";
 import Tools, { ZoomConfig } from "../config/Tools";
 import Menu from "../config/Menu";
@@ -125,7 +125,7 @@ class _AppManager {
 
     EventBus.$on("input-key-down", this.onKeyDown.bind(this));
     EventBus.$on("input-key-up", this.onKeyUp.bind(this));
-    
+
     EventBus.$on("reset-canvas", this.onResetCanvas.bind(this));
     EventBus.$on("redraw-canvas", this.onRedrawCanvas.bind(this));
 
@@ -151,24 +151,26 @@ class _AppManager {
   }
 
   async onMouseWheel(delta, x, y) {
-    let mousePos = screenToOffsetXY(this.canvas.el, x, y);
+    if (this.file) {
+      let mousePos = screenToOffsetXY(this.canvas.el, x, y);
 
-    if (delta < 0) {
-      await this.file.doAction(
-        ZoomIn,
-        ZoomConfig.ZoomLevels,
-        mousePos.x,
-        mousePos.y,
-        this.canvas.el
-      );
-    } else if (delta > 0) {
-      await this.file.doAction(
-        ZoomOut,
-        ZoomConfig.ZoomLevels,
-        mousePos.x,
-        mousePos.y,
-        this.canvas.el
-      );
+      if (delta < 0) {
+        await this.file.doAction(
+          ZoomIn,
+          ZoomConfig.ZoomLevels,
+          mousePos.x,
+          mousePos.y,
+          this.canvas.el
+        );
+      } else if (delta > 0) {
+        await this.file.doAction(
+          ZoomOut,
+          ZoomConfig.ZoomLevels,
+          mousePos.x,
+          mousePos.y,
+          this.canvas.el
+        );
+      }
     }
   }
 
@@ -304,9 +306,11 @@ class _AppManager {
     if (this.input.isMouseDown() && this.file && isXYValid) {
       // Run Use Tool method
       await this.file.doAction(UseTool, pos.x, pos.y);
-    }
-    else if (this.file.selectedTool &&this.input.isRightMouseDown() && 
-      this.file.selectedTool.size) {
+    } else if (
+      this.file.selectedTool &&
+      this.input.isRightMouseDown() &&
+      this.file.selectedTool.size
+    ) {
       // compute the distance and set the right brush size
       const distance = Math.floor(this.input.getMousePosDelta().x / 2);
       // Increase the brush size by that distance
@@ -438,7 +442,9 @@ class _AppManager {
       // Runs menu action on the app... AppAction()
       case "app":
         if (item.action) this.doAction(item.action);
-        if (item.emit) EventBus.$emit(item.emit);
+        if (item.emit) {
+          EventBus.$emit(item.emit, item.scopeParam);
+        }
         break;
       // Runs menu action on current file... FileAction(this.file, ...params)
       case "file":
