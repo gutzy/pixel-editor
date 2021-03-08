@@ -31,7 +31,7 @@ const vm = new Vue({
 		components : { LayersPanel, Toolbox, ColorPalette, MenuBar },
 
 		template : `
-            <div class="app">
+            <div class="app"">
             	<div class="header">
             		<menu-bar />
 				</div>

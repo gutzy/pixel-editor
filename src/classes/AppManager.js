@@ -305,7 +305,8 @@ class _AppManager {
       // Run Use Tool method
       await this.file.doAction(UseTool, pos.x, pos.y);
     }
-    else if (this.input.isRightMouseDown() && this.file.selectedTool.size) {
+    else if (this.file.selectedTool &&this.input.isRightMouseDown() && 
+      this.file.selectedTool.size) {
       // compute the distance and set the right brush size
       const distance = Math.floor(this.input.getMousePosDelta().x / 2);
       // Increase the brush size by that distance

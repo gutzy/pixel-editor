@@ -35,7 +35,7 @@ export default class Input {
     window.addEventListener("keydown", this.onKeyDown.bind(this));
     window.addEventListener("resize", this.onResize.bind(this));
     window.addEventListener("focus", this.onFocus.bind(this));
-    window.addEventListener("oncontextmenu ", this.preventContextMenu.bind(this));
+    window.addEventListener("contextmenu", this.preventContextMenu.bind(this));
   }
 
   /**
