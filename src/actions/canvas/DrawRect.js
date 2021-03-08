@@ -48,6 +48,10 @@ export default class DrawRect extends CanvasAction {
       x = x - halfStroke;
       y = y - halfStroke;
 
+      // Adjust for odd-sized stroke widths
+      w -= 1 - (strokeWidth % 2);
+      h -= 1 - (strokeWidth % 2);
+
       target.ctx.fillStyle = stroke ? stroke : "transparent";
       target.ctx.fillRect(Math.floor(x), Math.floor(y), w, strokeWidth); // Top
       target.ctx.fillRect(Math.floor(x), Math.floor(y), strokeWidth, h); // Left
