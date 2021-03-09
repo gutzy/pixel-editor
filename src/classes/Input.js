@@ -228,6 +228,10 @@ export default class Input {
     return this._rightMouseDownPos;
   }
 
+  /**
+   * Returns the difference between the previous mouse position and the current one
+   * @returns {x,y} the difference on the for the axis, the difference for the y axis
+   */
   getMousePosDelta() {
     return {x: this._currMousePos.x - this._lastMousePos.x, y: this._currMousePos.y - this._lastMousePos.y};
   }
