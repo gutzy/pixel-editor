@@ -26,6 +26,7 @@ import DeleteLayer from "../actions/file/layers/DeleteLayer";
 import MergeLayerBelow from "../actions/file/layers/MergeLayerBelow";
 import FlattenAllLayers from "../actions/file/layers/FlattenAllLayers";
 import FlattenVisibleLayers from "../actions/file/layers/FlattenVisibleLayers";
+import TogglePixelGrid from "../actions/app/TogglePixelGrid";
 
 export default {
   File: [
@@ -119,6 +120,14 @@ export default {
     },
   ],
   Editor: [
+    {
+      name: "Show Pixel Grid",
+      scope: "app",
+      type: "bool",
+      value: true,
+      emit: "toggle-pixel-grid",
+      action: TogglePixelGrid,
+    },
     {
       name: "Switch to Basic Mode",
       scope: "app",

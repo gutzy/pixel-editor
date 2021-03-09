@@ -36,6 +36,7 @@ class _AppManager {
     this.file = null;
     this.tools = null;
     this.menu = null;
+    this.pixelGrid = true;
 
     this.persistentLoop = null;
     this.loopCount = 0;
