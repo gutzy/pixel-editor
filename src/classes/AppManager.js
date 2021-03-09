@@ -313,7 +313,15 @@ class _AppManager {
       this.file.selectedTool.size
     ) {
       // compute the distance and set the right brush size
-      const distance = Math.floor(this.input.getMousePosDelta().x / 2);
+      let distance = this.input.getMousePosDelta().x / 2;
+
+      // This is to avoid scaling down being easier than scaling up (if I floor a 
+      // negative value, it becomes -1 and not 0)
+      if (distance > 0)
+        distance = Math.floor(distance);
+      else  
+        distance = Math.ceil(distance);
+
       // Increase the brush size by that distance
       this.file.selectedTool.doAction(ChangeSize, distance);
     }
