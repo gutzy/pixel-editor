@@ -1,3 +1,5 @@
+@import "vars";
+
 .dialog-overlay {
   background-color: rgba(35, 32, 36, 0.75);
   width: 100vw;
@@ -9,11 +11,150 @@
   z-index: 1000;
 }
 
+#editor-mode {
+	display: none;
+}
+
+#new-pixel-warning {
+	color:$panelColor;
+	font-style: italic;
+	margin-top:20px;
+}
+
+#create-button {
+	color:$panelColor;
+
+	&:hover {
+		color:$dialogTitle;
+	}
+}
+
 .dialog-window {
   background-color: $panelBg;
-  padding: 16px;
+  padding: 20px;
   border-radius: 3px;
   box-shadow: 0px 0px 10px 0px rgb(0 0 0 / 50%);
-  // pointer-events: none;
+  position:relative;
   width: 400px;
+    
+	h1 {
+		margin: 0 0 10px;
+		color: $dialogTitle;
+		text-transform: uppercase;
+		font-size: 1.5em;
+	} 
+	h2 {
+		margin: 25px 0 10px;
+		color: $dialogTitle;
+		text-transform: uppercase;
+		font-size: 1em;
+	}
+	a {
+		color: $panelSelectedBg;
+		border-bottom: dotted 1px transparent;
+		text-decoration: none;
+		&:hover {
+			border-bottom: dotted 1px $panelSelectedBg;
+		}
+	}
+
+	.close-button {
+		position:absolute;
+		top:0;
+		right:0;
+		width: 32px;
+		height: 32px;
+		background: transparent;
+		border: none;
+		color: $dialogTitle;
+		font-weight: bold;
+		font-size: 1em;
+		cursor: pointer;
+		border-radius: 0 3px 0 0;
+		path {
+			fill: $panelSelectedBg2;
+		}
+		&:hover {
+			background: $panelSelectedBg;
+			path {
+				fill: $dialogTitle;
+			}
+		}
+	}
+
+	button.default {
+		float: right;
+		background: $panelSelectedBg;
+		border: none;
+		border-radius: 4px;
+		color: $panelSelectedBg2;
+		padding: 10px 20px;
+		cursor: pointer;
+		margin: 20px 0 0 10px;
+		&:hover {
+			background: $panelSelectedBg2;
+		}
+	}
+
+	input {
+		background: $background;
+		border: none;
+		border-radius: 4px;
+		color: $panelColor;
+		padding: 10px 20px;
+		margin: 0;
+		width: 60px;
+		text-align: center;
+	}
+
+	.dropdown-button {
+		background: $panelSelectedBg url('assets/png/dropdown-arrow.png') right center no-repeat;
+		border: none;
+		border-radius: 4px;
+		color: $panelColor;
+		padding: 5px 20px 5px 5px;
+		cursor: pointer;
+		margin: 0;
+		width: 200px;
+		text-align: left;
+		&:hover {
+			background: $panelSelectedBg2 url('assets/png/dropdown-arrow-hover.png') right center no-repeat;
+			color: $dialogTitle;
+		}
+		&.selected {
+			border-radius: 4px 4px 0 0;
+		}
+	}
+
+	.dropdown-menu {
+		background: $panelSelectedBg;
+		border: none;
+		color: $panelSelectedBg2;
+		padding: 0;
+		margin: -1px 0 0 0;
+		width: 200px;
+		text-align: left;
+		position: absolute;
+		border-radius: 0 0 4px 4px;
+		overflow: hidden;
+		display: none;
+		&.selected {
+			display: block;
+		}
+
+		button {
+			background: $panelSelectedBg;
+			border: none;
+			color: $panelSelectedBg2;
+			padding: 5px 20px 5px 5px;
+			cursor: pointer;
+			margin: 0;
+			width: 100%;
+			text-align: left;
+			&:hover {
+				background: $panelSelectedBg2;
+			}
+		}
+	}
 }
+

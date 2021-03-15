@@ -41,7 +41,6 @@ export default {
     },
 
     stopPropagation(e) {
-      console.log("STOP");
       e.preventDefault();
       e.stopPropagation();
     },

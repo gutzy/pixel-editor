@@ -3,8 +3,42 @@
 import html from "../../utils/html";
 
 export default {
+  data: function() {
+    return {
+      paletteMenuActive: false,
+      presetMenuActive: false,
+      modeMenuActive: false
+    }
+  },
+
+  methods: {
+    print() {
+      console.log("WOW!");
+    },
+
+    toggleModeMenu() {
+      console.log("Mode menu: " + this.modeMenuActive);
+
+      if (this.modeMenuActive)
+        this.$refs.modeMenu.style.display = "none";
+      else 
+        this.$refs.modeMenu.style.display = "block";
+
+      modeMenuActive = !modeMenuActive;
+
+    },
+
+    togglePaletteMenu() {
+
+    },
+
+    togglePresetMenu() {
+
+    }
+  },
+
   template: html`<div id="new-pixel" style="display: block;">
-    <button class="close-button">
+    <button class="close-button" @click=print>
       <svg width="20" height="20" viewBox="0 0 1792 1792">
         X
         <path
@@ -20,20 +54,19 @@ export default {
     <button id="editor-mode-button" class="dropdown-button">
       Choose a mode...
     </button>
-    <div id="editor-mode-menu" class="dropdown-menu">
+    <div id="editor-mode-menu" class="dropdown-menu" ref="modeMenu">
       <button>Basic</button><button>Advanced</button>
     </div>
-    <input id="editor-mode" value="'Advanced'" autocomplete="off" />
+    <input id="editor-mode" value="Advanced" autocomplete="off" />
     <p id="editor-mode-info"></p>
 
     <!-- Preset-->
     <h2>Preset</h2>
-    <button id="preset-button" class="dropdown-button">
+    <button id="preset-button" class="dropdown-button" @click=toggleModeMenu>
       Choose a preset...
     </button>
-    <div id="preset-menu" class="dropdown-menu">
-      <button>Gameboy Color</button><button>PICO-8</button
-      ><button>Commodore 64</button>
+    <div id="preset-menu" class="dropdown-menu" @click=togglePresetMenu ref="presetMenu">
+      <button>Gameboy Color</button><button>PICO-8</button><button>Commodore 64</button>
     </div>
 
     <h2>Size</h2>
@@ -49,11 +82,12 @@ export default {
         fill="#fff"
       ></path></svg
     ><input id="size-height" value="64" autocomplete="off" />
+
     <h2>Palette</h2>
-    <button id="palette-button" class="dropdown-button">
+    <button id="palette-button" class="dropdown-button" @click=togglePaletteMenu>
       Choose a palette...
     </button>
-    <div id="palette-menu" class="dropdown-menu">
+    <div id="palette-menu" class="dropdown-menu" ref="paletteMenu">
       <button id="no-palette-button">Empty Palette</button
       ><button id="load-palette-button">Load palette...</button
       ><button>Endesga 32</button><button>AAP-64</button><button>Pear36</button
