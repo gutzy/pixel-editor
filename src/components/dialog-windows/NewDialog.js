@@ -1,6 +1,7 @@
 // Allow html strings to be formatted with lit-html plugins
 // this does absolutely nothing to the code
 import html from "../../utils/html";
+import {toggleMenu} from "../../utils/DialogUtils";
 
 export default {
   data: function() {
@@ -12,33 +13,51 @@ export default {
   },
 
   methods: {
-    print() {
-      console.log("WOW!");
+    toggleModeMenu(e) {
+      if (!this.modeMenuActive) {
+        this.closeMenus(e, false);
+      }
+
+      this.modeMenuActive = toggleMenu(this.$refs.modeMenu, this.modeMenuActive);
     },
 
-    toggleModeMenu() {
-      console.log("Mode menu: " + this.modeMenuActive);
+    togglePaletteMenu(e) {
+      if (!this.paletteMenuActive) {
+        this.closeMenus(e, false);
+      }
 
-      if (this.modeMenuActive)
-        this.$refs.modeMenu.style.display = "none";
-      else 
-        this.$refs.modeMenu.style.display = "block";
-
-      modeMenuActive = !modeMenuActive;
-
+      this.paletteMenuActive = toggleMenu(this.$refs.paletteMenu, this.paletteMenuActive);
     },
 
-    togglePaletteMenu() {
+    togglePresetMenu(e) {
+      if (!this.presetMenuActive) {
+        this.closeMenus(e, false);
+      }
 
+      this.presetMenuActive = toggleMenu(this.$refs.presetMenu, this.presetMenuActive);
     },
 
-    togglePresetMenu() {
-
+    /** Closes all the currently open submenus
+     * 
+     * @param {*} e The event that triggered the function
+     * @param {*} clickedOutside Tells whether the function has been called because the
+     *                           user clicked outside the submenu or not
+     */
+    closeMenus(e, clickedOutside = true) {
+      if (!clickedOutside || !e.target.className.includes("dropdown-button")) {
+        // Close all the currently opened menus, if I'm not clicking on a different dropdown
+        if (this.modeMenuActive)
+          this.modeMenuActive = toggleMenu(this.$refs.modeMenu, this.modeMenuActive);
+        if (this.paletteMenuActive)
+          this.paletteMenuActive = toggleMenu(this.$refs.paletteMenu, this.paletteMenuActive);
+        if (this.presetMenuActive)
+          this.presetMenuActive = toggleMenu(this.$refs.presetMenu, this.presetMenuActive);
+      }
     }
   },
 
-  template: html`<div id="new-pixel" style="display: block;">
-    <button class="close-button" @click=print>
+  template: html`<div id="new-pixel" style="display: block;" @click=closeMenus>
+    <button class="close-button">
       <svg width="20" height="20" viewBox="0 0 1792 1792">
         X
         <path
@@ -51,7 +70,7 @@ export default {
 
     <!-- Editor mode-->
     <h2>Editor mode</h2>
-    <button id="editor-mode-button" class="dropdown-button">
+    <button id="editor-mode-button" class="dropdown-button" @click=toggleModeMenu>
       Choose a mode...
     </button>
     <div id="editor-mode-menu" class="dropdown-menu" ref="modeMenu">
@@ -62,10 +81,10 @@ export default {
 
     <!-- Preset-->
     <h2>Preset</h2>
-    <button id="preset-button" class="dropdown-button" @click=toggleModeMenu>
+    <button id="preset-button" class="dropdown-button" @click=togglePresetMenu>
       Choose a preset...
     </button>
-    <div id="preset-menu" class="dropdown-menu" @click=togglePresetMenu ref="presetMenu">
+    <div id="preset-menu" class="dropdown-menu" ref="presetMenu">
       <button>Gameboy Color</button><button>PICO-8</button><button>Commodore 64</button>
     </div>
 
