@@ -40,6 +40,8 @@ export default {
   mounted() {
     // bind 'ui-set-palette' editor event to set the colors in the palette (when loading a file or palette etc.)
     EventBus.$on("ui-set-palette", (colors) => {
+      console.log("Ok, colors: ");
+      console.log(colors);
       this.colors = colors;
     });
 
@@ -86,6 +88,7 @@ export default {
           ></div>
         </draggable>
       </div>
+      <button 
     </div>
   `,
 };

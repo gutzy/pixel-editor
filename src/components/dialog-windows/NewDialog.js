@@ -2,13 +2,20 @@
 // this does absolutely nothing to the code
 import html from "../../utils/html";
 import {toggleMenu} from "../../utils/DialogUtils";
+import EventBus from "../../utils/EventBus";
+import Palettes from "../../config/Palettes";
+import Presets from "../../config/Presets";
 
 export default {
   data: function() {
     return {
       paletteMenuActive: false,
       presetMenuActive: false,
-      modeMenuActive: false
+      modeMenuActive: false,
+
+      palettes: null,
+      presets: null,
+      currentPalette: null
     }
   },
 
@@ -53,11 +60,99 @@ export default {
         if (this.presetMenuActive)
           this.presetMenuActive = toggleMenu(this.$refs.presetMenu, this.presetMenuActive);
       }
+    },
+
+    /** Triggered when the user selects a new palette from the palette menu
+     * 
+     * @param {*} name The name of the chosen palette
+     * @param {*} palette The array of colours that make up the palette
+     */
+    changePalette(name, palette) {
+      // Setting the palette name as the dropdown button text
+      this.$refs.paletteButton.innerHTML = name;
+      // Saving the palette
+      this.currentPalette = palette;
+    },
+
+    changePreset(preset) {
+      // Setting the palette name as the dropdown button text
+      this.$refs.presetButton.innerHTML = preset.name;
+
+      // Setting the preset data
+      this.changePalette(preset.palette.name, preset.palette.colors);
+      this.$refs.widthInput.value = preset.width;
+      this.$refs.heightInput.value = preset.height;
+    },
+
+    browsePalette() {
+      console.log(this.$refs.loadPaletteHolder);
+      this.$refs.loadPaletteHolder.click();
+    },
+
+    loadPalette() {
+      console.log(this.$refs.loadPaletteHolder);
+      const files = this.$refs.loadPaletteHolder.files;
+
+      if (files && files[0]) {
+        // Checking if the extension is correct
+        if (fileContentType == 'image/png' || fileContentType == 'image/gif') {
+          //load file
+          let fileReader = new FileReader();
+          fileReader.onload = function(e) {
+              let img = new Image();
+              img.onload = function() {
+                //draw image onto a temporary canvas
+                let loadPaletteCanvas = document.createElement("canvas");
+                let loadPaletteContext = loadPaletteCanvas.getContext('2d');
+
+                loadPaletteCanvas.width = img.width;
+                loadPaletteCanvas.height = img.height;
+
+                loadPaletteContext.drawImage(img, 0, 0);
+
+                //create array to hold found colors
+                let colorPalette = [];
+                let imagePixelData = loadPaletteContext.getImageData(0,0,this.width, this.height).data;
+
+                console.log(imagePixelData);
+
+                //loop through pixels looking for colors to add to palette
+                for (let i = 0; i < imagePixelData.length; i += 4) {
+                    let color = '#'+rgbToHex(imagePixelData[i],imagePixelData[i + 1],imagePixelData[i + 2]);
+                    if (colorPalette.indexOf(color) == -1) {
+                        colorPalette.push(color);
+                    }
+                }
+
+                this.currentPalette = colorPalette;
+                this.$refs.paletteButton.innerHTML = 'Loaded palette';
+              };
+          };
+          fileReader.readAsDataURL(files[0]);
+      }
+      else alert('Only PNG and GIF files are supported at this time.');
+      }
+    },
+
+    newPixel() {
+      EventBus.$emit("new-pixel", this.$refs.widthInput.value, this.$refs.heightInput.value,
+        "advanced", "Funkier Test", this.currentPalette);
+
+      EventBus.$emit("ui-close-dialog", null);
+    },
+
+    close() {
+      EventBus.$emit("ui-close-dialog", null);
     }
   },
 
+  mounted() {
+    this.palettes = Palettes;
+    this.presets = Presets;
+  },
+
   template: html`<div id="new-pixel" style="display: block;" @click=closeMenus>
-    <button class="close-button">
+    <button class="close-button" @click=close>
       <svg width="20" height="20" viewBox="0 0 1792 1792">
         X
         <path
@@ -70,7 +165,7 @@ export default {
 
     <!-- Editor mode-->
     <h2>Editor mode</h2>
-    <button id="editor-mode-button" class="dropdown-button" @click=toggleModeMenu>
+    <button id="editor-mode-button" class="dropdown-button" @click=toggleModeMenu ref="modeButton">
       Choose a mode...
     </button>
     <div id="editor-mode-menu" class="dropdown-menu" ref="modeMenu">
@@ -79,49 +174,47 @@ export default {
     <input id="editor-mode" value="Advanced" autocomplete="off" />
     <p id="editor-mode-info"></p>
 
+    <h2>Palette</h2>
+    <button id="palette-button" class="dropdown-button" @click=togglePaletteMenu ref="paletteButton">
+      Choose a palette...
+    </button>
+    <div id="palette-menu" class="dropdown-menu" ref="paletteMenu">
+      <button id="load-palette-button" @click="browsePalette">Load palette...</button>
+
+      <input type="file" ref="loadPaletteHolder" id="load-palette-holder" 
+      accept="image/png, image/gif" @change="loadPalette"/>
+      <button
+      v-for="palette of palettes"
+      @click="changePalette(palette.name, palette.colors)"
+    >{{palette.name}}</button>
+      
+    </div>
+
     <!-- Preset-->
     <h2>Preset</h2>
-    <button id="preset-button" class="dropdown-button" @click=togglePresetMenu>
+    <button id="preset-button" class="dropdown-button" @click=togglePresetMenu ref="presetButton">
       Choose a preset...
     </button>
     <div id="preset-menu" class="dropdown-menu" ref="presetMenu">
-      <button>Gameboy Color</button><button>PICO-8</button><button>Commodore 64</button>
-    </div>
+      <button v-for="preset of presets" @click="changePreset(preset)">{{preset.name}}</button>
+    </div>    
 
     <h2>Size</h2>
-    <input id="size-width" value="64" autocomplete="off" /><svg
-      width="16"
-      height="16"
-      viewBox="0 0 1792 1792"
-      class="dimentions-x"
-    >
+    <input id="size-width" value="64" autocomplete="off" ref="widthInput"/>
+    <svg width="16" height="16" viewBox="0 0 1792 1792" class="dimentions-x">
       X
       <path
         d="M1490 1322q0 40-28 68l-136 136q-28 28-68 28t-68-28l-294-294-294 294q-28 28-68 28t-68-28l-136-136q-28-28-28-68t28-68l294-294-294-294q-28-28-28-68t28-68l136-136q28-28 68-28t68 28l294 294 294-294q28-28 68-28t68 28l136 136q28 28 28 68t-28 68l-294 294 294 294q28 28 28 68z"
         fill="#fff"
-      ></path></svg
-    ><input id="size-height" value="64" autocomplete="off" />
-
-    <h2>Palette</h2>
-    <button id="palette-button" class="dropdown-button" @click=togglePaletteMenu>
-      Choose a palette...
-    </button>
-    <div id="palette-menu" class="dropdown-menu" ref="paletteMenu">
-      <button id="no-palette-button">Empty Palette</button
-      ><button id="load-palette-button">Load palette...</button
-      ><button>Endesga 32</button><button>AAP-64</button><button>Pear36</button
-      ><button>Zughy 32</button><button>Resurrect 64</button
-      ><button>Journey</button><button>Endesga 64</button
-      ><button>Sweetie 16</button><button>Vinik24</button
-      ><button>Fantasy 24</button><button>Commodore 64</button
-      ><button>PICO-8</button><button>Gameboy Color</button>
-    </div>
+      ></path>
+    </svg>
+    <input id="size-height" value="64" autocomplete="off" ref="heightInput"/>
 
     <div id="new-pixel-warning" style="display: block;">
       Creating a new pixel will discard your current one.
     </div>
     <div>
-      <button id="create-button" class="default">Create</button>
+      <button id="create-button" class="default" @click="newPixel">Create</button>
     </div>
   </div>`,
 };

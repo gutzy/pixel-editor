@@ -65,14 +65,20 @@ class _AppManager {
     file.color = "#ff0000";
   }
 
+  onNewPixel(width, height, mode, name, palette) {
+    this.file = this.doAction(NewFile, width, height, mode, name, palette);
+  }
+
   /**
    * Load main application configuration
    * load tools and menu settings from the Tools and Menu /config files
    */
   loadAppConfig() {
+    // Load tools
     this.tools = Tools.map((t) => new t());
     EventBus.$emit("ui-set-tools", this.tools);
 
+    // Load menu
     this.menu = Menu;
     EventBus.$emit("ui-set-menu", this.menu);
   }
@@ -135,6 +141,8 @@ class _AppManager {
     EventBus.$on("set-tool-cursor", this.onSetToolCursor.bind(this));
 
     EventBus.$on("run-menu-item", this.onRunMenuItem.bind(this));
+
+    EventBus.$on("new-pixel", this.onNewPixel.bind(this));
   }
 
   /**

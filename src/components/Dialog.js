@@ -41,8 +41,10 @@ export default {
     },
 
     stopPropagation(e) {
-      e.preventDefault();
-      e.stopPropagation();
+      if (!e.target.id.includes("load-palette")) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
     },
 
     getType() {
@@ -71,6 +73,8 @@ export default {
     EventBus.$on("ui-open-dialog", (type) => {
       this.type = type;
     });
+
+    EventBus.$on("ui-close-dialog", this.closeDialog);
   },
 
   template: html`
