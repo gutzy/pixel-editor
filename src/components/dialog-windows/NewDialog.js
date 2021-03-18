@@ -5,6 +5,7 @@ import { toggleMenu } from "../../utils/DialogUtils";
 import EventBus from "../../utils/EventBus";
 import Palettes from "../../config/Palettes";
 import Presets from "../../config/Presets";
+import {rgbToHex} from "../../utils/ColorUtils";
 
 export default {
   data: function () {
@@ -110,14 +111,18 @@ export default {
     loadPalette() {
       console.log(this.$refs.loadPaletteHolder);
       const files = this.$refs.loadPaletteHolder.files;
+      const fileContentType = files[0].type;
+      const paletteButton = this.$refs.paletteButton;
 
       if (files && files[0]) {
         // Checking if the extension is correct
         if (fileContentType == "image/png" || fileContentType == "image/gif") {
+          console.log("here");
           //load file
           let fileReader = new FileReader();
           fileReader.onload = function (e) {
             let img = new Image();
+
             img.onload = function () {
               //draw image onto a temporary canvas
               let loadPaletteCanvas = document.createElement("canvas");
@@ -133,11 +138,9 @@ export default {
               let imagePixelData = loadPaletteContext.getImageData(
                 0,
                 0,
-                this.width,
-                this.height
+                img.width,
+                img.height
               ).data;
-
-              console.log(imagePixelData);
 
               //loop through pixels looking for colors to add to palette
               for (let i = 0; i < imagePixelData.length; i += 4) {
@@ -155,8 +158,10 @@ export default {
 
               this.currentPalette = colorPalette;
               this.$refs.paletteButton.innerHTML = "Loaded palette";
-            };
-          };
+            }.bind(this);
+
+            img.src = e.target.result;
+          }.bind(this);
           fileReader.readAsDataURL(files[0]);
         } else alert("Only PNG and GIF files are supported at this time.");
       }
