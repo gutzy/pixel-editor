@@ -1,13 +1,13 @@
 // Allow html strings to be formatted with lit-html plugins
 // this does absolutely nothing to the code
 import html from "../../utils/html";
-import {toggleMenu} from "../../utils/DialogUtils";
+import { toggleMenu } from "../../utils/DialogUtils";
 import EventBus from "../../utils/EventBus";
 import Palettes from "../../config/Palettes";
 import Presets from "../../config/Presets";
 
 export default {
-  data: function() {
+  data: function () {
     return {
       paletteMenuActive: false,
       presetMenuActive: false,
@@ -15,8 +15,8 @@ export default {
 
       palettes: null,
       presets: null,
-      currentPalette: null
-    }
+      currentPalette: null,
+    };
   },
 
   methods: {
@@ -25,7 +25,10 @@ export default {
         this.closeMenus(e, false);
       }
 
-      this.modeMenuActive = toggleMenu(this.$refs.modeMenu, this.modeMenuActive);
+      this.modeMenuActive = toggleMenu(
+        this.$refs.modeMenu,
+        this.modeMenuActive
+      );
     },
 
     togglePaletteMenu(e) {
@@ -33,7 +36,10 @@ export default {
         this.closeMenus(e, false);
       }
 
-      this.paletteMenuActive = toggleMenu(this.$refs.paletteMenu, this.paletteMenuActive);
+      this.paletteMenuActive = toggleMenu(
+        this.$refs.paletteMenu,
+        this.paletteMenuActive
+      );
     },
 
     togglePresetMenu(e) {
@@ -41,11 +47,14 @@ export default {
         this.closeMenus(e, false);
       }
 
-      this.presetMenuActive = toggleMenu(this.$refs.presetMenu, this.presetMenuActive);
+      this.presetMenuActive = toggleMenu(
+        this.$refs.presetMenu,
+        this.presetMenuActive
+      );
     },
 
     /** Closes all the currently open submenus
-     * 
+     *
      * @param {*} e The event that triggered the function
      * @param {*} clickedOutside Tells whether the function has been called because the
      *                           user clicked outside the submenu or not
@@ -54,16 +63,25 @@ export default {
       if (!clickedOutside || !e.target.className.includes("dropdown-button")) {
         // Close all the currently opened menus, if I'm not clicking on a different dropdown
         if (this.modeMenuActive)
-          this.modeMenuActive = toggleMenu(this.$refs.modeMenu, this.modeMenuActive);
+          this.modeMenuActive = toggleMenu(
+            this.$refs.modeMenu,
+            this.modeMenuActive
+          );
         if (this.paletteMenuActive)
-          this.paletteMenuActive = toggleMenu(this.$refs.paletteMenu, this.paletteMenuActive);
+          this.paletteMenuActive = toggleMenu(
+            this.$refs.paletteMenu,
+            this.paletteMenuActive
+          );
         if (this.presetMenuActive)
-          this.presetMenuActive = toggleMenu(this.$refs.presetMenu, this.presetMenuActive);
+          this.presetMenuActive = toggleMenu(
+            this.$refs.presetMenu,
+            this.presetMenuActive
+          );
       }
     },
 
     /** Triggered when the user selects a new palette from the palette menu
-     * 
+     *
      * @param {*} name The name of the chosen palette
      * @param {*} palette The array of colours that make up the palette
      */
@@ -95,55 +113,71 @@ export default {
 
       if (files && files[0]) {
         // Checking if the extension is correct
-        if (fileContentType == 'image/png' || fileContentType == 'image/gif') {
+        if (fileContentType == "image/png" || fileContentType == "image/gif") {
           //load file
           let fileReader = new FileReader();
-          fileReader.onload = function(e) {
-              let img = new Image();
-              img.onload = function() {
-                //draw image onto a temporary canvas
-                let loadPaletteCanvas = document.createElement("canvas");
-                let loadPaletteContext = loadPaletteCanvas.getContext('2d');
+          fileReader.onload = function (e) {
+            let img = new Image();
+            img.onload = function () {
+              //draw image onto a temporary canvas
+              let loadPaletteCanvas = document.createElement("canvas");
+              let loadPaletteContext = loadPaletteCanvas.getContext("2d");
 
-                loadPaletteCanvas.width = img.width;
-                loadPaletteCanvas.height = img.height;
+              loadPaletteCanvas.width = img.width;
+              loadPaletteCanvas.height = img.height;
 
-                loadPaletteContext.drawImage(img, 0, 0);
+              loadPaletteContext.drawImage(img, 0, 0);
 
-                //create array to hold found colors
-                let colorPalette = [];
-                let imagePixelData = loadPaletteContext.getImageData(0,0,this.width, this.height).data;
+              //create array to hold found colors
+              let colorPalette = [];
+              let imagePixelData = loadPaletteContext.getImageData(
+                0,
+                0,
+                this.width,
+                this.height
+              ).data;
 
-                console.log(imagePixelData);
+              console.log(imagePixelData);
 
-                //loop through pixels looking for colors to add to palette
-                for (let i = 0; i < imagePixelData.length; i += 4) {
-                    let color = '#'+rgbToHex(imagePixelData[i],imagePixelData[i + 1],imagePixelData[i + 2]);
-                    if (colorPalette.indexOf(color) == -1) {
-                        colorPalette.push(color);
-                    }
+              //loop through pixels looking for colors to add to palette
+              for (let i = 0; i < imagePixelData.length; i += 4) {
+                let color =
+                  "#" +
+                  rgbToHex(
+                    imagePixelData[i],
+                    imagePixelData[i + 1],
+                    imagePixelData[i + 2]
+                  );
+                if (colorPalette.indexOf(color) == -1) {
+                  colorPalette.push(color);
                 }
+              }
 
-                this.currentPalette = colorPalette;
-                this.$refs.paletteButton.innerHTML = 'Loaded palette';
-              };
+              this.currentPalette = colorPalette;
+              this.$refs.paletteButton.innerHTML = "Loaded palette";
+            };
           };
           fileReader.readAsDataURL(files[0]);
-      }
-      else alert('Only PNG and GIF files are supported at this time.');
+        } else alert("Only PNG and GIF files are supported at this time.");
       }
     },
 
     newPixel() {
-      EventBus.$emit("new-pixel", this.$refs.widthInput.value, this.$refs.heightInput.value,
-        "advanced", "Funkier Test", this.currentPalette);
+      EventBus.$emit(
+        "new-pixel",
+        this.$refs.widthInput.value,
+        this.$refs.heightInput.value,
+        "advanced",
+        "Funkier Test",
+        this.currentPalette
+      );
 
       EventBus.$emit("ui-close-dialog", null);
     },
 
     close() {
       EventBus.$emit("ui-close-dialog", null);
-    }
+    },
   },
 
   mounted() {
@@ -151,8 +185,12 @@ export default {
     this.presets = Presets;
   },
 
-  template: html`<div id="new-pixel" style="display: block;" @click=closeMenus>
-    <button class="close-button" @click=close>
+  template: html`<div
+    id="new-pixel"
+    style="display: block;"
+    @click="closeMenus"
+  >
+    <button class="close-button" @click="close">
       <svg width="20" height="20" viewBox="0 0 1792 1792">
         X
         <path
@@ -165,7 +203,12 @@ export default {
 
     <!-- Editor mode-->
     <h2>Editor mode</h2>
-    <button id="editor-mode-button" class="dropdown-button" @click=toggleModeMenu ref="modeButton">
+    <button
+      id="editor-mode-button"
+      class="dropdown-button"
+      @click="toggleModeMenu"
+      ref="modeButton"
+    >
       Choose a mode...
     </button>
     <div id="editor-mode-menu" class="dropdown-menu" ref="modeMenu">
@@ -175,32 +218,52 @@ export default {
     <p id="editor-mode-info"></p>
 
     <h2>Palette</h2>
-    <button id="palette-button" class="dropdown-button" @click=togglePaletteMenu ref="paletteButton">
+    <button
+      id="palette-button"
+      class="dropdown-button"
+      @click="togglePaletteMenu"
+      ref="paletteButton"
+    >
       Choose a palette...
     </button>
     <div id="palette-menu" class="dropdown-menu" ref="paletteMenu">
-      <button id="load-palette-button" @click="browsePalette">Load palette...</button>
+      <button id="load-palette-button" @click="browsePalette">
+        Load palette...
+      </button>
 
-      <input type="file" ref="loadPaletteHolder" id="load-palette-holder" 
-      accept="image/png, image/gif" @change="loadPalette"/>
+      <input
+        type="file"
+        ref="loadPaletteHolder"
+        id="load-palette-holder"
+        accept="image/png, image/gif"
+        @change="loadPalette"
+      />
       <button
-      v-for="palette of palettes"
-      @click="changePalette(palette.name, palette.colors)"
-    >{{palette.name}}</button>
-      
+        v-for="palette of palettes"
+        @click="changePalette(palette.name, palette.colors)"
+      >
+        {{palette.name}}
+      </button>
     </div>
 
     <!-- Preset-->
     <h2>Preset</h2>
-    <button id="preset-button" class="dropdown-button" @click=togglePresetMenu ref="presetButton">
+    <button
+      id="preset-button"
+      class="dropdown-button"
+      @click="togglePresetMenu"
+      ref="presetButton"
+    >
       Choose a preset...
     </button>
     <div id="preset-menu" class="dropdown-menu" ref="presetMenu">
-      <button v-for="preset of presets" @click="changePreset(preset)">{{preset.name}}</button>
-    </div>    
+      <button v-for="preset of presets" @click="changePreset(preset)">
+        {{preset.name}}
+      </button>
+    </div>
 
     <h2>Size</h2>
-    <input id="size-width" value="64" autocomplete="off" ref="widthInput"/>
+    <input id="size-width" value="64" autocomplete="off" ref="widthInput" />
     <svg width="16" height="16" viewBox="0 0 1792 1792" class="dimentions-x">
       X
       <path
@@ -208,13 +271,15 @@ export default {
         fill="#fff"
       ></path>
     </svg>
-    <input id="size-height" value="64" autocomplete="off" ref="heightInput"/>
+    <input id="size-height" value="64" autocomplete="off" ref="heightInput" />
 
     <div id="new-pixel-warning" style="display: block;">
       Creating a new pixel will discard your current one.
     </div>
     <div>
-      <button id="create-button" class="default" @click="newPixel">Create</button>
+      <button id="create-button" class="default" @click="newPixel">
+        Create
+      </button>
     </div>
   </div>`,
 };
