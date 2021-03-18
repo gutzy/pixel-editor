@@ -237,6 +237,7 @@ export default {
         id="load-palette-holder"
         accept="image/png, image/gif"
         @change="loadPalette"
+        @click="(e)=>e.stopPropagation()"
       />
       <button
         v-for="palette of palettes"

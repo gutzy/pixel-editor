@@ -41,10 +41,8 @@ export default {
     },
 
     stopPropagation(e) {
-      if (!e.target.id.includes("load-palette")) {
-        e.preventDefault();
-        e.stopPropagation();
-      }
+      e.preventDefault();
+      e.stopPropagation();
     },
 
     getType() {
