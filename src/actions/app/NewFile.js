@@ -33,7 +33,8 @@ export default class NewFile extends AppAction {
 		EventBus.$emit("new-file", app.file);
 
 		// Emit a try-selecting-color event to select the first colour of the palette
-		EventBus.$emit('try-selecting-color', palette[0]);
+		if (palette.length > 0)
+			EventBus.$emit('try-selecting-color', palette[0]);
 		// Emit a try-selecting-tool event to select the pencil
 		EventBus.$emit('try-selecting-tool', "pencil");
 

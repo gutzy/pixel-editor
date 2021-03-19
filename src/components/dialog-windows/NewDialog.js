@@ -16,7 +16,7 @@ export default {
 
       palettes: null,
       presets: null,
-      currentPalette: null,
+      currentPalette: [],
     };
   },
 
@@ -168,6 +168,7 @@ export default {
     },
 
     newPixel() {
+      this.handleURL();
       EventBus.$emit(
         "new-pixel",
         this.$refs.widthInput.value,
@@ -183,6 +184,17 @@ export default {
     close() {
       EventBus.$emit("ui-close-dialog", null);
     },
+
+    // DEBUG
+    handleURL() {
+      const url = window.location.href;
+
+      console.log("Url: " + url);
+
+      if (!url.endsWith("app")) {
+        console.log("url");
+      }
+    }
   },
 
   mounted() {

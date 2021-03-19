@@ -55,6 +55,18 @@ export default {
   ],
   Edit: [
     {
+      name: "Resize canvas",
+      scope: "app",
+      emit: "ui-open-dialog",
+      scopeParam: "resize-canvas"
+    },
+    {
+      name: "Scale sprite",
+      scope: "app",
+      emit: "ui-open-dialog",
+      scopeParam: "scale-sprite"
+    },
+    {
       name: "Undo",
       scope: "file",
       action: Undo,

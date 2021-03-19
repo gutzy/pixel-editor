@@ -16,6 +16,9 @@ import AboutDialog from "./dialog-windows/AboutDialog";
 import SettingsDialog from "./dialog-windows/SettingsDialog";
 import ChangelogDialog from "./dialog-windows/ChangelogDialog";
 
+import ScaleSpriteDialog from "./dialog-windows/ScaleSpriteDialog";
+import ResizeCanvasDialog from "./dialog-windows/ResizeCanvasDialog";
+
 export default {
   components: {
     NewDialog,
@@ -23,6 +26,8 @@ export default {
     AboutDialog,
     SettingsDialog,
     ChangelogDialog,
+    ScaleSpriteDialog,
+    ResizeCanvasDialog
   },
 
   props: {
@@ -53,6 +58,10 @@ export default {
           return "test-dialog";
         case "new-file":
           return "new-dialog";
+        case "scale-sprite":
+          return "scale-sprite-dialog";
+        case "resize-canvas":
+          return "resize-canvas-dialog";
         case "help-dialog":
           return "help-dialog";
         case "about-dialog":
