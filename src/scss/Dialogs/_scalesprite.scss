@@ -149,13 +149,16 @@
         justify-content: center;
     }
 
+    input:checked {
+        background:red;
+    }
+
     select {
         height:30px;
         background-color: $panelHoverBg;
         color: $panelColor;
         border:none;
         position:relative;
-        left:10px;
 
         option {
             background-color: $panelHoverBg;
@@ -171,12 +174,11 @@
 }
 
 #rs-keep-ratio {
-    background: color(button);
+    background: $dialogTitle;
     border: none;
     font-size:14px;
-    color: color(button, foreground);
+    color: $panelBg;
     padding: 10px 20px;
-    margin: 0 auto;
     position:relative;
     display: block;
 }

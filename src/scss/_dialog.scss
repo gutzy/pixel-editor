@@ -10,6 +10,30 @@
   justify-content: center;
   align-items: center;
   z-index: 1000;
+
+  .close-button {
+	position:absolute;
+	top:0;
+	right:0;
+	width: 32px;
+	height: 32px;
+	background: transparent;
+	border: none;
+	color: $dialogTitle;
+	font-weight: bold;
+	font-size: 1em;
+	cursor: pointer;
+	border-radius: 0 3px 0 0;
+	path {
+		fill: $panelSelectedBg2;
+	}
+	&:hover {
+		background: $panelSelectedBg;
+		path {
+			fill: $dialogTitle;
+		}
+	}
+  }
 }
 
 #editor-mode {
@@ -60,30 +84,6 @@
 		text-decoration: none;
 		&:hover {
 			border-bottom: dotted 1px $panelSelectedBg;
-		}
-	}
-
-	.close-button {
-		position:absolute;
-		top:0;
-		right:0;
-		width: 32px;
-		height: 32px;
-		background: transparent;
-		border: none;
-		color: $dialogTitle;
-		font-weight: bold;
-		font-size: 1em;
-		cursor: pointer;
-		border-radius: 0 3px 0 0;
-		path {
-			fill: $panelSelectedBg2;
-		}
-		&:hover {
-			background: $panelSelectedBg;
-			path {
-				fill: $dialogTitle;
-			}
 		}
 	}
 
