@@ -1,5 +1,7 @@
 import html from "../../utils/html";
 import AppManager from "../../classes/AppManager";
+import EventBus from "../../utils/EventBus";
+import ResizeCanvas from "../../actions/canvas/ResizeCanvas";
 
 export default {
     data: function() {
@@ -8,7 +10,8 @@ export default {
             height: 0,
             widthPercentage: 100,
             heightPercentage: 100,
-            keepRatio: true
+            keepRatio: true,
+            algorithm: "nearest-neighbor"
         };
     },
 
@@ -102,11 +105,31 @@ export default {
         toggleKeepRatio() {
             this.keepRatio = !this.keepRatio;
 
+            if (this.keepRatio) {
+                const oldPerc = parseInt(this.$refs.heightPercentageInput.value);
+                //this.updateHeightPercentage(parseInt(this.$refs.widthPercentageInput.value), false);
+                this.updateHeight(parseInt(this.$refs.heightInput.value) * (parseInt(this.$refs.widthPercentageInput.value) / oldPerc), false);
+            }
+
             // TODO: lock the dimensions depending on the locked percentage values
         },
 
         changeAlgorithm(newAlgorithm) {
-            
+            this.algorithm = newAlgorithm;
+        },
+
+        close() {
+            EventBus.$emit("ui-close-dialog", null);
+        },
+
+        scaleSprite() {
+            const newWidth = this.$refs.widthInput.value;
+            const newHeight = this.$refs.heightInput.value;
+
+            AppManager.file.doAction(ResizeCanvas, newWidth, newHeight);
+
+            // Update the image data
+            this.close();
         }
     },
 
@@ -120,7 +143,7 @@ export default {
 
     template: html`
         <div id = "resize-sprite">
-            <button class="close-button">
+            <button class="close-button" @click=close>
                 <svg width="20" height="20" viewBox="0 0 1792 1792">
                     X
                     <path
@@ -170,11 +193,11 @@ export default {
                     <span>
                         Scaling algorithm:
                         <select name = "resize-algorithm" id = "resize-algorithm-combobox">
-                            <option value = "nearest-neighbor" @click='changeAlgorithm("nearest")'>
+                            <option value = "nearest-neighbor" @click='changeAlgorithm("nearest-neighbor")'>
                                 Nearest neighbour
                             </option>
 
-                            <option value = "bilinear-interpolation" @click='changeAlgorithm("bilinear")'>
+                            <option value = "bilinear-interpolation" @click='changeAlgorithm("bilinear-filter")'>
                                 Bilinear
                             </option>
                         </select>
@@ -182,7 +205,7 @@ export default {
                 </div>
             </span>
             </br>
-            <button id = "resize-sprite-confirm">Scale sprite</button>
+            <button id = "resize-sprite-confirm" @click="scaleSprite()">Scale sprite</button>
         </div>
     `
 };
