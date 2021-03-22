@@ -53,7 +53,7 @@ class _AppManager {
     this.startLoop();
 
     // Create the first file
-    const file = this.doAction(NewFile, 320, 240, "advanced", "Funky test", [
+    const file = this.doAction(NewFile, 64, 64, "advanced", "Funky test", [
       "#ff0000",
       "#ffe21f",
       "#46ca35",

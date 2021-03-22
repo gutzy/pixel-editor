@@ -1,7 +1,7 @@
 import html from "../../utils/html";
 import AppManager from "../../classes/AppManager";
 import EventBus from "../../utils/EventBus";
-import ResizeCanvas from "../../actions/canvas/ResizeCanvas";
+import ResizeSprite from "../../actions/canvas/ResizeSprite";
 
 export default {
     data: function() {
@@ -114,8 +114,9 @@ export default {
             // TODO: lock the dimensions depending on the locked percentage values
         },
 
-        changeAlgorithm(newAlgorithm) {
-            this.algorithm = newAlgorithm;
+        changeAlgorithm(e) {
+            this.algorithm = e.target.value;
+            console.log("chosen: " + e.target.value + ", actual: " + this.algorithm);
         },
 
         close() {
@@ -126,7 +127,7 @@ export default {
             const newWidth = this.$refs.widthInput.value;
             const newHeight = this.$refs.heightInput.value;
 
-            AppManager.file.doAction(ResizeCanvas, newWidth, newHeight);
+            AppManager.file.doAction(ResizeSprite, newWidth, newHeight, this.algorithm);
 
             // Update the image data
             this.close();
@@ -192,12 +193,12 @@ export default {
                     </span>
                     <span>
                         Scaling algorithm:
-                        <select name = "resize-algorithm" id = "resize-algorithm-combobox">
-                            <option value = "nearest-neighbor" @click='changeAlgorithm("nearest-neighbor")'>
+                        <select name = "resize-algorithm" id = "resize-algorithm-combobox" @change="changeAlgorithm($event)">
+                            <option value = "nearest-neighbor">
                                 Nearest neighbour
                             </option>
 
-                            <option value = "bilinear-interpolation" @click='changeAlgorithm("bilinear-filter")'>
+                            <option value = "bilinear-interpolation">
                                 Bilinear
                             </option>
                         </select>

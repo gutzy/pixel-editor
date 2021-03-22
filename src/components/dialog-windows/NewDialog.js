@@ -104,12 +104,10 @@ export default {
     },
 
     browsePalette() {
-      console.log(this.$refs.loadPaletteHolder);
       this.$refs.loadPaletteHolder.click();
     },
 
     loadPalette() {
-      console.log(this.$refs.loadPaletteHolder);
       const files = this.$refs.loadPaletteHolder.files;
       const fileContentType = files[0].type;
       const paletteButton = this.$refs.paletteButton;
@@ -117,7 +115,6 @@ export default {
       if (files && files[0]) {
         // Checking if the extension is correct
         if (fileContentType == "image/png" || fileContentType == "image/gif") {
-          console.log("here");
           //load file
           let fileReader = new FileReader();
           fileReader.onload = function (e) {
