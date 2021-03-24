@@ -1,0 +1,129 @@
+
+#resize-canvas, #resize-sprite {
+    display:flex;
+    position:relative;
+    flex-wrap:wrap;
+}
+
+#pivot-menu {
+    position: relative;
+    display:inline-flex;
+    flex-wrap:wrap;
+    vertical-align:middle;
+    text-align:center;
+    width:130px;
+    float:left;
+
+    button {
+        margin-right:10px;
+        margin-bottom:10px;
+        position:relative;
+        width:32px;
+        height:32px;
+        background:$panelSelectedBg2;
+        border:none;
+        
+        path, img {
+            width:20px;
+            height:20px;
+            fill:$panelColor;
+        }
+        transition: background 100ms ease-in-out, 
+                    transform 100ms ease;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+    }
+
+    button:hover,
+    button:focus,
+    button.rc-selected-pivot {
+        cursor:pointer;
+        background-color: $titleColor;
+        path {
+            fill:$dialogTitle;
+        }
+        border: 2px solid color(base, foreground);
+    }
+    button:active {
+        transform: scale(0.95);
+    }
+}
+
+#rs-percentage-menu {
+    width: 400px;
+    span {
+        width:150px;
+    }
+}
+
+#rs-size-menu {
+    width: 400px;
+    span {
+        width:150px;
+    }
+}
+
+#rs-percentage-menu, #rs-size-menu {
+    justify-content: center;
+
+    div {
+        float: none;
+    }
+}
+
+#borders-menu {
+    width:400px;
+    justify-content: center;
+
+    div {
+        float: none;
+        width: 330px;
+        padding-left:50px;
+
+        span {
+            padding-right:20px;
+        }
+    }
+}
+
+#rs-ratio-div {
+    width:400px;
+    justify-content: center;
+    padding-left:20px;
+
+    span {
+        width:400px;
+        justify-content: center;
+    }
+
+    select {
+        height:30px;
+        background-color: $panelSelectedBg2;
+        color: $panelColor;
+        border:none;
+        position:relative;
+        left:10px;
+
+        option {
+            background-color: $panelSelectedBg2;
+            color:$panelColor;
+            padding:5px;
+        }
+
+        option:checked, option:hover {
+            box-shadow: 0 0 10px 100px $panelColor inset;
+            color: $dialogTitle;
+        }
+    }
+}
+
+#rs-keep-ratio {
+    background: color(button);
+    border: none;
+    font-size:14px;
+    color: color(button, foreground);
+    padding: 10px 20px;
+    margin: 0 auto;
+    position:relative;
+    display: block;
+}
