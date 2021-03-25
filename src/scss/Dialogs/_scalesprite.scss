@@ -184,11 +184,11 @@
 }
 
 #resize-canvas-confirm, #resize-sprite-confirm {
-    background: $panelSelectedBg2;
+    background: $panelSelectedBg2 !important;
     border: none;
     font-size:14px;
     border-radius: 4px;
-    color: $panelColor;
+    color: $panelColor !important;
     padding: 10px 20px;
     cursor: pointer;
     top:10px;
@@ -196,7 +196,7 @@
     margin: 0 auto;
 
     &:hover {
-        background: $titleColor;
-        color:$dialogTitle;
+        background-color: $titleColor !important;
+        color:$dialogTitle !important;
     }
 }

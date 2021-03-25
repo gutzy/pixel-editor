@@ -97,7 +97,7 @@ export default {
                 </span>
             </div>
             <button id = "resize-canvas-confirm">Resize canvas</button>
-        </span>            
+        </span>
     </div>
     `
 };

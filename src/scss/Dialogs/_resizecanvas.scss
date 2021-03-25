@@ -23,10 +23,10 @@
         background:$panelSelectedBg2;
         border:none;
         
-        path, img {
+        img {
             width:20px;
             height:20px;
-            fill:$panelColor;
+            filter: brightness(0) invert(0.8);
         }
         transition: background 100ms ease-in-out, 
                     transform 100ms ease;
@@ -39,8 +39,8 @@
     button.rc-selected-pivot {
         cursor:pointer;
         background-color: $titleColor;
-        path {
-            fill:$dialogTitle;
+        img {
+            filter: brightness(0) invert(1);
         }
         border: 2px solid color(base, foreground);
     }
