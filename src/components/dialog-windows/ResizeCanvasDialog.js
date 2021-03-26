@@ -11,6 +11,7 @@ import MiddleButton from "../../assets/svg/arrows/middle.svg";
 
 import AppManager from "../../classes/AppManager";
 import EventBus from "../../utils/EventBus";
+import ResizeCanvas from "../../actions/file/ResizeCanvas";
 
 export default {
     data: function() {
@@ -59,8 +60,6 @@ export default {
         updateHeight() {
             this.endHeight = parseInt(this.$refs.heightInput.value);
 
-            console.log("Height bug");
-
             let top = Math.round((this.endHeight - this.startHeight) / 2);
             let bottom = this.endHeight - this.startHeight - top;
 
@@ -86,7 +85,8 @@ export default {
         },
 
         resizeCanvas() {
-            console.log("Left: " + this.left + ", right: " + this.right + ", top: " + this.top + ", bottom: " + this.bottom);
+            console.log("bug qui");
+            AppManager.file.doAction(ResizeCanvas, this.pivot, this.left, this.right, this.top, this.bottom);
             this.closeWindow();
         },
 

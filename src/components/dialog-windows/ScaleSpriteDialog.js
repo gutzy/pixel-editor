@@ -1,7 +1,7 @@
 import html from "../../utils/html";
 import AppManager from "../../classes/AppManager";
 import EventBus from "../../utils/EventBus";
-import ResizeSprite from "../../actions/canvas/ResizeSprite";
+import ResizeSprite from "../../actions/file/ScaleSprite";
 
 export default {
     data: function() {

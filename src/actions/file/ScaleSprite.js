@@ -1,11 +1,11 @@
 /**
- * Resize Canvas
+ * Scale Sprite
  * @ActionType: File
- * @Description Resizes a file to be of the specified dimensions
+ * @Description Scales a sprite and resizes the canvas to the specified dimensions
  *
  */
  import {FileAction} from "../../classes/abstracts/Actions";
- import PutImage from "../../actions/canvas/PutImage";
+ import PutImage from "../canvas/PutImage";
 
  export default class ResizeSprite extends FileAction {
     do(file, newWidth, newHeight, algorithm) {
