@@ -191,9 +191,9 @@
     color: $panelColor !important;
     padding: 10px 20px;
     cursor: pointer;
-    top:10px;
     display: block;
     margin: 0 auto;
+    margin-top:10px;
 
     &:hover {
         background-color: $titleColor !important;

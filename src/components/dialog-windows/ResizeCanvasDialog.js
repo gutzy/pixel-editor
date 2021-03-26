@@ -8,7 +8,9 @@ import TopLeftArrow from "../../assets/svg/arrows/topleft.svg";
 import BottomRightArrow from "../../assets/svg/arrows/bottomright.svg";
 import BottomLeftArrow from "../../assets/svg/arrows/bottomleft.svg";
 import MiddleButton from "../../assets/svg/arrows/middle.svg";
+
 import AppManager from "../../classes/AppManager";
+import EventBus from "../../utils/EventBus";
 
 export default {
     data: function() {
@@ -46,8 +48,6 @@ export default {
         updateWidth() {
             this.endWidth = parseInt(this.$refs.widthInput.value);
 
-            console.log("Width ok");
-
             let right = Math.round((this.endWidth - this.startWidth) / 2);
             let left = this.endWidth - this.startWidth - right;
 
@@ -69,11 +69,25 @@ export default {
         },
 
         updateBorder(borderName) {
-
+            switch (borderName) {
+                case 'left':
+                    this.left = this.$refs.leftBorderInput.value;
+                    break;
+                case 'right':
+                    this.right = this.$refs.rightBorderInput.value;
+                    break;
+                case 'top':
+                    this.top = this.$refs.topBorderInput.value;
+                    break;
+                case 'bottom':
+                    this.bottom = this.$refs.bottomBorderInput.value;
+                    break;
+            }
         },
 
         resizeCanvas() {
-
+            console.log("Left: " + this.left + ", right: " + this.right + ", top: " + this.top + ", bottom: " + this.bottom);
+            this.closeWindow();
         },
 
         closeWindow() {
@@ -86,7 +100,7 @@ export default {
         this.$refs.heightInput.value = AppManager.file.height;
 
         this.startWidth = AppManager.file.width;
-        this.startHeight = AppManager.file.heightInput;
+        this.startHeight = AppManager.file.height;
     },
     
     template: html`
@@ -135,22 +149,22 @@ export default {
             <div>
                 <span>
                     Left: <input id="rc-border-left" type="number" default="0" step="1" 
-                    value="0" autocomplete="off" ref="leftBorderInput"/>
+                    value="0" autocomplete="off" ref="leftBorderInput" @change="updateBorder('left')"/>
                 </span>
                 
                 <span>
                     Right: <input id="rc-border-right" type="number" default="0" step="1" 
-                    value="0" autocomplete="off" ref="rightBorderInput"/>
+                    value="0" autocomplete="off" ref="rightBorderInput" @change="updateBorder('right')"/>
                 </span>
                 
                 <span>
                     Top: <input id="rc-border-top" type="number" default="0" step="1" 
-                    value="0" autocomplete="off" ref="topBorderInput"/>
+                    value="0" autocomplete="off" ref="topBorderInput" @change="updateBorder('top')"/>
                 </span>
                 
                 <span>
                     Bottom: <input id="rc-border-bottom" default="0" step="1" type="number" 
-                    value="0" autocomplete="off" ref="bottomBorderInput"/>
+                    value="0" autocomplete="off" ref="bottomBorderInput" @change="updateBorder('bottom  ')"/>
                 </span>
             </div>
             <button id = "resize-canvas-confirm" @click="resizeCanvas()">Resize canvas</button>

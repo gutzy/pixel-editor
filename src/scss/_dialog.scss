@@ -72,12 +72,15 @@
 		color: $dialogTitle;
 		text-transform: uppercase;
 		font-size: 1.5em;
+		display:block;
+		width:100%;
 	} 
 	h2 {
 		margin: 25px 0 10px;
 		color: $dialogTitle;
 		text-transform: uppercase;
 		font-size: 1em;
+		display:block;
 	}
 	a {
 		color: $panelSelectedBg;
