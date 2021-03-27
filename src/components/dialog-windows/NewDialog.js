@@ -173,8 +173,8 @@ export default {
       }
       EventBus.$emit(
         "new-pixel",
-        this.$refs.widthInput.value,
-        this.$refs.heightInput.value,
+        parseInt(this.$refs.widthInput.value),
+        parseInt(this.$refs.heightInput.value),
         "advanced",
         "Funkier Test",
         this.currentPalette

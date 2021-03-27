@@ -12,6 +12,8 @@ export default class ResizeCanvas extends FileAction {
         let newWidth = file.width + left + right;
         let newHeight = file.height + top + bottom;
 
+        console.log("width: " + newWidth + ", height: " + newHeight);
+
         switch (pivot) {
             case 'top':
                 leftToApply = (left + right) / 2;

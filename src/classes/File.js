@@ -126,7 +126,7 @@ export default class File {
         }
         return a.do(this, ...params);
     }
-
+    
     /**
      * Focus - set this file as the active file.
      * This doesn't do a lot until we have tabbed files etc

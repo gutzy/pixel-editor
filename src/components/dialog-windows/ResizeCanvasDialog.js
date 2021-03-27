@@ -102,7 +102,6 @@ export default {
         },
 
         resizeCanvas() {
-            console.log("bug qui");
             AppManager.file.doAction(ResizeCanvas, this.pivot, this.left, this.right, this.top, this.bottom);
             this.closeWindow();
         },

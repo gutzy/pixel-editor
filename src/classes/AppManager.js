@@ -66,7 +66,7 @@ class _AppManager {
   }
 
   onNewPixel(width, height, mode, name, palette) {
-    this.file = this.doAction(NewFile, width, height, mode, name, palette);
+    const file = this.doAction(NewFile, width, height, mode, name, palette);
   }
 
   /**
