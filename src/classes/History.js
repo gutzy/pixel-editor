@@ -20,14 +20,15 @@ export default class History {
     /**
      * Create a new history state and save it. Return the snapshot index
      *
-     * @param {[]} layers - file layers to save
+     * @param {[]} file - file state to save
      * @param {number|null} activeLayer
      * @param {number|null} index - optional. adds the state to a given index, instead of appending a new one.
      * @param {Canvas|null} selectionCanvas - used to also serialize the selection into the state
      * @return {number} snapshot index
      */
-    saveState(layers, activeLayer = -1, index = -1, selectionCanvas = null) {
+    saveState(file, activeLayer = -1, index = -1, selectionCanvas = null) {
         let d = [];
+        const layers = file.layers;
         console.log("Saved state", selectionCanvas);
 
         // save selection canvas to layers
