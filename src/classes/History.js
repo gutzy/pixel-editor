@@ -27,13 +27,17 @@ export default class History {
      * @return {number} snapshot index
      */
     saveState(file, activeLayer = -1, index = -1, selectionCanvas = null) {
-        let d = [];
+        let d = {
+            layers: [],
+            canvasWidth: file.width,
+            canvasHeight: file.height
+        };
         const layers = file.layers;
         console.log("Saved state", selectionCanvas);
 
         // save selection canvas to layers
         if (selectionCanvas) {
-            d.push({
+            d.layers.push({
                 name: '_selection-canvas',
                 data: selectionCanvas.doAction(GetImage)
             })
@@ -41,7 +45,7 @@ export default class History {
 
         // serialize each layer and save it
        for (let l = 0; l < layers.length; l++) {
-            d.push({
+            d.layers.push({
                 name : layers[l].name,
                 locked: layers[l].locked,
                 visible: layers[l].visible,

@@ -19,7 +19,7 @@ export default class Redo extends FileAction {
 			// Load and restore history state
 			const state = file.history.getState(file.historyIndex-1);
 			file.doAction(ResetLayers);
-			file.doAction(LoadContents, {name: file.name, layers: state});
+			file.doAction(LoadContents, {name: file.name, layers: state.layers});
 			EventBus.$emit("redraw-canvas");
 			EventBus.$emit("ui-update-layers", file.layers);
 		}
