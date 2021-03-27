@@ -36,7 +36,7 @@ export default {
             right: 0,
             top: 0,
             bottom: 0,
-
+        
             pivot: "middle"
         }
     },
@@ -52,9 +52,8 @@ export default {
             let right = Math.round((this.endWidth - this.startWidth) / 2);
             let left = this.endWidth - this.startWidth - right;
 
-            this.$refs.leftBorderInput.value = left;
-            this.$refs.rightBorderInput.value = right;
-
+            this.updateBorder('left', left);
+            this.updateBorder('right', right);
         },
 
         updateHeight() {
@@ -63,23 +62,41 @@ export default {
             let top = Math.round((this.endHeight - this.startHeight) / 2);
             let bottom = this.endHeight - this.startHeight - top;
 
-            this.$refs.topBorderInput.value = top;
-            this.$refs.bottomBorderInput.value = bottom;
+            this.updateBorder('top', top);
+            this.updateBorder('bottom', bottom);
         },
 
-        updateBorder(borderName) {
+        updateBorder(borderName, value) {
+            console.log("update border");
+
             switch (borderName) {
                 case 'left':
-                    this.left = this.$refs.leftBorderInput.value;
+                    if (value != null) {
+                        this.$refs.leftBorderInput.value = value;
+                    }
+
+                    this.left = parseInt(this.$refs.leftBorderInput.value);
                     break;
                 case 'right':
-                    this.right = this.$refs.rightBorderInput.value;
+                    if (value != null) {
+                        this.$refs.rightBorderInput.value = value;
+                    }
+
+                    this.right = parseInt(this.$refs.rightBorderInput.value);
                     break;
                 case 'top':
-                    this.top = this.$refs.topBorderInput.value;
+                    if (value != null) {
+                        this.$refs.topBorderInput.value = value;
+                    }
+
+                    this.top = parseInt(this.$refs.topBorderInput.value);
                     break;
                 case 'bottom':
-                    this.bottom = this.$refs.bottomBorderInput.value;
+                    if (value != null) {
+                        this.$refs.bottomBorderInput.value = value;
+                    }
+
+                    this.bottom = parseInt(this.$refs.bottomBorderInput.value);
                     break;
             }
         },

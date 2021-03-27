@@ -6,24 +6,21 @@
  */
  import {FileAction} from "../../classes/abstracts/Actions";
  import PutImage from "../canvas/PutImage";
+ import ResizeCanvas from "../../actions/file/ResizeCanvas";
 
  export default class ResizeSprite extends FileAction {
     do(file, newWidth, newHeight, algorithm) {
         const layers = file.layers;
         const imageDatas = [];
+        let leftRightIncrease = (newWidth - file.width) / 2;
+        let topBottomIncrease = (newHeight - file.height) / 2;
 
         // Get all image datas of the layers
         for (let i=0; i<layers.length; i++) {
             imageDatas.push(layers[i].getImageData());
         }
 
-        file.width = newWidth;
-        file.height = newHeight;
-
-        for (const layer of layers) {
-            layer.canvas.el.setAttribute('width', newWidth + '');
-            layer.canvas.el.setAttribute('height', newHeight + '');
-        }
+        file.doAction(ResizeCanvas, 'middle', leftRightIncrease, leftRightIncrease, topBottomIncrease, topBottomIncrease);
 
         // Put all the converted image datas into the layers
         for (let i=0; i<layers.length; i++) {

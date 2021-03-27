@@ -5,14 +5,14 @@ export default class ResizeCanvas extends FileAction {
     do(file, pivot, left, right, top, bottom) {
         let leftToApply = 0;
         let topToApply = 0;
+
+        let originLeft = 0;
+        let originTop = 0;
+
         let newWidth = file.width + left + right;
         let newHeight = file.height + top + bottom;
 
-        console.log("qui");
-
         switch (pivot) {
-            case 'topleft':
-                break;
             case 'top':
                 leftToApply = (left + right) / 2;
                 break;
@@ -41,6 +41,17 @@ export default class ResizeCanvas extends FileAction {
                 topToApply = top + bottom;
                 leftToApply = (left + right);
                 break;
+            default:
+                break;
+        }
+
+        if (leftToApply < 0) {
+            leftToApply = 0;
+            originLeft = Math.abs(leftToApply);
+        }
+        if (topToApply < 0) {
+            topToApply = 0;
+            originTop = Math.abs(topToApply);
         }
         
         const layers = file.layers;
@@ -62,7 +73,7 @@ export default class ResizeCanvas extends FileAction {
         // Put all the converted image datas into the layers
         for (let i=0; i<layers.length; i++) {
             layers[i].canvasAction(PutImage, imageDatas[i], 0, 0, 
-                leftToApply, topToApply, newWidth, newHeight);
+                Math.abs(leftToApply), Math.abs(topToApply), newWidth, newHeight);
         }
     }
 }

@@ -2,7 +2,7 @@ export default {
     Empty: {
         name: "Empty Palette",
         author: "",
-        colors: []
+        colors: ["#000000"]
     },
     
     C64 : {

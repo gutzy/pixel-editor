@@ -166,6 +166,11 @@ export default {
 
     newPixel() {
       this.handleURL();
+
+      // Adding at least a colour to avoid completely empty palettes
+      if (this.currentPalette.length == 0) {
+        this.currentPalette = Palettes.Empty.colors;
+      }
       EventBus.$emit(
         "new-pixel",
         this.$refs.widthInput.value,
