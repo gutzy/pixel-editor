@@ -201,6 +201,8 @@ class _AppManager {
 
     const isXYinCanvas = isXYinRect(r, x, y);
     const isXYinContainer = isXYinRect([0, 0, r2.width, r2.height], x, y);
+    
+    // TODO: add some way to avoid events when a dialogue is open
     const isXYValid =
       (isXYinCanvas ||
         (this.file.selectedTool && this.file.selectedTool.useOutside)) &&
