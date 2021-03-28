@@ -54,8 +54,6 @@ export default class History {
             })
         }
 
-        console.log(this.snapshots.length);
-
        // if an index was specified, add the snapshot at the given instance - as the last snapshot
         if (index > -1) {
             this.snapshots.splice(index, this.snapshots.length-index, d);

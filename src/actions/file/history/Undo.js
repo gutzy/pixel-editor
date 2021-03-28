@@ -25,7 +25,7 @@ export default class Undo extends FileAction {
 			file.doAction(ResetLayers);
 			file.doAction(ResizeCanvas, 'middle', Math.round(widthDelta/2), 
 				widthDelta - Math.round(widthDelta/2), Math.round(heightDelta/2),
-				heightDelta - Math.round(heightDelta/2));
+				heightDelta - Math.round(heightDelta/2), false);
 			file.doAction(LoadContents, {name: file.name, layers: state.layers});
 			EventBus.$emit("redraw-canvas");
 			EventBus.$emit("ui-update-layers", file.layers);

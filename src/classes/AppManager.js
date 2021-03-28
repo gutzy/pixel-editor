@@ -37,6 +37,7 @@ class _AppManager {
     this.tools = null;
     this.menu = null;
     this.pixelGrid = true;
+    this.dialogueOpen = false;
 
     this.persistentLoop = null;
     this.loopCount = 0;
@@ -189,6 +190,9 @@ class _AppManager {
    * @param y - cursor y position
    */
   async onMouseDown(x, y) {
+    if (this.dialogueOpen) {
+      return;
+    }
     // get position
     const r = getCenterRect(
       this.canvas.el,
@@ -224,6 +228,9 @@ class _AppManager {
    * @param y - cursor y position
    */
   async onMouseUp(x, y) {
+    if (this.dialogueOpen) {
+      return;
+    }
     // get position
     const r = getCenterRect(
       this.canvas.el,
@@ -354,6 +361,10 @@ class _AppManager {
    * @param input - input helper class
    */
   onKeyDown(key, input) {
+    if (this.dialogueOpen) {
+      return;
+    }
+
     if (!this.file) return false;
     if (input.isKeyDown("Alt")) return false;
 
@@ -381,6 +392,10 @@ class _AppManager {
    * @param key - designated key
    */
   onKeyUp(key) {
+    if (this.dialogueOpen) {
+      return;
+    }
+    
     for (let tool of this.tools) {
       // Look for a released active spicy tool
       if (tool.spicykey === key && this.file.spicy) {

@@ -18,6 +18,7 @@ import ChangelogDialog from "./dialog-windows/ChangelogDialog";
 
 import ScaleSpriteDialog from "./dialog-windows/ScaleSpriteDialog";
 import ResizeCanvasDialog from "./dialog-windows/ResizeCanvasDialog";
+import AppManager from "../classes/AppManager";
 
 export default {
   components: {
@@ -43,6 +44,7 @@ export default {
   methods: {
     closeDialog(e) {
       this.type = null;
+      AppManager.dialogueOpen = false;
     },
 
     stopPropagation(e) {
@@ -79,6 +81,7 @@ export default {
   mounted() {
     EventBus.$on("ui-open-dialog", (type) => {
       this.type = type;
+      AppManager.dialogueOpen = true; 
     });
 
     EventBus.$on("ui-close-dialog", this.closeDialog);

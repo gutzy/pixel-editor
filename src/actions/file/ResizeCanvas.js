@@ -1,8 +1,9 @@
 import PutImage from "../canvas/PutImage";
 import {FileAction} from "../../classes/abstracts/Actions";
+import SaveHistory from "../file/history/SaveHistory";
 
 export default class ResizeCanvas extends FileAction {
-    do(file, pivot, left, right, top, bottom) {
+    do(file, pivot, left, right, top, bottom, saveHistory = true) {
         let leftToApply = 0;
         let topToApply = 0;
 
@@ -76,6 +77,11 @@ export default class ResizeCanvas extends FileAction {
         for (let i=0; i<layers.length; i++) {
             layers[i].canvasAction(PutImage, imageDatas[i], Math.abs(leftToApply), Math.abs(topToApply),0, 0, 
                  newWidth, newHeight);
+        }
+
+        // Save the history for canvas resizing, if I'm not undoing or redoing
+        if (saveHistory) {
+            file.doAction(SaveHistory);
         }
     }
 }
