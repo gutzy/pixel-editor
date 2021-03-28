@@ -4,59 +4,26 @@ import SaveHistory from "../file/history/SaveHistory";
 
 export default class ResizeCanvas extends FileAction {
     do(file, pivot, left, right, top, bottom, saveHistory = true) {
-        let leftToApply = 0;
-        let topToApply = 0;
-
-        let originLeft = 0;
-        let originTop = 0;
-
         let newWidth = file.width + left + right;
         let newHeight = file.height + top + bottom;
 
-        console.log("width: " + newWidth + ", height: " + newHeight);
+        let leftToApply = Math.round((newWidth - file.width) / 2);
+        let topToApply = Math.round((newHeight - file.height) / 2);
 
-        switch (pivot) {
-            case 'top':
-                leftToApply = (left + right) / 2;
-                break;
-            case 'topright':
-                leftToApply = left + right;
-                break;
-            case 'left':
-                topToApply = (top + bottom) / 2;
-                break;
-            case 'middle':
-                topToApply = (top + bottom) / 2;
-                leftToApply = (left + right) / 2;
-                break;
-            case 'right':
-                topToApply = (top + bottom) / 2;
-                leftToApply = left + right;
-                break;
-            case 'bottomleft':
-                topToApply = top + bottom;
-                break;
-            case 'bottom':
-                topToApply = top + bottom;
-                leftToApply = (left + right) / 2;
-                break;
-            case 'bottomright':
-                topToApply = top + bottom;
-                leftToApply = (left + right);
-                break;
-            default:
-                break;
+        if (pivot.includes('left')) {
+            leftToApply = left;
+        }
+        else if (pivot.includes('right')) {
+            leftToApply = newWidth - right - Math.round(file.width / 2);
         }
 
-        if (leftToApply < 0) {
-            leftToApply = 0;
-            originLeft = Math.abs(leftToApply);
+        if (pivot.includes('top')) {
+            topToApply = top;
         }
-        if (topToApply < 0) {
-            topToApply = 0;
-            originTop = Math.abs(topToApply);
+        else if (pivot.includes('bottom')) {
+            topToApply = newHeight - bottom - Math.round(file.height / 2);
         }
-        
+
         const layers = file.layers;
         const imageDatas = [];
 

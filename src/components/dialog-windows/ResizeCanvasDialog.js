@@ -37,13 +37,49 @@ export default {
             top: 0,
             bottom: 0,
         
-            pivot: "middle"
+            pivot: "middle",
+            defaultPivot: true
         }
     },
 
     methods: {
         changePivot(newPivot) {
+            let rightFix, leftFix, topFix, bottomFix;
             this.pivot = newPivot;
+            this.defaultPivot = false;
+
+            console.log("here");
+            // Automatically updating the borders depending on the chosen pivot
+            if (newPivot.includes('left')) {
+                rightFix = this.endWidth - this.startWidth;
+                leftFix = 0;
+            }
+            else if (newPivot.includes('right')) {
+                rightFix = 0;
+                leftFix = this.endWidth - this.startWidth;
+            }
+            else {
+                rightFix = Math.round((this.endWidth - this.startWidth) / 2);
+                leftFix = this.endWidth - this.startWidth - rightFix;
+            }
+
+            if (newPivot.includes('top')) {
+                topFix = 0;
+                bottomFix = this.endHeight - this.startHeight;
+            }
+            else if (newPivot.includes('bottom')) {
+                topFix = this.endHeight - this.startHeight;
+                bottomFix = 0;
+            }
+            else {
+                topFix = Math.round((this.endHeight - this.startHeight) / 2);
+                bottomFix = this.endHeight - this.startHeight - topFix;
+            }
+            
+            this.$refs.rightBorderInput.value = rightFix;
+            this.$refs.leftBorderInput.value = leftFix;
+            this.$refs.topBorderInput.value = topFix;
+            this.$refs.bottomBorderInput.value = bottomFix;
         },
 
         updateWidth() {
@@ -99,10 +135,40 @@ export default {
                     this.bottom = parseInt(this.$refs.bottomBorderInput.value);
                     break;
             }
+
+            // Updating width and height inputs depending on the values of the borders
+            this.$refs.widthInput.value = this.startWidth + this.left + this.right;
+            this.$refs.heightInput.value = this.startHeight + this.top + this.bottom;
         },
 
         resizeCanvas() {
-            AppManager.file.doAction(ResizeCanvas, this.pivot, this.left, this.right, this.top, this.bottom);
+            // Interpreting user data: it doesn't make sense to center the pic if the user wanted
+            // to only expand the right side of the drawing
+            let interpretedPivot = '';
+            // If the user left the default pivot
+            if (this.defaultPivot) {
+                if (this.top > this.bottom) {
+                    interpretedPivot += 'bottom';
+                }
+                else if (this.top < this.bottom) {
+                    interpretedPivot += 'top';
+                }
+
+                if (this.left > this.right) {
+                    interpretedPivot += 'right';
+                }
+                else if (this.left < this.right) {
+                    interpretedPivot += 'left';
+                }
+            }
+
+            if (interpretedPivot === '') {
+                interpretedPivot = this.pivot;
+            }
+
+            console.log("bottom: " + this.bottom);
+            
+            AppManager.file.doAction(ResizeCanvas, interpretedPivot, this.left, this.right, this.top, this.bottom);
             this.closeWindow();
         },
 
@@ -180,7 +246,7 @@ export default {
                 
                 <span>
                     Bottom: <input id="rc-border-bottom" default="0" step="1" type="number" 
-                    value="0" autocomplete="off" ref="bottomBorderInput" @change="updateBorder('bottom  ')"/>
+                    value="0" autocomplete="off" ref="bottomBorderInput" @change="updateBorder('bottom')"/>
                 </span>
             </div>
             <button id = "resize-canvas-confirm" @click="resizeCanvas()">Resize canvas</button>
