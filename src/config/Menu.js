@@ -27,6 +27,7 @@ import MergeLayerBelow from "../actions/file/layers/MergeLayerBelow";
 import FlattenAllLayers from "../actions/file/layers/FlattenAllLayers";
 import FlattenVisibleLayers from "../actions/file/layers/FlattenVisibleLayers";
 import TogglePixelGrid from "../actions/app/TogglePixelGrid";
+import TrimCanvas from "../actions/file/TrimCanvas";
 
 export default {
   File: [
@@ -65,6 +66,11 @@ export default {
       scope: "app",
       emit: "ui-open-dialog",
       scopeParam: "scale-sprite"
+    },
+    {
+      name: "Trim canvas",
+      cope: "file",
+      action: TrimCanvas
     },
     {
       name: "Undo",
