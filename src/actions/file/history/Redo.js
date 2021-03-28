@@ -19,6 +19,9 @@ export default class Redo extends FileAction {
 
 			// Load and restore history state
 			const state = file.history.getState(file.historyIndex-1);
+
+			console.log("width: " + state.width + "height: " + state.height);
+
 			const widthDelta = state.canvasWidth - file.width;
 			const heightDelta = state.canvasHeight - file.height;
 

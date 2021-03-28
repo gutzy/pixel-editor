@@ -5,7 +5,7 @@
 
 import GetImage from "../actions/canvas/GetImage";
 
-const MAX_SNAPSHOTS = 100;
+const MAX_SNAPSHOTS = 500;
 
 export default class History {
 
