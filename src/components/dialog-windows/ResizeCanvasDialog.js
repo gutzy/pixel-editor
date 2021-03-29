@@ -80,6 +80,11 @@ export default {
             this.$refs.leftBorderInput.value = leftFix;
             this.$refs.topBorderInput.value = topFix;
             this.$refs.bottomBorderInput.value = bottomFix;
+
+            this.right = rightFix;
+            this.left = leftFix;
+            this.top = topFix;
+            this.bottom = bottomFix;
         },
 
         updateWidth() {

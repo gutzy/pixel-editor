@@ -14,14 +14,14 @@ export default class ResizeCanvas extends FileAction {
             leftToApply = left;
         }
         else if (pivot.includes('right')) {
-            leftToApply = newWidth - right - Math.round(file.width / 2);
+            leftToApply = newWidth - right - file.width;
         }
 
         if (pivot.includes('top')) {
             topToApply = top;
         }
         else if (pivot.includes('bottom')) {
-            topToApply = newHeight - bottom - Math.round(file.height / 2);
+            topToApply = newHeight - bottom - file.height;
         }
 
         const layers = file.layers;
@@ -42,8 +42,8 @@ export default class ResizeCanvas extends FileAction {
 
         // Put all the converted image datas into the layers
         for (let i=0; i<layers.length; i++) {
-            layers[i].canvasAction(PutImage, imageDatas[i], Math.abs(leftToApply), Math.abs(topToApply),0, 0, 
-                 newWidth, newHeight);
+            layers[i].canvasAction(PutImage, imageDatas[i], Math.abs(leftToApply), 
+            Math.abs(topToApply), 0, 0, newWidth, newHeight);
         }
 
         // Save the history for canvas resizing, if I'm not undoing or redoing
