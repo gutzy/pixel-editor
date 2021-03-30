@@ -69,7 +69,7 @@ export default {
     },
     {
       name: "Trim canvas",
-      cope: "file",
+      scope: "file",
       action: TrimCanvas
     },
     {

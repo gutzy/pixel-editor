@@ -3,7 +3,7 @@ import PutImage from "../canvas/PutImage";
 import ResizeCanvas from "../../actions/file/ResizeCanvas";
 import IsOpaque from "../../actions/canvas/IsOpaque";
 
-export default class TrimCanvas {
+export default class TrimCanvas extends FileAction {
     do(file) {
         const layers = file.layers;
         let minX = Infinity;
@@ -36,7 +36,10 @@ export default class TrimCanvas {
             }
         }
 
-        console.log("Min: " + minX + "," + minY + " - Max: " + maxX + "," + maxY);
-        // Resize the canvas
+        // We're dealing with canvas dimensions, not with indexes
+        minX++; minY++; maxX++; maxY++;
+
+        // Resize the canvas depending on the values 
+        file.doAction(ResizeCanvas, 'middle', -minX, file.width-maxX, -minY, file.height-maxY);
     }
 }
