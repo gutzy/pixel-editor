@@ -23,7 +23,7 @@ export default class PutImage extends CanvasAction {
             dw = target.el.width;
         if (dh === null)
             dh = target.el.height;
-
+        
         return target.ctx.putImageData(imgData, x, y, dx, dy, dw, dh);
     }
 }
