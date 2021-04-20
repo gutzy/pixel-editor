@@ -38,10 +38,7 @@ export default class TrimCanvas extends FileAction {
 
         // We're dealing with canvas dimensions, not with indexes
         maxX++; maxY++;
-
-        console.log("Left: " + (file.width - maxX) + ", bottom: " + (file.height - maxY));
-        console.log("Type of width: " + typeof(file.width));
-
+        
         // Resize the canvas depending on the values 
         file.doAction(ResizeCanvas, 'middle', -minX, -(file.width-maxX), -minY, -(file.height-maxY));
     }
