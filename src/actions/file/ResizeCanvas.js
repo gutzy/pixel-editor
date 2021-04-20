@@ -53,15 +53,13 @@ export default class ResizeCanvas extends FileAction {
 
             if (left < 0) {
                 originXOffset = Math.abs(left);
-                leftToApply = 0;
+                leftToApply = -originXOffset;
             }
             if (top < 0) {
                 originYOffset = Math.abs(top);
-                topToApply = 0;
+                topToApply = -originYOffset;
             }
-
-            console.log("Origin x: " + originXOffset + ", y: " + originYOffset);
-
+            
             layers[i].canvasAction(PutImage, imageDatas[i], leftToApply, topToApply,
                 originXOffset, originYOffset, oldWidth, oldHeight);
         }
