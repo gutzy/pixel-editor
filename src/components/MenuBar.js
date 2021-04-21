@@ -54,6 +54,12 @@ export default {
     onHover(name) {
       if (this.open && this.open !== name) this.open = name;
     },
+
+    getBool: function (item) {
+      if (item.type !== "bool") return null;
+
+      return item.value ? ": True" : ": False";
+    },
   },
 
   /**
@@ -112,7 +118,7 @@ export default {
                 v-for="item in group"
                 @click="selectMenuItem(item)"
               >
-                {{item.name}}
+                {{item.name}}{{getBool(item)}}
               </div>
             </div>
           </div>

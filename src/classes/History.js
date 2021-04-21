@@ -5,7 +5,7 @@
 
 import GetImage from "../actions/canvas/GetImage";
 
-const MAX_SNAPSHOTS = 100;
+const MAX_SNAPSHOTS = 500;
 
 export default class History {
 
@@ -20,19 +20,24 @@ export default class History {
     /**
      * Create a new history state and save it. Return the snapshot index
      *
-     * @param {[]} layers - file layers to save
+     * @param {[]} file - file state to save
      * @param {number|null} activeLayer
      * @param {number|null} index - optional. adds the state to a given index, instead of appending a new one.
      * @param {Canvas|null} selectionCanvas - used to also serialize the selection into the state
      * @return {number} snapshot index
      */
-    saveState(layers, activeLayer = -1, index = -1, selectionCanvas = null) {
-        let d = [];
+    saveState(file, activeLayer = -1, index = -1, selectionCanvas = null) {
+        let d = {
+            layers: [],
+            canvasWidth: file.width,
+            canvasHeight: file.height
+        };
+        const layers = file.layers;
         console.log("Saved state", selectionCanvas);
 
         // save selection canvas to layers
         if (selectionCanvas) {
-            d.push({
+            d.layers.push({
                 name: '_selection-canvas',
                 data: selectionCanvas.doAction(GetImage)
             })
@@ -40,7 +45,7 @@ export default class History {
 
         // serialize each layer and save it
        for (let l = 0; l < layers.length; l++) {
-            d.push({
+            d.layers.push({
                 name : layers[l].name,
                 locked: layers[l].locked,
                 visible: layers[l].visible,

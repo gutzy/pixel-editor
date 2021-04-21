@@ -48,7 +48,7 @@ export default class Pencil extends Tool {
 
   use(file, canvas, x, y, toolCanvas) {
     const dist = distance(x, y, this.pos.x, this.pos.y);
-    if (dist > 0.5) {
+    if (dist > 0.1) {
       const px = pixelsBetween(x, y, this.pos.x, this.pos.y);
       for (let p of px) {
         // draw pixels between this and the previous mouse movement

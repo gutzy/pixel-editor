@@ -1,0 +1,202 @@
+@import "../vars";
+
+#pivot-menu {
+    position: relative;
+    display:inline-flex;
+    flex-wrap:wrap;
+    vertical-align:middle;
+    text-align:center;
+    float:left;
+
+    button {
+        margin-right:10px;
+        margin-bottom:10px;
+        position:relative;
+        width:32px;
+        height:32px;
+        background:$panelHoverBg;
+        border:none;
+        
+        path {
+            fill:$titleColor;
+        }
+        transition: background 100ms ease-in-out, 
+                    transform 100ms ease;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+    }
+
+    button:hover,
+    button:focus,
+    button.rc-selected-pivot {
+        cursor:pointer;
+        background-color: $panelHoverBg;
+        path {
+            fill:$dialogTitle;
+        }
+        border: 2px solid color(base, foreground);
+    }
+    button:active {
+        transform: scale(0.95);
+    }
+    }
+
+    #borders-menu, #rc-size-menu, #rs-size-menu, #rs-percentage-menu {
+    display:flex;
+    position:relative;
+    flex-wrap: wrap;
+    width:250px;
+    font-size:15px;
+    left:10px;
+    text-align:center;
+
+    button {
+        background:$panelHoverBg;
+        border:none;
+        
+        color: $titleColor;
+        transition: background 100ms ease-in-out, 
+                    transform 100ms ease;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+    }
+
+    button:hover,
+    button:focus {
+        cursor:pointer;
+        background-color: $panelHoverBg;
+        color:$dialogTitle;
+        border: 2px solid color(base, foreground);
+    }
+    button:active {
+        transform: scale(0.95);
+    }
+
+    input[type=number] {
+        position:relative;
+        margin-left:10px;
+        height:15px !important;
+        width:40px !important;
+        padding:8px !important;
+    }
+
+    input[type=number]::-webkit-outer-spin-button,
+        input[type=number]::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+        }
+        /* Firefox */
+        input[type=number] {
+        -moz-appearance: textfield;
+        }
+
+    span {
+        padding-right:10px;
+        float:left;
+        position:relative;
+        vertical-align:middle;
+        height:40px;
+        width:100px;
+        display: inline-flex;
+        align-items: center;
+    }
+}
+
+#rs-percentage-menu {
+    width: 400px;
+    span {
+        width:150px;
+    }
+}
+
+#rs-size-menu {
+    width: 400px;
+    span {
+        width:150px;
+    }
+}
+
+#rs-percentage-menu, #rs-size-menu {
+    justify-content: center;
+
+    div {
+        float: none;
+    }
+}
+
+#borders-menu {
+    width:400px;
+    justify-content: center;
+
+    div {
+        float: none;
+        width: 330px;
+        padding-left:50px;
+
+        span {
+            padding-right:20px;
+        }
+    }
+}
+
+#rs-ratio-div {
+    width:400px;
+    justify-content: center;
+    padding-left:20px;
+
+    span {
+        width:400px;
+        justify-content: center;
+    }
+
+    input:checked {
+        background:red;
+    }
+
+    select {
+        height:30px;
+        background-color: $panelHoverBg;
+        color: $panelColor;
+        border:none;
+        position:relative;
+
+        option {
+            background-color: $panelHoverBg;
+            color:$dialogTitle;
+            padding:5px;
+        }
+
+        option:checked, option:hover {
+            box-shadow: 0 0 10px 100px $titleColor inset;
+            color: $dialogTitle;
+        }
+    }
+}
+
+#rs-keep-ratio {
+    background: $dialogTitle;
+    border: none;
+    font-size:14px;
+    color: $panelBg;
+    padding: 10px 20px;
+    position:relative;
+    display: block;
+}
+
+#resize-canvas-confirm, #resize-sprite-confirm {
+    background: $panelSelectedBg2 !important;
+    border: none;
+    font-size:14px;
+    border-radius: 4px;
+    color: $panelColor !important;
+    padding: 10px 20px;
+    cursor: pointer;
+    display: block;
+    margin: 0 auto;
+    margin-top:10px;
+
+    &:hover {
+        background-color: $titleColor !important;
+        color:$dialogTitle !important;
+    }
+}

@@ -46,7 +46,6 @@ export default class Canvas {
         if (data) {
             this.doAction(PutImage, data, 0, 0);
         }
-
     }
 
     /**

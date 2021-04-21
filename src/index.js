@@ -14,35 +14,40 @@
  * Have fun!
  *
  */
-import Vue from 'vue/dist/vue';
+
+import Vue from "vue/dist/vue";
 import "./style.scss";
 import AppManager from "./classes/AppManager";
 import LayersPanel from "./components/LayersPanel";
 import Toolbox from "./components/Toolbox";
 import ColorPalette from "./components/ColorPalette";
 import MenuBar from "./components/MenuBar";
+import DialogWindow from "./components/Dialog";
+import html from "./utils/html";
 
-const vm = new Vue({
+const App = {
+  async mounted() {
+    AppManager.init(this.$refs.canvas);
+  },
 
-		async mounted() {
-			AppManager.init(this.$refs.canvas);
-		},
+  components: { LayersPanel, Toolbox, ColorPalette, MenuBar, DialogWindow },
 
-		components : { LayersPanel, Toolbox, ColorPalette, MenuBar },
+  template: html`
+    <div class="app">
+      <DialogWindow />
+      <div class="header">
+        <menu-bar />
+      </div>
+      <div class="main-content">
+        <toolbox />
+        <div class="canvas-wrapper">
+          <canvas id="main-canvas" ref="canvas"></canvas>
+        </div>
+        <color-palette />
+        <layers-panel />
+      </div>
+    </div>
+  `,
+};
 
-		template : `
-            <div class="app"">
-            	<div class="header">
-            		<menu-bar />
-				</div>
-				<div class="main-content">
-					<toolbox />
-	            	<div class="canvas-wrapper">
-    	        		<canvas id="main-canvas" ref="canvas"></canvas>
-					</div>
-					<color-palette />
-            		<layers-panel />
-				</div>
-		    </div>`
-	},
-).$mount('#app');
+const vm = new Vue(App).$mount("#app");

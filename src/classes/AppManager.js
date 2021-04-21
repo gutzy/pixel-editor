@@ -12,7 +12,7 @@ import {
   isXYinRect,
   screenToRectXY,
   screenToOffsetXY,
-  pixelsBetween
+  pixelsBetween,
 } from "../utils/CanvasUtils";
 import Tools, { ZoomConfig } from "../config/Tools";
 import Menu from "../config/Menu";
@@ -36,6 +36,8 @@ class _AppManager {
     this.file = null;
     this.tools = null;
     this.menu = null;
+    this.pixelGrid = true;
+    this.dialogueOpen = false;
 
     this.persistentLoop = null;
     this.loopCount = 0;
@@ -52,7 +54,7 @@ class _AppManager {
     this.startLoop();
 
     // Create the first file
-    const file = this.doAction(NewFile, 320, 240, "advanced", "Funky test", [
+    const file = this.doAction(NewFile, 64, 64, "advanced", "Funky test", [
       "#ff0000",
       "#ffe21f",
       "#46ca35",
@@ -64,14 +66,20 @@ class _AppManager {
     file.color = "#ff0000";
   }
 
+  onNewPixel(width, height, mode, name, palette) {
+    const file = this.doAction(NewFile, width, height, mode, name, palette);
+  }
+
   /**
    * Load main application configuration
    * load tools and menu settings from the Tools and Menu /config files
    */
   loadAppConfig() {
+    // Load tools
     this.tools = Tools.map((t) => new t());
     EventBus.$emit("ui-set-tools", this.tools);
 
+    // Load menu
     this.menu = Menu;
     EventBus.$emit("ui-set-menu", this.menu);
   }
@@ -125,7 +133,7 @@ class _AppManager {
 
     EventBus.$on("input-key-down", this.onKeyDown.bind(this));
     EventBus.$on("input-key-up", this.onKeyUp.bind(this));
-    
+
     EventBus.$on("reset-canvas", this.onResetCanvas.bind(this));
     EventBus.$on("redraw-canvas", this.onRedrawCanvas.bind(this));
 
@@ -134,6 +142,8 @@ class _AppManager {
     EventBus.$on("set-tool-cursor", this.onSetToolCursor.bind(this));
 
     EventBus.$on("run-menu-item", this.onRunMenuItem.bind(this));
+
+    EventBus.$on("new-pixel", this.onNewPixel.bind(this));
   }
 
   /**
@@ -151,24 +161,26 @@ class _AppManager {
   }
 
   async onMouseWheel(delta, x, y) {
-    let mousePos = screenToOffsetXY(this.canvas.el, x, y);
+    if (this.file) {
+      let mousePos = screenToOffsetXY(this.canvas.el, x, y);
 
-    if (delta < 0) {
-      await this.file.doAction(
-        ZoomIn,
-        ZoomConfig.ZoomLevels,
-        mousePos.x,
-        mousePos.y,
-        this.canvas.el
-      );
-    } else if (delta > 0) {
-      await this.file.doAction(
-        ZoomOut,
-        ZoomConfig.ZoomLevels,
-        mousePos.x,
-        mousePos.y,
-        this.canvas.el
-      );
+      if (delta < 0) {
+        await this.file.doAction(
+          ZoomIn,
+          ZoomConfig.ZoomLevels,
+          mousePos.x,
+          mousePos.y,
+          this.canvas.el
+        );
+      } else if (delta > 0) {
+        await this.file.doAction(
+          ZoomOut,
+          ZoomConfig.ZoomLevels,
+          mousePos.x,
+          mousePos.y,
+          this.canvas.el
+        );
+      }
     }
   }
 
@@ -178,6 +190,9 @@ class _AppManager {
    * @param y - cursor y position
    */
   async onMouseDown(x, y) {
+    if (this.dialogueOpen) {
+      return;
+    }
     // get position
     const r = getCenterRect(
       this.canvas.el,
@@ -190,6 +205,8 @@ class _AppManager {
 
     const isXYinCanvas = isXYinRect(r, x, y);
     const isXYinContainer = isXYinRect([0, 0, r2.width, r2.height], x, y);
+    
+    // TODO: add some way to avoid events when a dialogue is open
     const isXYValid =
       (isXYinCanvas ||
         (this.file.selectedTool && this.file.selectedTool.useOutside)) &&
@@ -211,6 +228,9 @@ class _AppManager {
    * @param y - cursor y position
    */
   async onMouseUp(x, y) {
+    if (this.dialogueOpen) {
+      return;
+    }
     // get position
     const r = getCenterRect(
       this.canvas.el,
@@ -231,7 +251,6 @@ class _AppManager {
       await this.file.doAction(StopTool, pos.x, pos.y);
     }
 
-    // BUG: causes error when clicking on layers context menu option
     EventBus.$emit("redraw-canvas");
   }
 
@@ -304,9 +323,11 @@ class _AppManager {
     if (this.input.isMouseDown() && this.file && isXYValid) {
       // Run Use Tool method
       await this.file.doAction(UseTool, pos.x, pos.y);
-    }
-    else if (this.file.selectedTool &&this.input.isRightMouseDown() && 
-      this.file.selectedTool.size) {
+    } else if (
+      this.file.selectedTool &&
+      this.input.isRightMouseDown() &&
+      this.file.selectedTool.size
+    ) {
       // compute the distance and set the right brush size
       let distance = this.input.getMousePosDelta().x / 2;
 
@@ -340,6 +361,10 @@ class _AppManager {
    * @param input - input helper class
    */
   onKeyDown(key, input) {
+    if (this.dialogueOpen) {
+      return;
+    }
+
     if (!this.file) return false;
     if (input.isKeyDown("Alt")) return false;
 
@@ -367,6 +392,10 @@ class _AppManager {
    * @param key - designated key
    */
   onKeyUp(key) {
+    if (this.dialogueOpen) {
+      return;
+    }
+    
     for (let tool of this.tools) {
       // Look for a released active spicy tool
       if (tool.spicykey === key && this.file.spicy) {
@@ -446,7 +475,9 @@ class _AppManager {
       // Runs menu action on the app... AppAction()
       case "app":
         if (item.action) this.doAction(item.action);
-        if (item.emit) EventBus.$emit(item.emit);
+        if (item.emit) {
+          EventBus.$emit(item.emit, item.scopeParam);
+        }
         break;
       // Runs menu action on current file... FileAction(this.file, ...params)
       case "file":

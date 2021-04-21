@@ -13,6 +13,6 @@ export default class SaveHistory extends FileAction {
         if (!file.history) file.history = new History();
 
         // Add history snapshot to file history
-        file.historyIndex = file.history.saveState(file.layers, file.activeLayer, file.historyIndex, file.toolSelectionCanvas);
+        file.historyIndex = file.history.saveState(file, file.activeLayer, file.historyIndex, file.toolSelectionCanvas);
     }
 }

@@ -26,120 +26,155 @@ import DeleteLayer from "../actions/file/layers/DeleteLayer";
 import MergeLayerBelow from "../actions/file/layers/MergeLayerBelow";
 import FlattenAllLayers from "../actions/file/layers/FlattenAllLayers";
 import FlattenVisibleLayers from "../actions/file/layers/FlattenVisibleLayers";
+import TogglePixelGrid from "../actions/app/TogglePixelGrid";
+import TrimCanvas from "../actions/file/TrimCanvas";
 
 export default {
-
-	"File" : [
-		{
-			name: "New",
-			scope: "app",
-		},
-		{
-			name: "Save Project",
-			scope: "app",
-		},
-		{
-			name: "Open",
-			scope: "app",
-		},
-		{
-			name: "Export",
-			scope: "app",
-		},
-		{
-			name: "Exit",
-			scope: "app",
-		}
-	],
-	"Edit" : [
-		{
-			name: "Undo",
-			scope: "file",
-			action: Undo,
-			activeAction: CanUndo
-		},
-		{
-			name: "Redo",
-			scope: "file",
-			action: Redo,
-			activeAction: CanRedo
-		}
-	],
-	"Layer" : [
-		{
-			name: "New Layer",
-			scope: "file",
-			action: AddLayer
-		},
-		{
-			name: "Rename",
-			scope: "layer",
-			emit: "ui-start-renaming-layer"
-		},
-		{
-			name: "Delete",
-			scope: "layer",
-			action: DeleteLayer,
-			scopeParam: "name"
-		},
-		{
-			name: "Merge Below",
-			scope: "layer",
-			action: MergeLayerBelow,
-			scopeParam: "name"
-		},
-		{
-			name: "Flatten Visible",
-			scope: "file",
-			action: FlattenVisibleLayers
-		},
-		{
-			name: "Flatten All",
-			scope: "file",
-			action: FlattenAllLayers
-		}
-	],
-	"Selection" : [
-		{
-			name: "Copy",
-			scope: "layer",
-		},
-		{
-			name: "Cut",
-			scope: "layer",
-		},
-		{
-			name: "Paste",
-			scope: "layer",
-		},
-		{
-			name: "Clear Selection",
-			scope: "layer",
-		}
-	],
-	"Editor" : [
-		{
-			name: "Switch to Basic Mode",
-			scope: "app",
-		},
-	],
-	"Help" : [
-		{
-			name: "Settings",
-			scope: "app"
-		},
-		{
-			name: "Help",
-			scope: "app"
-		},
-		{
-			name: "About",
-			scope: "app"
-		},
-		{
-			name: "Changelog",
-			scope: "app"
-		}
-	]
-
-}
+  File: [
+    {
+      name: "New",
+      scope: "app",
+      emit: "ui-open-dialog",
+      scopeParam: "new-file",
+    },
+    {
+      name: "Save Project",
+      scope: "app",
+    },
+    {
+      name: "Open",
+      scope: "app",
+    },
+    {
+      name: "Export",
+      scope: "app",
+    },
+    {
+      name: "Exit",
+      scope: "app",
+    },
+  ],
+  Edit: [
+    {
+      name: "Resize canvas",
+      scope: "app",
+      emit: "ui-open-dialog",
+      scopeParam: "resize-canvas"
+    },
+    {
+      name: "Scale sprite",
+      scope: "app",
+      emit: "ui-open-dialog",
+      scopeParam: "scale-sprite"
+    },
+    {
+      name: "Trim canvas",
+      scope: "file",
+      action: TrimCanvas
+    },
+    {
+      name: "Undo",
+      scope: "file",
+      action: Undo,
+      activeAction: CanUndo,
+    },
+    {
+      name: "Redo",
+      scope: "file",
+      action: Redo,
+      activeAction: CanRedo,
+    },
+  ],
+  Layer: [
+    {
+      name: "New Layer",
+      scope: "file",
+      action: AddLayer,
+    },
+    {
+      name: "Rename",
+      scope: "layer",
+      emit: "ui-start-renaming-layer",
+    },
+    {
+      name: "Delete",
+      scope: "layer",
+      action: DeleteLayer,
+      scopeParam: "name",
+    },
+    {
+      name: "Merge Below",
+      scope: "layer",
+      action: MergeLayerBelow,
+      scopeParam: "name",
+    },
+    {
+      name: "Flatten Visible",
+      scope: "file",
+      action: FlattenVisibleLayers,
+    },
+    {
+      name: "Flatten All",
+      scope: "file",
+      action: FlattenAllLayers,
+    },
+  ],
+  Selection: [
+    {
+      name: "Copy",
+      scope: "layer",
+    },
+    {
+      name: "Cut",
+      scope: "layer",
+    },
+    {
+      name: "Paste",
+      scope: "layer",
+    },
+    {
+      name: "Clear Selection",
+      scope: "layer",
+    },
+  ],
+  Editor: [
+    {
+      name: "Show Pixel Grid",
+      scope: "app",
+      type: "bool",
+      value: true,
+      emit: "toggle-pixel-grid",
+      action: TogglePixelGrid,
+    },
+    {
+      name: "Switch to Basic Mode",
+      scope: "app",
+    },
+  ],
+  Help: [
+    {
+      name: "Settings",
+      scope: "app",
+      emit: "ui-open-dialog",
+      scopeParam: "settings-dialog",
+    },
+    {
+      name: "Help",
+      scope: "app",
+      emit: "ui-open-dialog",
+      scopeParam: "help-dialog",
+    },
+    {
+      name: "About",
+      scope: "app",
+      emit: "ui-open-dialog",
+      scopeParam: "about-dialog",
+    },
+    {
+      name: "Changelog",
+      scope: "app",
+      emit: "ui-open-dialog",
+      scopeParam: "changelog-dialog",
+    },
+  ],
+};

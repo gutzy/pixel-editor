@@ -86,6 +86,7 @@ export default {
           ></div>
         </draggable>
       </div>
+      <button 
     </div>
   `,
 };

@@ -13,6 +13,7 @@ import PixelGrid from "../canvas/PixelGrid";
 import Canvas from "../../classes/Canvas";
 import DrawSelectionMarchingAnts from "../canvas/DrawSelectionMarchingAnts";
 import UITool from "./tools/UITool.js";
+import appManager from "../../classes/AppManager";
 
 export default class Redraw extends FileAction {
   /**
@@ -85,7 +86,7 @@ export default class Redraw extends FileAction {
     ///////////////////////////////////////////////////////////////////////
     // draw a Pixel Grid if zoom is high enough so it won't be obstructive
 
-    if (file.zoom >= 8) {
+    if (appManager.pixelGrid && file.zoom >= 8) {
       canvas.doAction(PixelGrid, file.zoom, r[0], r[1]);
     }
 
