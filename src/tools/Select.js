@@ -17,6 +17,8 @@ import AxisLocking from "../actions/tool/AxisLocking";
 import InitCutImage from "../actions/file/selection/InitCutImage";
 import DrawToolCanvasOnLayer from "../actions/file/selection/DrawToolCanvasOnLayer";
 import DrawSelectionBorders from "../actions/canvas/DrawSelectionBorders";
+import ImgDataToCanvas from "../actions/canvas/ImgDataToCanvas";
+import GetMaskImage from "../actions/canvas/GetMaskImage";
 
 export default class Select extends Tool {
 
@@ -60,11 +62,17 @@ export default class Select extends Tool {
 
         if (file.selectionCanvas) { // a selection is defined
             file.lastSelectionOffset = null;
-            if (file.selectionCanvas && file.selectionCanvas.doAction(IsOpaque, x, y)) { // inside current selection
+            // if inside current selection
+            if (file.selectionCanvas && file.selectionCanvas.doAction(IsOpaque, x, y)) { 
                 this.dragging = {x, y};
                 this.context = 'object';
-                if (this.mode === "copy") { this._doCopy(canvas, file); }
-                else if (!file.toolSelectionCanvas || file.forceCut) { this._doCut(canvas, file) }
+
+                if (this.mode === "copy") { 
+                    this._doCopy(canvas, file); 
+                }
+                else if (!file.toolSelectionCanvas || file.forceCut) { 
+                    this._doCut(canvas, file) 
+                }
             }
             else { // outside selection
                 this.dragging = false;
@@ -109,7 +117,6 @@ export default class Select extends Tool {
         if (file.toolSelectionCanvas && file.lastSelectionOffset) {
             file.toolSelectionCanvas.doAction(OffsetImage, file.lastSelectionOffset.x, file.lastSelectionOffset.y)
         }
-
     }
 
     use(file, canvas, x, y, toolCanvas) {

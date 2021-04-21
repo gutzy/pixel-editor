@@ -10,6 +10,7 @@
 import {FileAction} from "../../../classes/abstracts/Actions";
 import EventBus from "../../../utils/EventBus";
 import Layer from "../../../classes/Layer";
+import DrawToolCanvasOnLayer from "../selection/DrawToolCanvasOnLayer";
 
 export default class AddLayer extends FileAction {
 	do(file, name = "Untitled Layer", index = -1) {
@@ -51,8 +52,14 @@ export default class AddLayer extends FileAction {
 		// emit event to save history
 		EventBus.$emit('save-history');
 
+		// Keeping the selection on the previous layer
+		if (file.toolSelectionCanvas) {
+            file.doAction(DrawToolCanvasOnLayer, true);
+            file.toolSelectionCanvas = null;
+        }
+
 		// emit event to select active layer in UI
-		EventBus.$emit('ui-select-layer', file.layers[file.activeLayer]);
+		EventBus.$emit('ui-select-layer', file.layers[file.activeLayer], file);
 		return layer;
 	}
 }

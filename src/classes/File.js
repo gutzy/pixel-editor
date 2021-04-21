@@ -84,7 +84,7 @@ export default class File {
         // Otherwise, create a first empty layer, and save the empty, one-layer file to history as the base state
         else {
             const layer = this.doAction(AddLayer,'Layer 1');
-            EventBus.$emit('ui-select-layer', layer);
+            EventBus.$emit('ui-select-layer', layer, this);
             this.doAction(SaveHistory);
         }
     }

@@ -6,6 +6,7 @@
  */
 import {FileAction} from "../../../classes/abstracts/Actions";
 import EventBus from "../../../utils/EventBus";
+import DrawToolCanvasOnLayer from "../selection/DrawToolCanvasOnLayer";
 
 export default class SelectLayer extends FileAction {
 	/**
@@ -15,6 +16,12 @@ export default class SelectLayer extends FileAction {
 	 * @return {boolean}
 	 */
 	do(file, layerName) {
+		// Keeping the selection on the previous layer
+		if (file.toolSelectionCanvas) {
+            file.doAction(DrawToolCanvasOnLayer, true);
+            file.toolSelectionCanvas = null;
+        }
+
 		// iterate layers, look for target layer
 		for (let l = 0; l < file.layers.length; l++) {
 			if (file.layers[l].name === layerName) {
@@ -23,7 +30,7 @@ export default class SelectLayer extends FileAction {
 				file.activeLayer = l;
 
 				// update UI
-				EventBus.$emit('ui-select-layer', file.layers[l]);
+				EventBus.$emit('ui-select-layer', file.layers[l], file);
 
 				// return success
 				return true;

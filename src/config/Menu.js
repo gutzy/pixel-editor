@@ -123,14 +123,17 @@ export default {
     {
       name: "Copy",
       scope: "layer",
+      emit: "copy-selection",
     },
     {
       name: "Cut",
       scope: "layer",
+      emit: "cut-selection",
     },
     {
       name: "Paste",
       scope: "layer",
+      emit: "paste-selection",
     },
     {
       name: "Clear Selection",
