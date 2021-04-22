@@ -17,8 +17,7 @@ import AxisLocking from "../actions/tool/AxisLocking";
 import InitCutImage from "../actions/file/selection/InitCutImage";
 import DrawToolCanvasOnLayer from "../actions/file/selection/DrawToolCanvasOnLayer";
 import DrawSelectionBorders from "../actions/canvas/DrawSelectionBorders";
-import ImgDataToCanvas from "../actions/canvas/ImgDataToCanvas";
-import GetMaskImage from "../actions/canvas/GetMaskImage";
+import AppManager from "../classes/AppManager";
 
 export default class Select extends Tool {
 
@@ -40,6 +39,19 @@ export default class Select extends Tool {
             this._resetInfo();
         });
         this.doAction(WatchKey, 'Shift', () => { this._resetInfo(); });
+
+        EventBus.$on("copy-selection", this._doCopy.bind(this));
+        EventBus.$on("cut-selection", this._doCopy.bind(this));
+        EventBus.$on("paste-selection", this._doPaste.bind(this));
+        EventBus.$on("clear-selection", this._onClear.bind(this));
+    }
+
+    _doPaste() {
+
+    }
+
+    onClear() {
+        this._onFinished();
     }
 
     select() {
@@ -144,7 +156,10 @@ export default class Select extends Tool {
         this.newPos = this.startPos = this.rect = this.tempRect = this.img = null;
     }
 
-    _onClear(canvas, file) {
+    _onClear() {
+        const file = AppManager.file;
+        const canvas = file.layers[file.activeLayer].canvas;
+
         this._clearCut(file);
         EventBus.$emit('select-area', 'selectionCanvas', [0,0,0,0]);
         if (file.toolSelectionCanvas) {
@@ -153,12 +168,20 @@ export default class Select extends Tool {
         }
     }
 
-    _doCopy(canvas, file) {
+    _doCopy() {
+        const file = AppManager.file;
+        const canvas = file.layers[file.activeLayer].canvas;
+
         if (!file.toolSelectionCanvas) file.doAction(InitCutImage, canvas);
         file.doAction(DrawToolCanvasOnLayer);
     }
 
-    _doCut(canvas, file) {
+    _doCut() {
+        console.log("cut");
+
+        const file = AppManager.file;
+        const canvas = file.layers[file.activeLayer].canvas;
+
         delete file.forceCut;
         file.doAction(InitCutImage, canvas);
         canvas.doAction(CutImage, file.selectionCanvas.el); // remove the image from the layer

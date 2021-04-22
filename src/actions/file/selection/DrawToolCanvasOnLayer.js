@@ -23,7 +23,7 @@ export default class DrawToolCanvasOnLayer extends FileAction {
                 tx = file.lastSelectionOffset.x; ty = file.lastSelectionOffset.y;
             }
         }
-
+        
         // draw selection layer on active layer
         file.layers[file.activeLayer].canvas.doAction(DrawImage, file.toolSelectionCanvas.el,tx,ty);
         file.doAction(SaveHistory);

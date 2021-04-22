@@ -138,6 +138,7 @@ export default {
     {
       name: "Clear Selection",
       scope: "layer",
+      emit: "clear-selection",
     },
   ],
   Editor: [
