@@ -7,6 +7,7 @@
  */
 import {FileAction} from "../../../classes/abstracts/Actions";
 import DrawImage from "../../canvas/DrawImage";
+import SaveHistory from "../history/SaveHistory";
 
 export default class DrawToolCanvasOnLayer extends FileAction {
 
@@ -25,6 +26,7 @@ export default class DrawToolCanvasOnLayer extends FileAction {
 
         // draw selection layer on active layer
         file.layers[file.activeLayer].canvas.doAction(DrawImage, file.toolSelectionCanvas.el,tx,ty);
+        file.doAction(SaveHistory);
     }
 
 }
